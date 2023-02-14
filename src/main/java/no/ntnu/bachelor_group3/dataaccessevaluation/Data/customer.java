@@ -1,32 +1,35 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
+import jakarta.persistence.*;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+
 @Entity
-public class Customer {
+public class customer {
 
     @Id
-    private int customerID;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int customer_id;
     private String address;
-    private String name;
 
-    public Customer() {
+    public customer() {
 
     }
 
-    public Customer(int customerID, String address, String name) {
-        this.customerID = customerID;
+    public customer(int customerID, String address) {
+        this.customer_id = customerID;
         this.address = address;
-        this.name = name;
     }
 
     public int getCustomerID() {
-        return customerID;
+        return customer_id;
     }
 
     public void setCustomerID(int customerID) {
-        this.customerID = customerID;
+        this.customer_id = customerID;
     }
 
     public String getAddress() {
@@ -37,11 +40,4 @@ public class Customer {
         this.address = address;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }
