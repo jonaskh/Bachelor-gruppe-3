@@ -2,6 +2,7 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 public class Customer {
@@ -43,5 +44,14 @@ public class Customer {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "customerID=" + customerID +
+                ", address='" + address + '\'' +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
