@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+//TODO: Add connection to other tables
 @Entity
 public class Customer {
 
