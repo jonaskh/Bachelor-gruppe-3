@@ -1,8 +1,8 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.HashMap;
 
 //TODO: Add connection to other tables
 @Entity
@@ -12,6 +12,12 @@ public class Customer {
     private int customerID;
     private String address;
     private String name;
+
+
+    //HashMap of orders for each customer
+    @OneToMany
+    @JoinColumn(name = "order_id")
+    private HashMap<Integer, Shipment> orders;
 
     public Customer() {
 
@@ -46,6 +52,7 @@ public class Customer {
     public void setName(String name) {
         this.name = name;
     }
+
 
     @Override
     public String toString() {

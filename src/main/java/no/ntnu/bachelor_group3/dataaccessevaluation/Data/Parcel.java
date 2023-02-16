@@ -16,23 +16,24 @@ public class Parcel {
     //price is evaluated with weight times a constant
     private int weight_class;
 
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Shipment order_placed_in; //which order the parcel belongs to
+
     //assigns a weight class depending on weight. Used at checkpoints to estimate cost.
     public void setWeight_class() {
-        if (weight <= 2) {
+        if (weight <= 5) {
             weight_class = 1;
 
         }
-        else if(weight <= 5) {
+        else if(weight <= 20) {
             weight_class = 2;
         }
-        else if(weight <= 10) {
+        else if(weight <= 50) {
             weight_class = 3;
         }
-        else if (weight <= 20) {
-            weight_class = 4;
-        }
         else {
-            weight_class = 5;
+            weight_class = 4;
         }
     }
 

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.util.Date;
 
+enum CheckpointType{Collected, ReceivedFirstTerminal,LoadedOnCar,ReceivedFinalTerminal,UnderDelivery,Delivered}
+
 @Entity
 @Table(name = "checkpoint")
 public class Checkpoint {
@@ -15,6 +17,8 @@ public class Checkpoint {
 
     //current address of the checkpoint, received from terminal/sender/receiver
     private String location;
+
+    private CheckpointType type;
 
     private int cost;
 
