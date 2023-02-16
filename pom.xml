@@ -14,7 +14,7 @@
 	<name>data-access-evaluation</name>
 	<description>Evaluate various Data Access Layers on two different databases.</description>
 	<properties>
-		<java.version>17</java.version>
+		<java.version>11</java.version>
 	</properties>
 	<dependencies>
 
