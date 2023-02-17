@@ -16,6 +16,10 @@ public class Parcel {
     //price is evaluated with weight times a constant
     private int weight_class;
 
+    public int getWeight() {
+        return weight;
+    }
+
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Shipment order_placed_in; //which order the parcel belongs to
