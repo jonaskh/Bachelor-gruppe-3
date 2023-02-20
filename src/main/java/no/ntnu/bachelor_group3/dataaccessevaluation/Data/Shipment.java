@@ -1,9 +1,10 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
+import com.github.javafaker.Faker;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
-
+import java.util.Locale;
 
 
 @Entity
@@ -11,6 +12,8 @@ public class Shipment {
 
     //static variable that is incremented each time a new shipment is created to provide a unique id.
     private static int counter = 1;
+
+    private static Faker faker = new Faker(new Locale("nb-NO"));
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,13 +50,13 @@ public class Shipment {
 
     }
 
-    public Shipment(int sender_id, String receiving_address,
-                    String receiving_zip, String receiver_name, int payer_id) {
+    //constructor is either called by existing user, or a non-existent one,
+    // in which case a new customer must be made.
+    public Shipment(String address, String zip_code, String name) {
         this.order_id = counter++;
-        this.sender_id = sender_id;
-        this.receiving_address = receiving_address;
-        this.receiving_zip = receiving_zip;
-        this.receiver_name = receiver_name;
+        this.receiving_address = address;
+        this.receiving_zip = zip_code;
+        this.receiver_name = name;
 
     }
 
@@ -68,7 +71,10 @@ public class Shipment {
     }
 
     public void setDelivered() {
+    }
 
+    public void setCustomer_id(int customer_id) {
+        this.customer_id = customer_id;
     }
 
 
