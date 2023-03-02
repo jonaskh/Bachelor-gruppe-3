@@ -11,10 +11,10 @@ import java.util.Optional;
 @Service
 public class CustomerService {
 
+    @Autowired
     private CustomerRepository customerRepository;
 
     private static final Logger logger = LoggerFactory.getLogger("CustomerServiceLogger");
-
 
     public Customer findByID(int id) {
         Optional<Customer> customer = customerRepository.findById(id);

@@ -3,6 +3,7 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 import com.github.javafaker.Faker;
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
@@ -21,6 +22,11 @@ public class Customer {
     private String name;
 
     private String zip_code;
+
+    @ManyToOne
+    @JoinTable(name = "customer_shipments")
+    @JsonIgnore
+    private Set<Shipment> shipments = new HashSet<>();
 
 
     //Set of orders for each customer
