@@ -1,6 +1,9 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
+import com.github.javafaker.Faker;
 import jakarta.persistence.*;
+
+import java.util.Locale;
 import java.util.Set;
 
 //TODO: Add connection to other tables
@@ -26,6 +29,13 @@ public class Customer {
     private Set<Shipment> shipments;
 
     public Customer() {
+        Faker faker = new Faker(new Locale("nb-NO"));
+
+        this.customer_id = counter_id++;
+        this.address = faker.address().streetAddress();
+        this.name = faker.name().fullName();
+        this.zip_code = faker.address().zipCode(); //TODO: Check for valid codes
+
     }
 
 
@@ -65,6 +75,9 @@ public class Customer {
     }
 
 
+    public void createOrder() {
+
+    }
     @Override
     public String toString() {
         return "Customer{" +
@@ -74,4 +87,6 @@ public class Customer {
                 ", zip='" + zip_code + '\'' +
                 '}';
     }
+
+
 }
