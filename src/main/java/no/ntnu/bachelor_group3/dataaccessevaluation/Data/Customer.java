@@ -13,46 +13,42 @@ import java.util.Set;
 public class Customer {
 
 
-    private static int counter_id = 1; //unique id, incremented each time a new customer is made.
+    //private static int counter_id = 1; //unique id, incremented each time a new customer is made.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int customer_id;
+    private Long customer_id;
 
     private String address;
     private String name;
-
     private String zip_code;
-
-    @ManyToOne
-    @JoinTable(name = "customer_shipments")
-    @JsonIgnore
-    private Set<Shipment> shipments = new HashSet<>();
-
 
     //Set of orders for each customer
     @OneToMany
     @JoinColumn(name = "order_id")
     private Set<Shipment> shipments;
 
+    /**
+     * Cosntructor that user JavcFaker to generate values
+     */
     public Customer() {
         Faker faker = new Faker(new Locale("nb-NO"));
 
-        this.customer_id = counter_id++;
         this.address = faker.address().streetAddress();
         this.name = faker.name().fullName();
         this.zip_code = faker.address().zipCode(); //TODO: Check for valid codes
-
     }
 
 
+    /**
+     * Constructor for manual input of values
+     */
     public Customer(String address, String name, String zip_code) {
-        this.customer_id = counter_id++;
         this.address = address;
         this.name = name;
         this.zip_code = zip_code;
     }
 
-    public int getCustomerID() {
+    public Long getCustomerID() {
         return customer_id;
     }
 
@@ -81,9 +77,18 @@ public class Customer {
     }
 
 
-    public void createOrder() {
+    /**
+     * Create a shipment where receiver and sender is same customer
+     */
+    public void createShipment() {
+        Shipment newShipment = new Shipment(this.customer_id);
+    }
+
+    public void createShipment(Customer customer) {
 
     }
+
+
     @Override
     public String toString() {
         return "Customer{" +

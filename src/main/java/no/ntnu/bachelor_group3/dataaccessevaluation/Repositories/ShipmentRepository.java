@@ -5,8 +5,8 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-public interface ShipmentRepository extends CrudRepository<Shipment, String> {
+public interface ShipmentRepository extends CrudRepository<Shipment, Long> {
 
     @Override
-    Optional<Shipment> findById(String s);
+    Optional<Shipment> findById(Long aLong);
 }

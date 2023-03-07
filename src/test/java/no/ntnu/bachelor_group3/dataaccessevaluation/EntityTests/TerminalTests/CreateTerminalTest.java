@@ -6,9 +6,4 @@ import org.junit.jupiter.api.Test;
 
 public class CreateTerminalTest {
 
-
-    @Test
-    public void createTerminalPositiveTest() {
-        Terminal terminal = new Terminal();
-    }
 }

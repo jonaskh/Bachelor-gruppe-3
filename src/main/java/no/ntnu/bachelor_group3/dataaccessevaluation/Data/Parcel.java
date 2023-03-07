@@ -2,27 +2,44 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.Set;
+
 //TODO: ADD CONNECTION TO OTHER TABLES
 @Entity
 @Table(name = "parcel")
 public class Parcel {
 
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int parcel_id;
+    private Long parcel_id;
 
     private int weight;
 
     //price is evaluated with weight times a constant
     private int weight_class;
 
-    public int getWeight() {
-        return weight;
-    }
+
+
+    @JoinColumn(name = "checkpoint_id")
+    @OneToMany
+    private ArrayList<Checkpoint> checkpoints;
+
+
+    //TODO: for each loop to generate cost through each checkpoint
+
+
 
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Shipment order_placed_in; //which order the parcel belongs to
+
+    public int getWeight() {
+        return weight;
+    }
 
     //assigns a weight class depending on weight. Used at checkpoints to estimate cost.
     public void setWeight_class() {
@@ -40,6 +57,8 @@ public class Parcel {
             weight_class = 4;
         }
     }
+
+
 
 
 }
