@@ -1,10 +1,12 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.CustomerTests;
 
 import com.github.javafaker.Faker;
+import no.ntnu.bachelor_group3.dataaccessevaluation.CustomerRepositoryTest;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.CustomerRepository;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.CustomerService;
-import org.aspectj.lang.annotation.Before;
+import no.ntnu.bachelor_group3.dataaccessevaluation.TestConfiguration;
+import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
@@ -14,42 +16,37 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.util.Locale;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.FactoryBasedNavigableListAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(SpringExtension.class)
+@DataJpaTest
 public class CreateCustomerTest {
 
-    Faker faker = new Faker(new Locale("nb-NO"));
-    private final Logger logger = LoggerFactory.getLogger("TestLogger");
-
-    private Customer customer1;
-    private Customer customer2;
+        @Autowired
+        private CustomerRepository customerRepositoryTest;
 
 
-    private CustomerService service;
+        @Test
+        public void whenInitializedByDbUnit_thenFindsByName() {
+            Customer customer = new Customer("Ålesund", "Stian", "6008");
+            customerRepositoryTest.save(customer);
 
-    @BeforeEach
-    public void setup() {
-         customer1 = new Customer();
-    }
-    @Test
-    @DisplayName("Positive create customer test")
-    @Bean
-    public void createCustomerPositiveTest() {
-
-        logger.info(customer1.toString());
-        service.add(customer1);
-
-        assertNotNull(service.findByID(customer1.getCustomerID()));
+            assertNotNull(customerRepositoryTest.findCustomerByName("Stian"));
+        }
 
     }
-}

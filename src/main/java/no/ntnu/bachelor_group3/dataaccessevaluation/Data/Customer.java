@@ -3,7 +3,6 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 import com.github.javafaker.Faker;
 import jakarta.persistence.*;
 
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
@@ -16,7 +15,7 @@ public class Customer {
     //private static int counter_id = 1; //unique id, incremented each time a new customer is made.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long customer_id;
+    private Long Customer_id;
 
     private String address;
     private String name;
@@ -49,7 +48,7 @@ public class Customer {
     }
 
     public Long getCustomerID() {
-        return customer_id;
+        return Customer_id;
     }
 
     public String getName() {
@@ -81,7 +80,7 @@ public class Customer {
      * Create a shipment where receiver and sender is same customer
      */
     public void createShipment() {
-        Shipment newShipment = new Shipment(this.customer_id);
+        Shipment newShipment = new Shipment(this.Customer_id);
     }
 
     public void createShipment(Customer customer) {
@@ -92,7 +91,7 @@ public class Customer {
     @Override
     public String toString() {
         return "Customer{" +
-                "customer_id=" + customer_id +
+                "customer_id=" + Customer_id +
                 ", address='" + address + '\'' +
                 ", name='" + name + '\'' +
                 ", zip='" + zip_code + '\'' +

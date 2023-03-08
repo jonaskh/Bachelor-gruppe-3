@@ -7,6 +7,5 @@ import java.util.Optional;
 
 public interface ShipmentRepository extends CrudRepository<Shipment, Long> {
 
-    @Override
-    Optional<Shipment> findById(Long aLong);
+    Optional<Shipment> findById(Long Long);
 }

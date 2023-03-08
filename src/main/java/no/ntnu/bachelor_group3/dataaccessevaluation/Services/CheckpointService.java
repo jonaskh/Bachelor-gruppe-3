@@ -15,6 +15,6 @@ public class CheckpointService {
 
     public Optional<Checkpoint> getCurrent() {
 
-        return checkpointRepository.findlastCheckpoint();
+        return checkpointRepository.findLastEntryInCheckpoint();
     }
 }
