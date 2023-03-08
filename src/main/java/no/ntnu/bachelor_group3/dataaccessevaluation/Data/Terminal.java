@@ -16,7 +16,7 @@ public class Terminal {
 
     //list of shipments for a period of time
     @OneToMany
-    @JoinTable(name = "order_id")
+    @JoinTable(name = "shipment_id")
     private Set<Shipment> shipments_passed;
 
     public Terminal() {

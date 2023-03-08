@@ -21,9 +21,9 @@ public class Customer {
     private String name;
     private String zip_code;
 
-    //Set of orders for each customer
+    //Set of shipments for each customer
     @OneToMany
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "shipment_id")
     private Set<Shipment> shipments;
 
     /**
