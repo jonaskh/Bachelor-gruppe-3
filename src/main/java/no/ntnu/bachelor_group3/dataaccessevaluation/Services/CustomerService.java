@@ -28,6 +28,12 @@ public class CustomerService {
         return customer.orElse(null);
     }
 
+    public Shipment findShipment(Long id) {
+        Shipment shipment = shipmentService.findByID(id);
+
+        return shipment;
+    }
+
     //saves a customer to the customerepo, and thus the database
     @Transactional
     public boolean add(Customer customer) {
@@ -45,7 +51,7 @@ public class CustomerService {
     public boolean addShipment(Shipment shipment) {
         boolean success = false;
 
-        Shipment ifAlreadyExists = findByID(shipment.getShipment_id());
+        Shipment ifAlreadyExists = shipmentService.findByID(shipment.getShipment_id());
         if (ifAlreadyExists == null) {
             shipmentService.add(shipment);
             success = true;

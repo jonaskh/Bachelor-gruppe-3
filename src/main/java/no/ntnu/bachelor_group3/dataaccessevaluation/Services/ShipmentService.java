@@ -20,7 +20,7 @@ public class ShipmentService {
 
         return shipment.orElse(null);
     }
-    //saves a customer to the customerepo, and thus the database
+    //saves a shipment to the repository, and thus the database
     @Transactional
     public boolean add(Shipment shipment) {
         boolean success = false;
