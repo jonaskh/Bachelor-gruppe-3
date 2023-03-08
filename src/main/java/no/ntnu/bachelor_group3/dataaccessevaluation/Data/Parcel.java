@@ -34,8 +34,8 @@ public class Parcel {
 
 
     @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Shipment order_placed_in; //which order the parcel belongs to
+    @JoinColumn(name = "shipment_id")
+    private Shipment shipment_placed_in; //which shipment the parcel belongs to
 
     public int getWeight() {
         return weight;

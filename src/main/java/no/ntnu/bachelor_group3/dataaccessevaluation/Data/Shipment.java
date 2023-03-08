@@ -100,8 +100,8 @@ public class Shipment {
         this.parcels = parcels;
     }
 
-    public void setShipment_id(Long order_id) {
-        this.shipment_id = order_id;
+    public void setShipment_id(Long shipment_id_id) {
+        this.shipment_id = shipment_id;
     }
 
     public void addparcel(Parcel parcel) {
