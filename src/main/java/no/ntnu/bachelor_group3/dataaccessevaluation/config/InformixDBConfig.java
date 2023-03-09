@@ -16,7 +16,7 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 @EnableJpaRepositories(
         entityManagerFactoryRef = "entityManagerFactory",
-        basePackages = { "com.example.demo.informix" }
+        basePackages = { "no.ntnu.bachelor_group3.dataaccessevaluation.informixrepositories" }
 )
 public class InformixDBConfig {
 
@@ -43,7 +43,7 @@ public class InformixDBConfig {
     ) {
         return builder
                 .dataSource(dataSource)
-                .packages("com.example.demo.informix")
+                .packages("no.ntnu.bachelor_group3.dataaccessevaluation.data")
                 .persistenceUnit("event")
                 .build();
     }
