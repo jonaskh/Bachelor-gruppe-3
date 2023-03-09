@@ -1,5 +1,7 @@
 package no.ntnu.bachelor_group3.jdbcevaluation.Data;
 
+import no.ntnu.bachelor_group3.jdbcevaluation.Services.CustomerService;
+
 import java.sql.*;
 
 public class Parcel {
@@ -75,12 +77,12 @@ public class Parcel {
     }
 
     // Static method to retrieve a parcel from the database given an ID
-    public static Parcel getParcelById(Long parcelId, Connection conn) throws SQLException {
+    public static Parcel getParcelById(Long parcelId, CustomerService customerService, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Parcel WHERE id = ?");
         stmt.setLong(1, parcelId);
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
-            Shipment shipment = Shipment.getShipmentById(rs.getInt("shipment_id"), conn);
+            Shipment shipment = Shipment.getShipmentById(rs.getInt("shipment_id"), customerService, conn);
             Parcel parcel = new Parcel(rs.getLong("id"), rs.getDouble("weight"));
             parcel.setShipment(shipment);
             return parcel;

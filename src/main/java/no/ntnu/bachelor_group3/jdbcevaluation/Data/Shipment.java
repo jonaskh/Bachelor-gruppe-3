@@ -1,5 +1,7 @@
 package no.ntnu.bachelor_group3.jdbcevaluation.Data;
 
+import no.ntnu.bachelor_group3.jdbcevaluation.Services.CustomerService;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,16 +9,22 @@ import java.util.List;
 public class Shipment {
     private Long id;
     private Customer sender;
-    private Customer receiver;
+
+    private String receiving_address;
+    private String receiving_zip;
+    private String receiver_name;
     private Customer payer;
     private double totalCost;
     private List<Parcel> parcels;
 
     // Constructor
-    public Shipment(Long id, Customer sender, Customer receiver, Customer payer, double totalCost) {
+    public Shipment(Long id, Customer sender, String receiving_address, String receiving_zip, String receiver_name,
+                    Customer payer, double totalCost) {
         this.id = id;
         this.sender = sender;
-        this.receiver = receiver;
+        this.receiving_address = receiving_address;
+        this.receiving_zip = receiving_zip;
+        this.receiver_name = receiver_name;
         this.payer = payer;
         this.totalCost = totalCost;
         this.parcels = new ArrayList<>();
@@ -39,12 +47,28 @@ public class Shipment {
         this.sender = sender;
     }
 
-    public Customer getReceiver() {
-        return receiver;
+    public String getReceiving_address() {
+        return receiving_address;
     }
 
-    public void setReceiver(Customer receiver) {
-        this.receiver = receiver;
+    public void setReceiving_address(String receiving_address) {
+        this.receiving_address = receiving_address;
+    }
+
+    public String getReceiving_zip() {
+        return receiving_zip;
+    }
+
+    public void setReceiving_zip(String receiving_zip) {
+        this.receiving_zip = receiving_zip;
+    }
+
+    public String getReceiver_name() {
+        return receiver_name;
+    }
+
+    public void setReceiver_name(String receiver_name) {
+        this.receiver_name = receiver_name;
     }
 
     public Customer getPayer() {
@@ -76,12 +100,15 @@ public class Shipment {
         PreparedStatement stmt;
         if (id == 0) {
             // This is a new shipment, so insert it into the database
-            stmt = conn.prepareStatement("INSERT INTO Shipment (sender_id, receiver_id, payer_id, total_cost) VALUES (?, ?, ?, ?)",
+            stmt = conn.prepareStatement("INSERT INTO Shipment (sender_id, receiving_address, receiving_zip," +
+                            " receiver_name, payer_id, total_cost) VALUES (?, ?, ?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS);
             stmt.setLong(1, sender.getId());
-            stmt.setLong(2, receiver.getId());
-            stmt.setLong(3, payer.getId());
-            stmt.setDouble(4, totalCost);
+            stmt.setString(2, receiving_address);
+            stmt.setString(3, receiving_zip);
+            stmt.setString(4, receiver_name);
+            stmt.setLong(5, payer.getId());
+            stmt.setDouble(6, totalCost);
             int rowsInserted = stmt.executeUpdate();
             if (rowsInserted > 0) {
                 ResultSet rs = stmt.getGeneratedKeys();
@@ -96,12 +123,15 @@ public class Shipment {
             }
         } else {
             // This is an existing shipment, so update it in the database
-            stmt = conn.prepareStatement("UPDATE Shipment SET sender_id = ?, receiver_id = ?, payer_id = ?, total_cost = ? WHERE id = ?");
+            stmt = conn.prepareStatement("UPDATE Shipment SET sender_id = ?, receiving_address = ?," +
+                    " receiving_zip = ?, receiver_name = ? payer_id = ?, total_cost = ? WHERE id = ?");
             stmt.setLong(1, sender.getId());
-            stmt.setLong(2, receiver.getId());
-            stmt.setLong(3, payer.getId());
-            stmt.setDouble(4, totalCost);
-            stmt.setLong(5, id);
+            stmt.setString(2, receiving_address);
+            stmt.setString(3, receiving_zip);
+            stmt.setString(4, receiver_name);
+            stmt.setLong(5, payer.getId());
+            stmt.setDouble(6, totalCost);
+            stmt.setLong(7, id);
             stmt.executeUpdate();
             // Update all parcels associated with this shipment
             for (Parcel parcel : parcels) {
@@ -126,15 +156,18 @@ public class Shipment {
     }
 
     // Static method to retrieve a shipment from the database given an ID
-    public static Shipment getShipmentById(int shipmentId, Connection conn) throws SQLException {
+    public static Shipment getShipmentById(int shipmentId, CustomerService customerService, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Shipment WHERE id = ?");
         stmt.setInt(1, shipmentId);
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
-            Customer sender = Customer.getCustomerById(rs.getInt("sender_id"), conn);
-            Customer receiver = Customer.getCustomerById(rs.getInt("receiver_id"), conn);
-            Customer payer = Customer.getCustomerById(rs.getInt("payer_id"), conn);
-            Shipment shipment = new Shipment(rs.getLong("id"), sender, receiver, payer, rs.getDouble("total_cost"));
+            Customer sender = customerService.getCustomerById(rs.getInt("sender_id"), conn);
+            String address = rs.getString("receiving_address");
+            String zip = rs.getString("receiving_zip");
+            String name = rs.getString("receiver_name");
+            Customer payer = customerService.getCustomerById(rs.getInt("payer_id"), conn);
+            Shipment shipment = new Shipment(rs.getLong("id"), sender, address, zip, name,
+                    payer, rs.getDouble("total_cost"));
             // Retrieve all parcels associated with this shipment
             stmt = conn.prepareStatement("SELECT * FROM Parcel WHERE shipment_id = ?");
             stmt.setInt(1, shipmentId);
