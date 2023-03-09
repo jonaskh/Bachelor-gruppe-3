@@ -17,7 +17,7 @@ public class Parcel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long parcel_id;
 
-    private int weight;
+    private double weight;
 
     //price is evaluated with weight times a constant
     private int weight_class;
@@ -29,15 +29,20 @@ public class Parcel {
     private ArrayList<Checkpoint> checkpoints;
 
 
-    //TODO: for each loop to generate cost through each checkpoint
-
-
-
     @ManyToOne
     @JoinColumn(name = "shipment_id")
     private Shipment shipment_placed_in; //which shipment the parcel belongs to
 
-    public int getWeight() {
+
+    public Parcel() {
+
+    }
+    public Parcel(Shipment shipment, double weight) {
+        this.shipment_placed_in = shipment;
+        this.weight = weight;
+    }
+
+    public double getWeight() {
         return weight;
     }
 
@@ -57,6 +62,8 @@ public class Parcel {
             weight_class = 4;
         }
     }
+
+    //TODO: for each loop to generate cost through each checkpoint
 
 
 

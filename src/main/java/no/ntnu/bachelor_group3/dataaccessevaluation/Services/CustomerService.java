@@ -1,5 +1,6 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Services;
 
+import com.github.javafaker.Faker;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.CustomerRepository;
@@ -8,12 +9,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
 public class CustomerService {
 
+    private static final Faker faker = new Faker(new Locale("nb-NO"));
     @Autowired
     private CustomerRepository customerRepository;
 
@@ -24,6 +28,12 @@ public class CustomerService {
 
     public Customer findByID(Long id) {
         Optional<Customer> customer = customerRepository.findById(id);
+
+        return customer.orElse(null);
+    }
+
+    public Customer findByName(String name) {
+        Optional<Customer> customer = customerRepository.findCustomerByName(name);
 
         return customer.orElse(null);
     }
@@ -48,13 +58,35 @@ public class CustomerService {
     }
 
     //saves a shipment to the customer
-    public boolean addShipment(Shipment shipment) {
+    public boolean addShipment(Long sender_id, Long receiver_id, Long payer_id) {
         boolean success = false;
 
-        Shipment ifAlreadyExists = shipmentService.findByID(shipment.getShipment_id());
-        if (ifAlreadyExists == null) {
-            shipmentService.add(shipment);
+        Optional<Customer> sender = customerRepository.findById(sender_id);
+        Optional<Customer> receiver = customerRepository.findById(receiver_id);
+        Optional<Customer> payer = customerRepository.findById(payer_id);
+
+        //same sender and receiver
+        if (sender.isPresent() && payer.isPresent() && (sender == receiver)) {
+            Shipment shipment = new Shipment(sender.get(), payer.get(), sender.get().getName(), sender.get().getAddress(),
+                    sender.get().getZip_code());
             success = true;
+            shipmentService.add(shipment);
+
+        }
+        //different sender and receiver
+        if (sender.isPresent() && payer.isPresent() && receiver.isPresent() && (sender != receiver)) {
+            Shipment shipment = new Shipment(sender.get(), payer.get(), receiver.get().getName(), receiver.get().getAddress(),
+                    receiver.get().getZip_code());
+            success = true;
+            shipmentService.add(shipment);
+        }
+        // if receiver is not an existing customer, address and name is generated at random
+        //TODO: generate proper zip values
+        if (sender.isPresent() && payer.isPresent() && receiver.isEmpty()) {
+            Shipment shipment = new Shipment(sender.get(), payer.get(), faker.name().fullName(), faker.address().streetAddress(), faker.address().zipCode());
+            success = true;
+        } else {
+            logger.error("Could not add shipment");
         }
         return success;
     }

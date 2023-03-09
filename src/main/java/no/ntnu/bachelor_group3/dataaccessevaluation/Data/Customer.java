@@ -27,7 +27,7 @@ public class Customer {
     private Set<Shipment> shipments;
 
     /**
-     * Cosntructor that user JavcFaker to generate values
+     * Constructor that user JavcFaker to generate values
      */
     public Customer() {
         Faker faker = new Faker(new Locale("nb-NO"));
@@ -77,14 +77,10 @@ public class Customer {
 
 
     /**
-     * Create a shipment where receiver and sender is same customer
+     * Add a shipment to the customer
      */
-    public void createShipment() {
-        Shipment newShipment = new Shipment(this.Customer_id);
-    }
-
-    public void createShipment(Customer customer) {
-
+    public void createShipment(Shipment shipment) {
+        shipments.add(shipment);
     }
 
 
@@ -97,6 +93,5 @@ public class Customer {
                 ", zip='" + zip_code + '\'' +
                 '}';
     }
-
 
 }

@@ -3,6 +3,7 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 import com.github.javafaker.Faker;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Set;
 
@@ -33,15 +34,23 @@ public class Shipment {
 
     @OneToMany
     @JoinColumn(name = "parcel_id")
-    private Set<Parcel> parcels;
+    private ArrayList<Parcel> parcels;
 
 
 
+    // if customer is both sender and receiver
     public Shipment() {
     }
 
+    // if receiver is another customer than the one making the shipment
     public Shipment(Long customer_id) {
+    }
 
+    // if receiver is not an existing customer
+    public Shipment(Customer sender, Customer Payer, String receiver_name, String receiving_address, String receiving_zip) {
+        this.receiver_name = receiver_name;
+        this.receiving_address = receiving_address;
+        this.receiving_zip = receiving_zip;
     }
 
 
@@ -92,11 +101,12 @@ public class Shipment {
         this.payer_id = payer_id;
     }
 
-    public Set<Parcel> getParcels() {
+    public ArrayList<Parcel> getParcels() {
+
         return parcels;
     }
 
-    public void setParcels(Set<Parcel> parcels) {
+    public void setParcels(ArrayList<Parcel> parcels) {
         this.parcels = parcels;
     }
 
@@ -104,7 +114,8 @@ public class Shipment {
         this.shipment_id = shipment_id;
     }
 
-    public void addparcel(Parcel parcel) {
+    public void addParcel(Parcel parcel) {
+
         parcels.add(parcel);
     }
 

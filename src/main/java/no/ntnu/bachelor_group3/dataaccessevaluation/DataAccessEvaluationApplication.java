@@ -28,14 +28,6 @@ public class DataAccessEvaluationApplication {
 
 
 
-
-	public void insertValues(CustomerRepository repo) {
-		ShipmentService shipmentService;
-
-		CustomerService customerService;
-
-		repo.save(new Customer());
-	}
 }
 
 /*	@Bean

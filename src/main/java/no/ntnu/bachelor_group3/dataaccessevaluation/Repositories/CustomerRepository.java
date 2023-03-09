@@ -8,11 +8,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Component
 public interface CustomerRepository extends CrudRepository<Customer, Long> {
 
-    Customer findCustomerByName(String name);
+    Optional<Customer> findCustomerByName(String name);
 
 }
