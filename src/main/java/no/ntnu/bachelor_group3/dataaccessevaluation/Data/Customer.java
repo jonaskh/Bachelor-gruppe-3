@@ -22,10 +22,12 @@ public class Customer {
     private String name;
     private String zip_code;
 
+    /*
     //Set of shipments for each customer
     @OneToMany
     @JoinColumn(name = "shipment_id")
     private Set<Shipment> shipments;
+     */
 
     /**
      * Cosntructor that user JavcFaker to generate values

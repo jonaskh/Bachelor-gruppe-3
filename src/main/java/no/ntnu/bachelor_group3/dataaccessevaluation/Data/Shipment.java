@@ -31,9 +31,12 @@ public class Shipment {
     @JoinColumn(name = "customer_id")
     private Long payer_id;
 
+    /*
     @OneToMany
     @JoinColumn(name = "parcel_id")
     private Set<Parcel> parcels;
+*/
+
 
 
 
@@ -92,6 +95,7 @@ public class Shipment {
         this.payer_id = payer_id;
     }
 
+    /*
     public Set<Parcel> getParcels() {
         return parcels;
     }
@@ -100,13 +104,18 @@ public class Shipment {
         this.parcels = parcels;
     }
 
+     */
+
     public void setShipment_id(Long shipment_id_id) {
         this.shipment_id = shipment_id;
     }
 
+    /*
     public void addparcel(Parcel parcel) {
         parcels.add(parcel);
     }
+
+     */
 
     public void setDelivered() {
     }
@@ -118,6 +127,7 @@ public class Shipment {
 
 
 
+    /*
     public int getTotalWeight() {
         int total_weight = 0;
         for (Parcel parcel : parcels) {
@@ -125,5 +135,7 @@ public class Shipment {
         }
         return total_weight;
     }
+
+     */
 
 }

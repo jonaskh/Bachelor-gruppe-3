@@ -4,6 +4,8 @@ import no.ntnu.bachelor_group3.jdbcevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Parcel;
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.jdbcevaluation.Services.CustomerService;
+import no.ntnu.bachelor_group3.jdbcevaluation.Services.ParcelService;
+import no.ntnu.bachelor_group3.jdbcevaluation.Services.ShipmentService;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,12 +15,17 @@ public class DatabaseManager implements AutoCloseable {
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String DB_USER = "postgres";
     private static final String DB_PASSWORD = "postgres";
-    private CustomerService customerService;
+    private final CustomerService customerService;
+    private final ShipmentService shipmentService;
+    private final ParcelService parcelService;
 
     private Connection conn;
 
     public DatabaseManager() throws SQLException {
         customerService = new CustomerService();
+        shipmentService = new ShipmentService();
+        parcelService = new ParcelService();
+
         conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
         conn.setAutoCommit(false); // Start a new transaction
     }
@@ -47,40 +54,40 @@ public class DatabaseManager implements AutoCloseable {
         customerService.delete(customer, conn);
     }
 
-    public Shipment getShipmentById(int shipmentId) throws SQLException {
-        return Shipment.getShipmentById(shipmentId, customerService, conn);
+    public Shipment getShipmentById(Long shipmentId) throws SQLException {
+        return shipmentService.getShipmentById(shipmentId, customerService, conn);
     }
 
     public void saveShipment(Shipment shipment) throws SQLException {
-        shipment.save(conn);
+        shipmentService.save(shipment, parcelService, conn);
     }
 
     public void deleteShipment(Shipment shipment) throws SQLException {
-        shipment.delete(conn);
+        shipmentService.delete(shipment, parcelService, conn);
     }
 
     public Parcel getParcelById(Long parcelId) throws SQLException {
-        return Parcel.getParcelById(parcelId, customerService, conn);
+        return parcelService.getParcelById(parcelId, customerService, shipmentService, conn);
     }
 
-    public void saveParcel(Parcel parcel) throws SQLException {
-        parcel.save(conn);
+    public Long saveParcel(Parcel parcel) throws SQLException {
+        return parcelService.save(parcel, conn);
     }
 
     public void deleteParcel(Parcel parcel) throws SQLException {
-        parcel.delete(conn);
+        parcelService.delete(parcel, conn);
     }
 
     public List<Customer> getAllCustomers() throws SQLException {
         List<Customer> customers = new ArrayList<>();
 
-        String query = "SELECT * FROM Customer";
+        String query = "SELECT * FROM customer";
         try (PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                Long id = rs.getLong("customerid");
-                String name = rs.getString("name");
+                Long id = rs.getLong("customer_id");
                 String address = rs.getString("address");
+                String name = rs.getString("name");
                 String zipCode = rs.getString("zip_code");
 
                 Customer customer = new Customer(id, name, address, zipCode);
@@ -97,20 +104,20 @@ public class DatabaseManager implements AutoCloseable {
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT * FROM shipment");
         while (rs.next()) {
-            Customer sender = getCustomerById(rs.getInt("sender_id"));
+            Customer sender = getCustomerById(rs.getInt("customer_id"));
             String address = rs.getString("receiving_address");
             String zip = rs.getString("receiving_zip");
             String name = rs.getString("receiver_name");
             Customer payer = getCustomerById(rs.getInt("payer_id"));
 
             Shipment shipment = new Shipment(
-                    rs.getLong("id"),
+                    rs.getLong("shipment_id"),
                     sender,
                     address,
                     zip,
                     name,
                     payer,
-                    rs.getDouble("total_cost")
+                    0
             );
 
             shipments.add(shipment);
@@ -129,7 +136,7 @@ public class DatabaseManager implements AutoCloseable {
         try (ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 Parcel parcel = new Parcel(
-                        rs.getLong("id"),
+                        rs.getLong("parcel_id"),
                         rs.getDouble("weight")
                 );
                 parcel.setShipment(shipment);

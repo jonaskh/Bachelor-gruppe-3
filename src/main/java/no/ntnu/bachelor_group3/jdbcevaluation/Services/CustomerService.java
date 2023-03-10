@@ -13,11 +13,11 @@ public class CustomerService {
     public CustomerService() {}
 
     public Customer getCustomerById(int customerId, Connection conn) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM customer WHERE id = ?");
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM customer WHERE customer_id = ?");
         stmt.setInt(1, customerId);
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
-            Customer customer = new Customer(rs.getLong("id"), rs.getString("name"),
+            Customer customer = new Customer(rs.getLong("customer_id"), rs.getString("name"),
                     rs.getString("address"), rs.getString("zip_code"));
             return customer;
         }
@@ -43,7 +43,7 @@ public class CustomerService {
             }
         } else {
             // This is an existing customer, so update it in the database
-            stmt = conn.prepareStatement("UPDATE customer SET name = ?, address = ?, zip_code = ?, email = ? WHERE id = ?");
+            stmt = conn.prepareStatement("UPDATE customer SET name = ?, address = ?, zip_code = ?, email = ? WHERE customer_id = ?");
             stmt.setString(1, customer.getName());
             stmt.setString(2, customer.getAddress());
             stmt.setString(3, customer.getZipCode());
@@ -55,7 +55,7 @@ public class CustomerService {
     public void delete(Customer customer, Connection conn) throws SQLException {
         Long id = customer.getId();
         if (id > 0) {
-            PreparedStatement stmt = conn.prepareStatement("DELETE FROM customer WHERE id = ?");
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM customer WHERE customer_id = ?");
             stmt.setLong(1, id);
             stmt.executeUpdate();
             id = 0L;
