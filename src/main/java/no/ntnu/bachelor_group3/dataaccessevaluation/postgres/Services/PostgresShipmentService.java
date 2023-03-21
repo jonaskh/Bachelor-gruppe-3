@@ -1,7 +1,7 @@
-package no.ntnu.bachelor_group3.dataaccessevaluation.Services;
+package no.ntnu.bachelor_group3.dataaccessevaluation.postgres.Services;
 
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.ShipmentRepository;
+import no.ntnu.bachelor_group3.dataaccessevaluation.postgres.repositories.PostgresShipmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,10 +9,10 @@ import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
-public class ShipmentService {
+public class PostgresShipmentService {
 
     @Autowired
-    private ShipmentRepository shipmentRepository;
+    private PostgresShipmentRepository shipmentRepository;
 
 
     public Shipment findByID(Long id) {

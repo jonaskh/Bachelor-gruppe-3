@@ -1,6 +1,6 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.util.Set;
 

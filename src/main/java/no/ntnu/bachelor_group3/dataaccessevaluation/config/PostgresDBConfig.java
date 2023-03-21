@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 @EnableJpaRepositories(
         //transactionManagerRef = "postgresTransactionManager",
         entityManagerFactoryRef = "postgresEntityManagerFactory",
-        basePackages = { "no.ntnu.bachelor_group3.dataaccessevaluation.postgresrepositories" }
+        basePackages = { "no.ntnu.bachelor_group3.dataaccessevaluation.postgres.repositories" }
 )
 public class PostgresDBConfig {
     @Bean(name="postgresDSProps")

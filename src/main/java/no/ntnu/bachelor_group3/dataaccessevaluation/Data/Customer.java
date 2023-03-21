@@ -1,7 +1,7 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
 import com.github.javafaker.Faker;
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.util.Locale;
 import java.util.Set;

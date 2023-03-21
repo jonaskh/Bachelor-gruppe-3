@@ -1,8 +1,8 @@
-package no.ntnu.bachelor_group3.dataaccessevaluation.Services;
+package no.ntnu.bachelor_group3.dataaccessevaluation.postgres.Services;
 
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.CustomerRepository;
+import no.ntnu.bachelor_group3.dataaccessevaluation.postgres.repositories.PostgresCustomerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,24 +12,24 @@ import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
-public class CustomerService {
+public class PostgresCustomerService {
 
     @Autowired
-    private CustomerRepository customerRepository;
+    private PostgresCustomerRepository postgresCustomerRepository;
 
     @Autowired
-    private ShipmentService shipmentService;
+    private PostgresShipmentService postgresShipmentService;
 
     private static final Logger logger = LoggerFactory.getLogger("CustomerServiceLogger");
 
     public Customer findByID(Long id) {
-        Optional<Customer> customer = customerRepository.findById(id);
+        Optional<Customer> customer = postgresCustomerRepository.findById(id);
 
         return customer.orElse(null);
     }
 
     public Shipment findShipment(Long id) {
-        Shipment shipment = shipmentService.findByID(id);
+        Shipment shipment = postgresShipmentService.findByID(id);
 
         return shipment;
     }
@@ -41,7 +41,7 @@ public class CustomerService {
 
         Customer ifAlreadyExists = findByID(customer.getCustomerID());
         if (ifAlreadyExists == null) {
-            customerRepository.save(customer);
+            postgresCustomerRepository.save(customer);
             success = true;
         }
         return success;
@@ -51,9 +51,9 @@ public class CustomerService {
     public boolean addShipment(Shipment shipment) {
         boolean success = false;
 
-        Shipment ifAlreadyExists = shipmentService.findByID(shipment.getShipment_id());
+        Shipment ifAlreadyExists = postgresShipmentService.findByID(shipment.getShipment_id());
         if (ifAlreadyExists == null) {
-            shipmentService.add(shipment);
+            postgresShipmentService.add(shipment);
             success = true;
         }
         return success;

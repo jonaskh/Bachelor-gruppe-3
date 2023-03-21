@@ -8,9 +8,9 @@
         http://www.springframework.org/schema/context/spring-context.xsd">
 
     <bean id="CustomerService"
-          class="no.ntnu.bachelor_group3.dataaccessevaluation.Services.CustomerService" />
+          class="no.ntnu.bachelor_group3.dataaccessevaluation.postgres.Services.PostgresCustomerService" />
     <bean id="CheckpointService"
-          class="no.ntnu.bachelor_group3.dataaccessevaluation.Services.CheckpointService" />
+          class="no.ntnu.bachelor_group3.dataaccessevaluation.postgres.Services.PostgresCheckpointService" />
     <bean id="ShipmentService"
-          class="no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService" />
+          class="no.ntnu.bachelor_group3.dataaccessevaluation.postgres.Services.PostgresShipmentService" />
 </beans>
