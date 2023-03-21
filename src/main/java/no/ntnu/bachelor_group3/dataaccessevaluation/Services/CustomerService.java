@@ -57,7 +57,13 @@ public class CustomerService {
         return success;
     }
 
-    //saves a shipment to the customer
+    /**
+     * Add a shipment to a customer, setting receiver and payer and sender to corresponding ids
+     * @param sender_id id of sender customer
+     * @param receiver_id id of receiver customer
+     * @param payer_id id of payer customer
+     * @return if successful or not
+     */
     public boolean addShipment(Long sender_id, Long receiver_id, Long payer_id) {
         boolean success = false;
 
@@ -85,6 +91,7 @@ public class CustomerService {
         if (sender.isPresent() && payer.isPresent() && receiver.isEmpty()) {
             Shipment shipment = new Shipment(sender.get(), payer.get(), faker.name().fullName(), faker.address().streetAddress(), faker.address().zipCode());
             success = true;
+            shipmentService.add(shipment);
         } else {
             logger.error("Could not add shipment");
         }

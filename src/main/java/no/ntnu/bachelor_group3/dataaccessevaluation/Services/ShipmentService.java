@@ -28,11 +28,9 @@ public class ShipmentService {
     public boolean add(Shipment shipment) {
         boolean success = false;
 
-        Shipment ifAlreadyExists = findByID(shipment.getShipment_id());
-        if (ifAlreadyExists == null) {
+
             shipmentRepository.save(shipment);
             success = true;
-        }
         return success;
     }
 

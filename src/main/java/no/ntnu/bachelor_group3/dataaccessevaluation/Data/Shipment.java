@@ -12,10 +12,9 @@ import java.util.Set;
 public class Shipment {
 
     private static Faker faker = new Faker(new Locale("nb-NO"));
-
+    private static Long counter = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long shipment_id;
 
     @JoinColumn(name = "customer_id")
@@ -40,14 +39,19 @@ public class Shipment {
 
     // if customer is both sender and receiver
     public Shipment() {
+        this.shipment_id = counter++;
     }
 
     // if receiver is another customer than the one making the shipment
     public Shipment(Long customer_id) {
+        this.shipment_id = counter++;
     }
 
     // if receiver is not an existing customer
-    public Shipment(Customer sender, Customer Payer, String receiver_name, String receiving_address, String receiving_zip) {
+    public Shipment(Customer sender, Customer payer, String receiver_name, String receiving_address, String receiving_zip) {
+        this.shipment_id = counter++;
+        this.customer_id = sender.getCustomerID();
+        this.payer_id = payer.getCustomerID();
         this.receiver_name = receiver_name;
         this.receiving_address = receiving_address;
         this.receiving_zip = receiving_zip;
@@ -137,4 +141,12 @@ public class Shipment {
         return total_weight;
     }
 
+    @Override
+    public String toString() {
+        return "Shipment{" +
+                "shipment_id=" + shipment_id +
+                ", sender_id='" + customer_id + '\'' +
+                ", receiver_zip='" + receiving_zip + '\'' +
+                '}';
+    }
 }
