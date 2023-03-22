@@ -2,6 +2,7 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.Services;
 
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Parcel;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.ShipmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,5 +54,14 @@ public class ShipmentService {
             System.out.println("Not a valid shipment");
             return null;
         }
+    }
+
+    //TODO: Update checkpoint method
+
+
+    //TODO:Terminals
+
+    //returns the terminal that matches the given zip code
+    public void findNearestTerminalByZip(String zip) {
     }
 }

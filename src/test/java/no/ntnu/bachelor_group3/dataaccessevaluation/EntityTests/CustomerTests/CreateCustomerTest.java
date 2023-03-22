@@ -1,15 +1,14 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.CustomerTests;
 
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Parcel;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
+import no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.TestConfiguration;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.CustomerRepository;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.CustomerService;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;

@@ -3,6 +3,7 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 import com.github.javafaker.Faker;
 import jakarta.persistence.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Set;
@@ -11,20 +12,24 @@ import java.util.Set;
 @Entity
 public class Shipment {
 
+    //how to display the date
+    private static final SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     private static Faker faker = new Faker(new Locale("nb-NO"));
+
     private static Long counter = 1L;
 
     @Id
     private Long shipment_id;
 
     @JoinColumn(name = "customer_id")
-    private Long customer_id;
+    private Long sender;
 
-    private String receiving_address;
+    @JoinColumn(name = "customer_id")
+    private Long receiver;
 
-    private String receiving_zip;
-
-    private String receiver_name;
+    @JoinColumn(name = "customer_id")
+    private Long payer;
 
     private boolean delivered;
 
@@ -48,45 +53,53 @@ public class Shipment {
     }
 
     // if receiver is not an existing customer
-    public Shipment(Customer sender, Customer payer, String receiver_name, String receiving_address, String receiving_zip) {
+    public Shipment(Customer sender, Customer payer, Customer receiver) {
         this.shipment_id = counter++;
-        this.customer_id = sender.getCustomerID();
-        this.payer_id = payer.getCustomerID();
-        this.receiver_name = receiver_name;
-        this.receiving_address = receiving_address;
-        this.receiving_zip = receiving_zip;
+        this.sender = sender.getCustomerID();
+        this.payer = payer.getCustomerID();
+        this.receiver = receiver.getCustomerID();
+    }
+
+    public Shipment(Customer sender, Customer payer, String receiver_address, String receiver_zip, String receiver_name) {
+        this.shipment_id = counter++;
+        this.sender = sender.getCustomerID();
+        this.payer = payer.getCustomerID();
+
     }
 
 
     //TODO: add total cost => weight * checkpoint cost
 
 
+    //TODO: Set terminals based on zip codes
+
+
+    public Long getSender() {
+        return sender;
+    }
+
+    public void setSender(Long sender) {
+        this.sender = sender;
+    }
+
+    public Long getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(Long receiver) {
+        this.receiver = receiver;
+    }
+
+    public Long getPayer() {
+        return payer;
+    }
+
+    public void setPayer(Long payer) {
+        this.payer = payer;
+    }
+
     public Long getShipment_id() {
         return shipment_id;
-    }
-
-    public String getReceiving_address() {
-        return receiving_address;
-    }
-
-    public void setReceiving_address(String receiving_address) {
-        this.receiving_address = receiving_address;
-    }
-
-    public String getReceiving_zip() {
-        return receiving_zip;
-    }
-
-    public void setReceiving_zip(String receiving_zip) {
-        this.receiving_zip = receiving_zip;
-    }
-
-    public String getReceiver_name() {
-        return receiver_name;
-    }
-
-    public void setReceiver_name(String receiver_name) {
-        this.receiver_name = receiver_name;
     }
 
     public boolean isDelivered() {
@@ -126,12 +139,6 @@ public class Shipment {
     public void setDelivered() {
     }
 
-    public void setCustomer_id(Long customer_id) {
-
-        this.customer_id = customer_id;
-    }
-
-
 
     public int getTotalWeight() {
         int total_weight = 0;
@@ -145,8 +152,8 @@ public class Shipment {
     public String toString() {
         return "Shipment{" +
                 "shipment_id=" + shipment_id +
-                ", sender_id='" + customer_id + '\'' +
-                ", receiver_zip='" + receiving_zip + '\'' +
+                ", sender_id='" + sender + '\'' +
+                ", receiver_zip='" + receiver + '\'' +
                 '}';
     }
 }

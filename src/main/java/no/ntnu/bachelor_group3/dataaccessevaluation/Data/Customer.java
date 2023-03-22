@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import java.util.Locale;
 import java.util.Set;
 
-//TODO: Add connection to other tables
 @Entity
 @Table(name = "customer")
 public class Customer {
@@ -28,7 +27,7 @@ public class Customer {
     private Set<Shipment> shipments;
 
     /**
-     * Constructor that user JavcFaker to generate values
+     * Constructor that user JavaFaker to generate values
      */
     public Customer() {
 

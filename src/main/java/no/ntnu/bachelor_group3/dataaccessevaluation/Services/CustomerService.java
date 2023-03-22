@@ -73,19 +73,12 @@ public class CustomerService {
 
         //same sender and receiver
         if (sender.isPresent() && payer.isPresent() && (sender == receiver)) {
-            Shipment shipment = new Shipment(sender.get(), payer.get(), sender.get().getName(), sender.get().getAddress(),
-                    sender.get().getZip_code());
+            Shipment shipment = new Shipment(sender.get(), payer.get(), receiver.get());
             success = true;
             shipmentService.add(shipment);
 
         }
-        //different sender and receiver
-        if (sender.isPresent() && payer.isPresent() && receiver.isPresent() && (sender != receiver)) {
-            Shipment shipment = new Shipment(sender.get(), payer.get(), receiver.get().getName(), receiver.get().getAddress(),
-                    receiver.get().getZip_code());
-            success = true;
-            shipmentService.add(shipment);
-        }
+
         // if receiver is not an existing customer, address and name is generated at random
         //TODO: generate proper zip values
         if (sender.isPresent() && payer.isPresent() && receiver.isEmpty()) {
