@@ -25,14 +25,14 @@ public class ShipmentService {
         return shipment.orElse(null);
     }
     //saves a shipment to the repository, and thus the database
-    @Transactional
     public boolean add(Shipment shipment) {
         boolean success = false;
-
-
+        if (shipmentRepository.findById(shipment.getShipment_id()).isEmpty()) {
             shipmentRepository.save(shipment);
-            success = true;
-        return success;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     //add a random number of parcels to the shipment

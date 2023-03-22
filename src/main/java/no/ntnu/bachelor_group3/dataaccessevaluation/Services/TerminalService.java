@@ -18,6 +18,7 @@ public class TerminalService {
         return terminalRepository.findById(id).orElse(null);
     }
 
+    //checks if terminal with this id exist already, if not add it to database
     public boolean addTerminal(Terminal terminal) {
         Optional<Terminal> existingTerminal = terminalRepository.findById(terminal.getTerminal_id());
         if (existingTerminal.isPresent()) {
