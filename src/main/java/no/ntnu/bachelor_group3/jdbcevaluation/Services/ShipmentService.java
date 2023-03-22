@@ -13,10 +13,18 @@ import java.util.List;
 
 public class ShipmentService {
 
+    private static final String GET_SHIPMENT_BY_ID_QUERY = "SELECT * FROM Shipment WHERE shipment_id = ?";
+    private static final String GET_PARCELS_IN_SHIPMENT_BY_ID_QUERY = "SELECT * FROM Parcel WHERE shipment_id = ?";
+    private static final String INSERT_SHIPMENT_QUERY = "INSERT INTO Shipment (customer_id, receiving_address, receiving_zip," +
+            " receiver_name, payer_id, delivered) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String UPDATE_SHIPMENT_QUERY = "UPDATE Shipment SET sender_id = ?, receiving_address = ?," +
+            " receiving_zip = ?, receiver_name = ? payer_id = ? WHERE id = ?";
+    private static final String DELETE_SHIPMENT_QUERY = "DELETE FROM Shipment WHERE id = ?";
+
     public ShipmentService() {}
 
     public Shipment getShipmentById(Long shipmentId, CustomerService customerService, Connection conn) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Shipment WHERE shipment_id = ?");
+        PreparedStatement stmt = conn.prepareStatement(GET_SHIPMENT_BY_ID_QUERY);
         stmt.setLong(1, shipmentId);
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
@@ -28,7 +36,7 @@ public class ShipmentService {
             Shipment shipment = new Shipment(rs.getLong("shipment_id"), sender, address, zip, name,
                     payer, 0);
             // Retrieve all parcels associated with this shipment
-            stmt = conn.prepareStatement("SELECT * FROM Parcel WHERE shipment_id = ?");
+            stmt = conn.prepareStatement(GET_PARCELS_IN_SHIPMENT_BY_ID_QUERY);
             stmt.setLong(1, shipmentId);
             rs = stmt.executeQuery();
             while (rs.next()) {
@@ -46,8 +54,7 @@ public class ShipmentService {
         List<Parcel> parcels = shipment.getParcels();
         if (id == 0) {
             // This is a new shipment, so insert it into the database
-            stmt = conn.prepareStatement("INSERT INTO Shipment (customer_id, receiving_address, receiving_zip," +
-                            " receiver_name, payer_id, delivered) VALUES (?, ?, ?, ?, ?, ?)",
+            stmt = conn.prepareStatement(INSERT_SHIPMENT_QUERY,
                     Statement.RETURN_GENERATED_KEYS);
             setShipmentInfo(shipment, stmt);
             int rowsInserted = stmt.executeUpdate();
@@ -64,8 +71,7 @@ public class ShipmentService {
             }
         } else {
             // This is an existing shipment, so update it in the database
-            stmt = conn.prepareStatement("UPDATE Shipment SET sender_id = ?, receiving_address = ?," +
-                    " receiving_zip = ?, receiver_name = ? payer_id = ? WHERE id = ?");
+            stmt = conn.prepareStatement(UPDATE_SHIPMENT_QUERY);
             setShipmentInfo(shipment, stmt);
             stmt.setLong(7, id);
             stmt.executeUpdate();
@@ -85,7 +91,7 @@ public class ShipmentService {
                 parcelService.delete(parcel, conn);
             }
             // Delete the shipment itself
-            PreparedStatement stmt = conn.prepareStatement("DELETE FROM Shipment WHERE id = ?");
+            PreparedStatement stmt = conn.prepareStatement(DELETE_SHIPMENT_QUERY);
             stmt.setLong(1, id);
             stmt.executeUpdate();
             id = 0L;

@@ -10,11 +10,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class ParcelService {
+
+    private static final String GET_PARCEL_BY_ID_QUERY = "SELECT * FROM Parcel WHERE parcel_id = ?";
+    private static final String INSERT_PARCEL_QUERY = "INSERT INTO Parcel (shipment_id, weight, weight_class) VALUES (?, ?, ?)";
+    private static final String UPDATE_PARCEL_QUERY = "UPDATE Parcel SET shipment_id = ?, weight = ?, weight_class = ? WHERE parcel_id = ?";
+    private static final String DELETE_PARCEL_QUERY = "DELETE FROM Parcel WHERE parcel_id = ?";
+
     public ParcelService() {}
 
     public Parcel getParcelById(Long parcelId, CustomerService customerService,
                                        ShipmentService shipmentService, Connection conn) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Parcel WHERE parcel_id = ?");
+        PreparedStatement stmt = conn.prepareStatement(GET_PARCEL_BY_ID_QUERY);
         stmt.setLong(1, parcelId);
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
@@ -34,7 +40,7 @@ public class ParcelService {
         int weight_class = parcel.getWeight_class();
         if (parcel_id == 0) {
             // This is a new parcel, so insert it into the database
-            stmt = conn.prepareStatement("INSERT INTO Parcel (shipment_id, weight, weight_class) VALUES (?, ?, ?)",
+            stmt = conn.prepareStatement(INSERT_PARCEL_QUERY,
                     Statement.RETURN_GENERATED_KEYS);
             stmt.setLong(1, shipment.getId());
             stmt.setDouble(2, weight);
@@ -50,7 +56,7 @@ public class ParcelService {
 
         } else {
             // This is an existing parcel, so update it in the database
-            stmt = conn.prepareStatement("UPDATE Parcel SET shipment_id = ?, weight = ?, weight_class = ? WHERE parcel_id = ?");
+            stmt = conn.prepareStatement(UPDATE_PARCEL_QUERY);
             stmt.setLong(1, shipment.getId());
             stmt.setDouble(2, weight);
             stmt.setInt(3, weight_class);
@@ -63,7 +69,7 @@ public class ParcelService {
     public void delete(Parcel parcel, Connection conn) throws SQLException {
         Long id = parcel.getId();
         if (id > 0) {
-            PreparedStatement stmt = conn.prepareStatement("DELETE FROM Parcel WHERE parcel_id = ?");
+            PreparedStatement stmt = conn.prepareStatement(DELETE_PARCEL_QUERY);
             stmt.setLong(1, id);
             stmt.executeUpdate();
             id = 0L;
