@@ -41,7 +41,7 @@ public class ParcelDataGenerator {
             // Commit the transaction to save the data to the database
             db.commit();
 
-            System.out.println("Shipments generated successfully!");
+            System.out.println("Parcels generated successfully!");
         } catch (SQLException e) {
             System.err.println("Error generating shipments: " + e.getMessage());
             e.printStackTrace();

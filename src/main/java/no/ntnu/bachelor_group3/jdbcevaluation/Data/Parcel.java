@@ -3,11 +3,14 @@ package no.ntnu.bachelor_group3.jdbcevaluation.Data;
 import no.ntnu.bachelor_group3.jdbcevaluation.Services.CustomerService;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Parcel {
     private Long id;
     private Shipment shipment;
     private double weight;
+    private List<Checkpoint> checkpoints;
 
     public int getWeight_class() {
         return weight_class;
@@ -19,6 +22,7 @@ public class Parcel {
     public Parcel(Long id, double weight) {
         this.id = id;
         this.weight = weight;
+        this.checkpoints = new ArrayList<>();
 
         if (weight <= 5) {
             weight_class = 1;
@@ -58,6 +62,14 @@ public class Parcel {
 
     public void setWeight(double weight) {
         this.weight = weight;
+    }
+
+    public List<Checkpoint> getCheckpoints() {
+        return checkpoints;
+    }
+
+    public void setCheckpoints(List<Checkpoint> checkpoints) {
+        this.checkpoints = checkpoints;
     }
 
     // Instance method to save this parcel to the database
