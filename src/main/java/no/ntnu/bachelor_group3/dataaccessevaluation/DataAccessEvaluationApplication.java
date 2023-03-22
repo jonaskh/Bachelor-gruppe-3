@@ -2,6 +2,7 @@ package no.ntnu.bachelor_group3.dataaccessevaluation;
 
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.CustomerRepository;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.CustomerService;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;
@@ -22,6 +23,7 @@ public class DataAccessEvaluationApplication {
 
 
 	public static void main(String[] args) {
+
 
 		SpringApplication.run(DataAccessEvaluationApplication.class, args);
 	}
