@@ -6,16 +6,16 @@ import jakarta.persistence.*;
 import java.util.Locale;
 import java.util.Set;
 
-//TODO: Add connection to other tables
 @Entity
 @Table(name = "customer")
 public class Customer {
 
+    private static Long counter = 1L;
+    private static final Faker faker = new Faker(new Locale("nb-NO"));
 
     //private static int counter_id = 1; //unique id, incremented each time a new customer is made.
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Customer_id;
+    private Long customer_id;
 
     private String address;
     private String name;
@@ -27,10 +27,10 @@ public class Customer {
     private Set<Shipment> shipments;
 
     /**
-     * Constructor that user JavcFaker to generate values
+     * Constructor that user JavaFaker to generate values
      */
     public Customer() {
-        Faker faker = new Faker(new Locale("nb-NO"));
+
 
         this.address = faker.address().streetAddress();
         this.name = faker.name().fullName();
@@ -42,13 +42,15 @@ public class Customer {
      * Constructor for manual input of values
      */
     public Customer(String address, String name, String zip_code) {
+
+        this.customer_id = counter++;
         this.address = address;
         this.name = name;
         this.zip_code = zip_code;
     }
 
     public Long getCustomerID() {
-        return Customer_id;
+        return customer_id;
     }
 
     public String getName() {
@@ -87,7 +89,7 @@ public class Customer {
     @Override
     public String toString() {
         return "Customer{" +
-                "customer_id=" + Customer_id +
+                "customer_id=" + customer_id +
                 ", address='" + address + '\'' +
                 ", name='" + name + '\'' +
                 ", zip='" + zip_code + '\'' +

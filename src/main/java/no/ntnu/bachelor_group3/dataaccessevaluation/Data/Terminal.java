@@ -3,29 +3,32 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 import jakarta.persistence.*;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.TerminalService;
 
+import java.util.Queue;
 import java.util.Set;
 
 @Entity
 @Table(name = "terminal")
 public class Terminal {
 
+    private static Long counter = 1L;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long terminal_id;
 
     private String address;
 
-    //list of shipments for a period of time
-    /*@OneToMany
+
+    //list of shipments for a period of time. Stored in a queue for first in first out.
+    @ManyToMany
     @JoinTable(name = "shipment_id")
-    private Set<Shipment> shipments_passed;*/
+    private Queue<Shipment> shipments_passed;
 
     public Terminal() {
     }
 
     public Terminal(String address) {
+        this.terminal_id = counter++;
         this.address = address;
-        //this.shipments_passed = shipments_passed;
     }
 
     public Long getTerminal_id() {
@@ -63,7 +66,7 @@ public class Terminal {
             terminalService.add(terminal);
         }
     }
-    }
+
 
 
     public String getAddress() {
@@ -74,11 +77,26 @@ public class Terminal {
         this.address = address;
     }
 
-    /*public Set<Shipment> getShipments_passed() {
+    public Queue<Shipment> getShipments_passed() {
         return shipments_passed;
     }
 
-    public void setShipments_passed(Set<Shipment> shipments_passed) {
-        this.shipments_passed = shipments_passed;
-    }*/
+    //TODO: Add shipments from checkpoints to each terminal
+    public boolean addShipment(Shipment shipment) {
+        for (Shipment ship: shipments_passed) {
+            if (shipment.getShipment_id() == ship.getShipment_id()) {
+                return false;
+            }
+        }
+        shipments_passed.add(shipment);
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Terminal{" +
+                "\n terminal_id=" + terminal_id +
+                "\n , address='" + address + '\'' +
+                '}';
+    }
 }
