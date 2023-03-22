@@ -16,6 +16,10 @@ public class Parcel {
         return weight_class;
     }
 
+    public void setWeight_class(int weight_class) {
+        this.weight_class = weight_class;
+    }
+
     private int weight_class;
 
     // Constructor

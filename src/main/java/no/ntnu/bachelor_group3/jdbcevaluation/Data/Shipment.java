@@ -17,6 +17,7 @@ public class Shipment {
     private double totalCost;
     private List<Parcel> parcels;
     private boolean delivered;
+    private List<Terminal> terminals;
 
     public boolean isDelivered() {
         return delivered;
@@ -37,6 +38,7 @@ public class Shipment {
         this.payer = payer;
         this.totalCost = totalCost;
         this.parcels = new ArrayList<>();
+        this.terminals = new ArrayList<>();
         this.delivered = false;
     }
 
@@ -105,12 +107,12 @@ public class Shipment {
         this.parcels = parcels;
     }
 
-    // Instance method to save this shipment to the database
+    public List<Terminal> getTerminals() {
+        return terminals;
+    }
 
-
-    // Instance method to delete this shipment from the database
-
-
-    // Static method to retrieve a shipment from the database given an ID
+    public void setTerminals(List<Terminal> terminals) {
+        this.terminals = terminals;
+    }
 
 }
