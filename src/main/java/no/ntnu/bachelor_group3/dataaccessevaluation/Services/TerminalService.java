@@ -35,8 +35,5 @@ public class TerminalService {
         }
     }
 
-    public Terminal findNearestTerminalToZip(String zip) {
-        return validPostalCodeRepository.findByPostalCode(zip).get();
-    }
 
 }
