@@ -23,8 +23,6 @@ public class DataAccessEvaluationApplication {
 
 
 	public static void main(String[] args) {
-
-
 		SpringApplication.run(DataAccessEvaluationApplication.class, args);
 	}
 

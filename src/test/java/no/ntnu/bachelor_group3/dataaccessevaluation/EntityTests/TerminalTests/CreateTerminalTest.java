@@ -1,11 +1,7 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.TerminalTests;
 
-import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
 import no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.TestConfiguration;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.CustomerRepository;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Services.CustomerService;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.TerminalService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

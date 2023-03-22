@@ -1,19 +1,17 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
 import jakarta.persistence.*;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Services.TerminalService;
 
 import java.util.Queue;
-import java.util.Set;
 
 @Entity
 @Table(name = "terminal")
 public class Terminal {
 
-    private static Long counter = 1L;
+    private static Integer counter = 1;
 
     @Id
-    private Long terminal_id;
+    private Integer terminal_id;
 
     private String address;
 
@@ -31,43 +29,13 @@ public class Terminal {
         this.address = address;
     }
 
-    public Long getTerminal_id() {
+    public Integer getTerminal_id() {
         return terminal_id;
     }
 
-    public void setTerminal_id(Long terminal_id) {
+    public void setTerminal_id(Integer terminal_id) {
         this.terminal_id = terminal_id;
     }
-
-    public static Terminal getTerminalById(Long id) {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("persistence-unit-name");
-        EntityManager em = emf.createEntityManager();
-        Terminal terminal = null;
-        try {
-            terminal = em.find(Terminal.class, id);
-        } finally {
-            em.close();
-            emf.close();
-        }
-        return terminal;
-    }
-
-
-    public void createTerminals(){
-        TerminalService terminalService = new TerminalService();
-
-        String[] terminalAddresses = {"OSLO", "AKERSHUS", "ØSTFOLD", "HEDMARK", "OPPLAND", "BUSKERUD", "VESTFOLD", "TELEMARK",
-                "ROGALAND", "VEST-AGDER", "AUST-AGDER", "HORDALAND", "SOGN OG FJORDANE", "MØRE OG ROMSDAL", "SØR-TRØNDELAG", "NORD-TRØNDELAG",
-                "NORDLAND", "TROMS", "FINNMARK"};
-
-
-        for (int i=0; i<=18; i++) {
-            Terminal terminal = new Terminal(terminalAddresses[i]);
-            terminalService.add(terminal);
-        }
-    }
-
-
 
     public String getAddress() {
         return address;

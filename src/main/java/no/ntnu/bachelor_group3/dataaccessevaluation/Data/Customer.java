@@ -21,6 +21,10 @@ public class Customer {
     private String name;
     private String zip_code;
 
+    @OneToOne
+    @JoinColumn(name = "terminal_id")
+    private Terminal nearest_Terminal;
+
     //Set of shipments for each customer
     @OneToMany
     @JoinColumn(name = "shipment_id")
@@ -30,7 +34,6 @@ public class Customer {
      * Constructor that user JavaFaker to generate values
      */
     public Customer() {
-
 
         this.address = faker.address().streetAddress();
         this.name = faker.name().fullName();
