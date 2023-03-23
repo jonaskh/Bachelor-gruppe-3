@@ -41,6 +41,22 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq</artifactId>
+			<version>3.18.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq-meta</artifactId>
+			<version>3.18.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq-codegen</artifactId>
+			<version>3.18.0</version>
+		</dependency>
+
 
 
 		<dependency>
@@ -53,14 +69,76 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-
-	</dependencies>
-
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>2.0.2</version>
+        </dependency>
+    </dependencies>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.jooq</groupId>
+				<artifactId>jooq-codegen-maven</artifactId>
+				<executions>
+					<execution>
+						<id>generate-postgre</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<jdbc>
+								<driver>org.postgresql.Driver</driver>
+								<url>jdbc:postgresql://localhost:5432/postgres</url>
+								<user>postgres</user>
+								<password>postgres</password>
+							</jdbc>
+							<generator>
+								<database>
+									<name>
+										org.jooq.meta.postgres.PostgresDatabase
+									</name>
+									<includes>.*</includes>
+									<excludes></excludes>
+									<inputSchema>public</inputSchema>
+								</database>
+								<generate>
+									<pojos>true</pojos>
+									<pojosEqualsAndHashCode>
+										true
+									</pojosEqualsAndHashCode>
+									<javaTimeTypes>true</javaTimeTypes>
+									<fluentSetters>true</fluentSetters>
+
+									<daos>true</daos>
+									<springAnnotations>true</springAnnotations>
+									<springDao>true</springDao>
+								</generate>
+								<target>
+									<packageName>
+										no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model
+									</packageName>
+									<directory>
+										target/generated-sources/jooq
+									</directory>
+								</target>
+							</generator>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
