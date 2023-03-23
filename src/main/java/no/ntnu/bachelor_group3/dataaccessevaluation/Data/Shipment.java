@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -38,7 +39,7 @@ public class Shipment {
 
     @OneToMany
     @JoinColumn(name = "parcel_id")
-    private ArrayList<Parcel> parcels;
+    private List<Parcel> parcels = new ArrayList<>();
 
 
 
@@ -118,8 +119,7 @@ public class Shipment {
         this.payer_id = payer_id;
     }
 
-    public ArrayList<Parcel> getParcels() {
-
+    public List<Parcel> getParcels() {
         return parcels;
     }
 
@@ -133,7 +133,7 @@ public class Shipment {
 
     public void addParcel(Parcel parcel) {
 
-        parcels.add(parcel);
+        this.parcels.add(parcel);
     }
 
     public void setDelivered() {
@@ -147,6 +147,15 @@ public class Shipment {
         }
         return total_weight;
     }
+
+    //for testing
+    public String printParcels() {
+        for (Parcel parcel : parcels) {
+            System.out.println(parcel.toString());
+        }
+        return "Number of parcels: " +parcels.size();
+    }
+
 
     @Override
     public String toString() {

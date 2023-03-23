@@ -15,7 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
-@DataJpaTest
+@DataJpaTest(showSql = false)
 @Import(TestConfiguration.class) //to load the required beans for the services
 public class ValidPostalCodeTest {
 
@@ -53,7 +53,7 @@ public class ValidPostalCodeTest {
         terminalService.addTerminal(terminal4);
         terminalService.addTerminal(terminal5);*/
 
-        validPostalCodeService.addValidPostalCode();
+        validPostalCodeService.addCodesFromMap();
 
         System.out.println(validPostalCodeService.findByZip("6300").toString());
 

@@ -18,6 +18,7 @@ import java.util.Optional;
 public class CustomerService {
 
     private static final Faker faker = new Faker(new Locale("nb-NO"));
+
     @Autowired
     private CustomerRepository customerRepository;
 

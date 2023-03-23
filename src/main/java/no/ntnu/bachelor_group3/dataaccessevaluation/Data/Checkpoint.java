@@ -67,6 +67,10 @@ public class Checkpoint {
         return sdf3.format(time);
     }
 
+    public double getCost() {
+        return cost;
+    }
+
     @Override
     public String toString() {
         return "Checkpoint{" +

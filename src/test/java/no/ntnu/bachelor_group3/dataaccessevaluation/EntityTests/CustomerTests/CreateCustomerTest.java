@@ -47,15 +47,21 @@ public class CreateCustomerTest {
 
             customerService.add(customer);
 
-            Shipment shipment = new Shipment(customer, customer, customer.getName(), customer.getAddress(), customer.getZip_code());
+            Shipment shipment = new Shipment(customer, customer, customer);
 
             //shipment.addParcel(new Parcel(shipment, 28.5));
 
             shipmentService.add(shipment);
+            System.out.println(shipment.toString());
+            shipmentService.findByID(shipment.getShipment_id()).printParcels();
+
+
+            shipmentService.addParcels(shipment.getShipment_id());
+            shipmentService.findByID(shipment.getShipment_id()).printParcels();
 
             assertNotNull(shipmentService.findByID(shipment.getShipment_id()));
 
-            System.out.println(shipment.toString());
+
 
         }
 

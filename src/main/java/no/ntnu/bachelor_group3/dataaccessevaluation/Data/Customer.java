@@ -35,6 +35,7 @@ public class Customer {
      */
     public Customer() {
 
+        this.customer_id = counter++;
         this.address = faker.address().streetAddress();
         this.name = faker.name().fullName();
         this.zip_code = faker.address().zipCode(); //TODO: Check for valid codes

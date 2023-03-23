@@ -29,4 +29,9 @@ public class TestConfiguration {
     public ValidPostalCodeService validPostalCodeService() {
         return new ValidPostalCodeService();
     }
+
+    @Bean
+    public ParcelService parcelService() {
+        return new ParcelService();
+    }
 }
