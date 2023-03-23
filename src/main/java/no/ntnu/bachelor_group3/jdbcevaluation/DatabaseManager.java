@@ -1,8 +1,10 @@
 package no.ntnu.bachelor_group3.jdbcevaluation;
 
+import no.ntnu.bachelor_group3.jdbcevaluation.Data.Checkpoint;
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Parcel;
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Shipment;
+import no.ntnu.bachelor_group3.jdbcevaluation.Services.CheckpointService;
 import no.ntnu.bachelor_group3.jdbcevaluation.Services.CustomerService;
 import no.ntnu.bachelor_group3.jdbcevaluation.Services.ParcelService;
 import no.ntnu.bachelor_group3.jdbcevaluation.Services.ShipmentService;
@@ -18,6 +20,7 @@ public class DatabaseManager implements AutoCloseable {
     private final CustomerService customerService;
     private final ShipmentService shipmentService;
     private final ParcelService parcelService;
+    private final CheckpointService checkpointService;
 
     private Connection conn;
 
@@ -25,6 +28,7 @@ public class DatabaseManager implements AutoCloseable {
         customerService = new CustomerService();
         shipmentService = new ShipmentService();
         parcelService = new ParcelService();
+        checkpointService = new CheckpointService();
 
         conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
         conn.setAutoCommit(false); // Start a new transaction
@@ -76,6 +80,15 @@ public class DatabaseManager implements AutoCloseable {
 
     public void deleteParcel(Parcel parcel) throws SQLException {
         parcelService.delete(parcel, conn);
+    }
+
+    public void setCheckpointOnParcel(Parcel parcel, Checkpoint checkpoint) throws SQLException {
+        List<Checkpoint> checkpoints = parcel.getCheckpoints();
+        checkpoints.add(checkpoint);
+        parcel.setCheckpoints(checkpoints);
+
+        checkpointService.save(checkpoint, conn);
+        parcelService.save(parcel, conn);
     }
 
     public List<Customer> getAllCustomers() throws SQLException {

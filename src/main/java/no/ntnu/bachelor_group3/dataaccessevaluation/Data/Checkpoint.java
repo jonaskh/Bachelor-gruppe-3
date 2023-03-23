@@ -22,6 +22,8 @@ public class Checkpoint {
 
     private double cost;
 
+    private String location;
+
     public void setType(CheckpointType type) {
         this.type = type;
 

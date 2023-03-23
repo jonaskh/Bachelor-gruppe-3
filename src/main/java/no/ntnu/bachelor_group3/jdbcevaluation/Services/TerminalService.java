@@ -31,7 +31,7 @@ public class TerminalService {
             // This is a new customer, so insert it into the database
             stmt = conn.prepareStatement("INSERT INTO terminal (address) VALUES (?)",
                     Statement.RETURN_GENERATED_KEYS);
-            stmt.setString(2, terminal.getLocation());
+            stmt.setString(1, terminal.getLocation());
             int rowsInserted = stmt.executeUpdate();
             if (rowsInserted > 0) {
                 ResultSet rs = stmt.getGeneratedKeys();
