@@ -17,6 +17,14 @@ public class CustomerService {
 
     public CustomerService() {}
 
+    /**
+     * Returns a customer from the customer table if it exists
+     *
+     * @param customerId the id of the customer to find
+     * @param conn the connection to the database
+     * @return a customer, or null if it does not exist
+     * @throws SQLException
+     */
     public Customer getCustomerById(int customerId, Connection conn) throws SQLException {
         try (PreparedStatement stmt = conn.prepareStatement(GET_CUSTOMER_BY_ID_QUERY)) {
             stmt.setInt(1, customerId);
@@ -30,12 +38,45 @@ public class CustomerService {
         return null;
     }
 
+    /**
+     * Saves a customer to the database or updates an existing one
+     *
+     * @param customer the customer to insert or update
+     * @param conn the connection to the database
+     * @throws SQLException
+     */
     public void save(Customer customer, Connection conn) throws SQLException {
-        Long id = customer.getId();
+        if (customerExists(customer.getId(), conn)) {
+            update(customer, conn);
+        } else {
+            insert(customer, conn);
+        }
+    }
 
-        try (PreparedStatement stmt = id == 0 ? createInsertStatement(customer, conn) : createUpdateStatement(customer, conn)) {
+    /**
+     * Updates a customer in the database
+     *
+     * @param customer the customer to update
+     * @param conn the connection to the database
+     * @throws SQLException
+     */
+    private void update(Customer customer, Connection conn) throws SQLException {
+        try (PreparedStatement stmt = createUpdateStatement(customer, conn)) {
+            stmt.executeUpdate();
+        }
+    }
+
+    /**
+     * Inserts a customer into the customer table
+     *
+     * @param customer the customer to insert
+     * @param conn the connection to the database
+     * @throws SQLException
+     */
+    private void insert(Customer customer, Connection conn) throws SQLException {
+        try (PreparedStatement stmt = createInsertStatement(customer, conn)) {
             int rowsAffected = stmt.executeUpdate();
-            if (rowsAffected > 0 && id == 0) {
+            if (rowsAffected > 0) {
                 try (ResultSet rs = stmt.getGeneratedKeys()) {
                     if (rs.next()) {
                         customer.setId(rs.getLong(1));
@@ -45,6 +86,35 @@ public class CustomerService {
         }
     }
 
+    /**
+     * Checks if the customer exists in the customer table
+     *
+     * @param id the id of the customer
+     * @param conn the connection to the database
+     * @return true if the customer exists
+     * @throws SQLException
+     */
+    private boolean customerExists(Long id, Connection conn) throws SQLException {
+        if (id == null || id == 0) {
+            return false;
+        }
+
+        try (PreparedStatement stmt = conn.prepareStatement(GET_CUSTOMER_BY_ID_QUERY)) {
+            stmt.setLong(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
+
+    /**
+     * Deletes a customer from the customer table if it exists
+     *
+     * @param customer the customer to delete
+     * @param conn the connection to the database
+     * @throws SQLException
+     */
     public void delete(Customer customer, Connection conn) throws SQLException {
         Long id = customer.getId();
         if (id > 0) {

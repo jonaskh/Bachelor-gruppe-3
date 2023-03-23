@@ -18,6 +18,16 @@ public class ParcelService {
 
     public ParcelService() {}
 
+    /**
+     * Returns a parcel from the parcel table if it exists
+     *
+     * @param parcelId the id of the parcel to find
+     * @param customerService
+     * @param shipmentService
+     * @param conn the connection to the database
+     * @return a parcel or null if it does not exist
+     * @throws SQLException
+     */
     public Parcel getParcelById(Long parcelId, CustomerService customerService,
                                        ShipmentService shipmentService, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(GET_PARCEL_BY_ID_QUERY);
@@ -32,40 +42,104 @@ public class ParcelService {
         return null;
     }
 
+    /**
+     * Saves a parcel to the parcel table or updates an existing one
+     *
+     * @param parcel the parcel to save
+     * @param conn the connection to the database
+     * @return the id of the parcel saved or null
+     * @throws SQLException
+     */
     public Long save(Parcel parcel, Connection conn) throws SQLException {
-        PreparedStatement stmt;
-        Long parcel_id = parcel.getId();
-        Shipment shipment = parcel.getShipment();
-        Double weight = parcel.getWeight();
-        int weight_class = parcel.getWeight_class();
-        if (parcel_id == 0) {
-            // This is a new parcel, so insert it into the database
-            stmt = conn.prepareStatement(INSERT_PARCEL_QUERY,
-                    Statement.RETURN_GENERATED_KEYS);
-            stmt.setLong(1, shipment.getId());
-            stmt.setDouble(2, weight);
-            stmt.setInt(3, weight_class);
-
-            int rowsInserted = stmt.executeUpdate();
-            if (rowsInserted > 0) {
-                ResultSet rs = stmt.getGeneratedKeys();
-                if (rs.next()) {
-                    return rs.getLong(1);
-                }
-            }
-
+        if (parcelExists(parcel.getId(), conn)) {
+            update(parcel, conn);
         } else {
-            // This is an existing parcel, so update it in the database
-            stmt = conn.prepareStatement(UPDATE_PARCEL_QUERY);
-            stmt.setLong(1, shipment.getId());
-            stmt.setDouble(2, weight);
-            stmt.setInt(3, weight_class);
-            stmt.setLong(4, parcel_id);
-            stmt.executeUpdate();
+            return insert(parcel, conn);
         }
         return null;
     }
 
+    /**
+     * Updates the parcel in the parcel table
+     *
+     * @param parcel the parcel to update
+     * @param conn the connection to the database
+     * @throws SQLException
+     */
+    private void update(Parcel parcel, Connection conn) throws SQLException {
+        try (PreparedStatement stmt = createUpdateStatement(parcel, conn)) {
+            stmt.executeUpdate();
+        }
+    }
+
+    /**
+     * Inserts the parcel in the parcel table
+     *
+     * @param parcel the parcel to insert
+     * @param conn the connection to the database
+     * @return the id of the inserted parcel
+     * @throws SQLException
+     */
+    private Long insert(Parcel parcel, Connection conn) throws SQLException {
+        try (PreparedStatement stmt = createInsertStatement(parcel, conn)) {
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                try (ResultSet rs = stmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        return rs.getLong(1);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Checks if the parcel exists in the parcel table
+     *
+     * @param id the id of the parcel
+     * @param conn the connection to the database
+     * @return
+     * @throws SQLException
+     */
+    private boolean parcelExists(Long id, Connection conn) throws SQLException {
+        if (id == null || id == 0) {
+            return false;
+        }
+
+        try (PreparedStatement stmt = conn.prepareStatement(GET_PARCEL_BY_ID_QUERY)) {
+            stmt.setLong(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
+    private PreparedStatement createInsertStatement(Parcel parcel, Connection conn) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement(INSERT_PARCEL_QUERY, Statement.RETURN_GENERATED_KEYS);
+        stmt.setLong(1, parcel.getShipment().getId());
+        stmt.setDouble(2, parcel.getWeight());
+        stmt.setInt(3, parcel.getWeight_class());
+        return stmt;
+    }
+
+    private PreparedStatement createUpdateStatement(Parcel parcel, Connection conn) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement(UPDATE_PARCEL_QUERY);
+        stmt.setLong(1, parcel.getShipment().getId());
+        stmt.setDouble(2, parcel.getWeight());
+        stmt.setInt(3, parcel.getWeight_class());
+        stmt.setLong(4, parcel.getId());
+        return stmt;
+    }
+
+
+    /**
+     * Deletes a parcel from the parcel table
+     *
+     * @param parcel the parcel to delete
+     * @param conn the connection to the database
+     * @throws SQLException
+     */
     public void delete(Parcel parcel, Connection conn) throws SQLException {
         Long id = parcel.getId();
         if (id > 0) {
