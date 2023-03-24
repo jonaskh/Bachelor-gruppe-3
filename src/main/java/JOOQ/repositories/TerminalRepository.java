@@ -24,7 +24,9 @@ public class TerminalRepository implements JOOQRepository<Terminal>{
     @Override
     public Terminal save(Terminal terminal){
         TerminalRecord terminalRecord = (TerminalRecord) dslContext.insertInto(TERMINAL)
-                .set(TERMINAL.ADDRESS, terminal.getAddress());
+                .set(TERMINAL.ADDRESS, terminal.getAddress())
+                .returning(TERMINAL.TERMINAL_ID).fetchOne();
+
 
         if (terminalRecord != null) {
             terminal.setTerminalId(terminalRecord.getTerminalId());

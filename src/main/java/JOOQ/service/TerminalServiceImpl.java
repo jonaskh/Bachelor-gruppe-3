@@ -20,6 +20,7 @@ public class TerminalServiceImpl implements TerminalService {
     @Override
     public Terminal create(Terminal terminal) {
         terminalDao.insert(terminal);
+
         return terminal;
     }
 
