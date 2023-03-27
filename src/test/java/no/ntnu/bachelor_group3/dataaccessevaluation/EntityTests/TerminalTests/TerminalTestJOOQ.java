@@ -26,7 +26,7 @@ public class TerminalTestJOOQ {
     }
 
     @Test
-    void testFindAll() {
+    public void testFindAll() {
         TerminalRepository repository = new TerminalRepository(dslContext);
         List<Terminal> terminals = repository.findAll();
         assertNotNull(terminals);
@@ -34,13 +34,13 @@ public class TerminalTestJOOQ {
     }
 
     @Test
-    void testCreateTerminal() {
+    public void testCreateTerminal() {
         Terminal terminal = new Terminal()
-                .setAddress("123 Main St.");
+                .setAddress("Trondheim");
         TerminalService service = new TerminalServiceImpl(new TerminalDao(dslContext.configuration()));
         Terminal savedTerminal = service.create(terminal);
         assertNotNull(savedTerminal.getTerminalId());
-        assertEquals("123 Main St.", savedTerminal.getAddress());
+        assertEquals("Trondheim", savedTerminal.getAddress());
     }
 }
 
