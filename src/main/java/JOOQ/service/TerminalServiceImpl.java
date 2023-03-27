@@ -40,7 +40,7 @@ public class TerminalServiceImpl implements TerminalService {
     public Terminal getOne(int id) {
         Terminal terminal = terminalDao.findById(id);
         if(terminal == null){
-            throw new NoSuchElementException(MessageFormat.format("Book id {0} not found", String.valueOf(id)));
+            throw new NoSuchElementException(MessageFormat.format("Terminal id {0} not found", String.valueOf(id)));
         }
         return terminal;
     }
