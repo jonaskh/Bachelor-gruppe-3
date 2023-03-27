@@ -22,6 +22,9 @@ public class ValidPostalCodeTest {
     @Autowired
     ValidPostalCodeService validPostalCodeService;
 
+    @Autowired
+    TerminalService terminalService;
+
 
 
 
@@ -41,22 +44,14 @@ public class ValidPostalCodeTest {
     @Test
     public void AddValidPostalCodesToDatabase() {
         createTerminals();
-/*        Terminal terminal1 = new Terminal("Oslo");
-        Terminal terminal2 = new Terminal("Akershus");
-        Terminal terminal3 = new Terminal("Østfold");
-        Terminal terminal4 = new Terminal("Hedmark");
-        Terminal terminal5 = new Terminal("Oppland");
-
-        terminalService.addTerminal(terminal1);
-        terminalService.addTerminal(terminal2);
-        terminalService.addTerminal(terminal3);
-        terminalService.addTerminal(terminal4);
-        terminalService.addTerminal(terminal5);*/
-
         validPostalCodeService.addCodesFromMap();
 
         System.out.println(validPostalCodeService.findByZip("6300").toString());
 
         assertNotNull(validPostalCodeService.findByZip("0021"));
+
+        Terminal terminal = terminalService.returnTerminalFromZip("6300");
+        System.out.println(terminal);
+
     }
 }

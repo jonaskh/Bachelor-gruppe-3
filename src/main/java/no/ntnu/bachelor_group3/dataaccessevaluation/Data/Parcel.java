@@ -4,10 +4,11 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.Check;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-//TODO: ADD CONNECTION TO OTHER TABLES
+
 @Entity
 @Table(name = "parcel")
 public class Parcel {
@@ -28,20 +29,20 @@ public class Parcel {
 
 
     @JoinColumn(name = "checkpoint_id")
-    @OneToMany
-    private ArrayList<Checkpoint> checkpoints;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Checkpoint> checkpoints = new ArrayList<>();
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shipment_id")
-    private Shipment shipment_placed_in; //which shipment the parcel belongs to
+//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinColumn(name = "shipment_id")
+//    private Shipment shipment_placed_in; //which shipment the parcel belongs to
 
 
     public Parcel() {
     }
 
-    public Parcel(Shipment shipment, double weight) {
-        this.shipment_placed_in = shipment;
+    public Parcel(double weight) {
+//        this.shipment_placed_in = shipment;
         this.parcel_id = counter++;
         this.weight = weight;
     }
@@ -50,9 +51,7 @@ public class Parcel {
         return weight;
     }
 
-    public Shipment getShipment_placed_in() {
-        return this.shipment_placed_in;
-    }
+
 
     public Long getParcel_id() {
         return this.parcel_id;
@@ -87,7 +86,6 @@ public class Parcel {
 
     public void setLastCheckpoint(Checkpoint checkpoint) {
         this.lastCheckpoint = checkpoint;
-        checkpoints.add(checkpoint);
     }
 
 
@@ -101,7 +99,6 @@ public class Parcel {
                 "parcel_id=" + parcel_id +
                 ", weight=" + weight +
                 ", lastCheckpoint=" + lastCheckpoint +
-                "shipment: " + shipment_placed_in +
                 '}';
     }
 }

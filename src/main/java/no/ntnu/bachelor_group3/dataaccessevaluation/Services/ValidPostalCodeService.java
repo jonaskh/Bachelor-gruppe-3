@@ -41,7 +41,7 @@ public class ValidPostalCodeService {
 //    }
 
 
-    //Adds the codes from the CSV to the database.
+    //Adds the codes from the CSV to the database
     public void addCodesFromMap() {
         HashMap<String, ValidPostalCode> mapWithPostalCodes = new HashMap<>();
 
@@ -53,10 +53,7 @@ public class ValidPostalCodeService {
             } else {
                 failed++;
                 System.out.println(failed);
-
-            }
-            System.out.println("hello");
-        });
+            }});
 
 
 
@@ -87,17 +84,16 @@ public class ValidPostalCodeService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return postalcodes;
     }
 
-    public Terminal returnTerminalFromZip(String zip) {
-        Terminal terminal = null;
-        if (validPostalCodeRepository.findByPostalCode(zip).isPresent()) {
-            terminal = validPostalCodeRepository.findByPostalCode(zip).get().getTerminal_id();
-        } else {
-            System.out.println("No terminal connected to that zip");
-        }
-        return terminal;
-    }
+//    public Terminal returnTerminalFromZip(String zip) {
+//        Terminal terminal = null;
+//        if (validPostalCodeRepository.findByPostalCode(zip).isPresent()) {
+//            terminal = validPostalCodeRepository.findByPostalCode(zip).get().getTerminal_id();
+//        } else {
+//            System.out.println("No terminal connected to that zip");
+//        }
+//        return terminal;
+//    }
 }

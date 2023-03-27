@@ -42,7 +42,7 @@ public class CreateParcelTest {
 
 
         if (shipmentService.findByID(shipment.getShipment_id()) != null) {
-            shipmentService.addParcels(shipment.getShipment_id());
+            shipmentService.addParcels(shipment);
             System.out.println(shipmentService.printShipmentInfo(shipment));
         }
     }

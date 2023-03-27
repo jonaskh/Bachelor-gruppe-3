@@ -37,7 +37,7 @@ public class Shipment {
     @JoinColumn(name = "customer_id")
     private Long payer_id;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "parcel_id")
     private List<Parcel> parcels = new ArrayList<>();
 
@@ -150,8 +150,12 @@ public class Shipment {
 
     //for testing
     public String printParcels() {
-        for (Parcel parcel : parcels) {
-            System.out.println(parcel.toString());
+        if (parcels.isEmpty()) {
+            System.out.println("Could not find any parcels");
+        } else {
+            for (Parcel parcel : parcels) {
+                System.out.println(parcel.toString());
+            }
         }
         return "Number of parcels: " +parcels.size();
     }
@@ -163,6 +167,7 @@ public class Shipment {
                 "shipment_id=" + shipment_id +
                 ", sender_id='" + sender + '\'' +
                 ", receiver_zip='" + receiver + '\'' +
+                "nr of parcels: " + parcels.size() +
                 '}';
     }
 }

@@ -10,17 +10,14 @@ import java.io.IOException;
 @Table(name = "valid_postal_codes")
 public class ValidPostalCode {
 
-    private static Long counter = 1L;
     @Id
-    private Long postal_id;
-
     private String postalCode;
 
     private String municipality;
 
     private String county;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "terminal_id")
     private Terminal terminal_id;
 
@@ -28,7 +25,6 @@ public class ValidPostalCode {
     }
 
     public ValidPostalCode(String postalCode, String municipality, String county, Terminal terminal_id) {
-        this.postal_id = counter++;
         this.postalCode = postalCode;
         this.municipality = municipality;
         this.county = county;
@@ -36,14 +32,6 @@ public class ValidPostalCode {
     }
 
 
-
-    public Long getPostal_id() {
-        return postal_id;
-    }
-
-    public void setPostal_id(Long postal_id) {
-        this.postal_id = postal_id;
-    }
 
     public String getPostalCode() {
         return postalCode;
@@ -80,7 +68,6 @@ public class ValidPostalCode {
     @Override
     public String toString() {
         return "ValidPostalCode{" +
-                "postal_id=" + postal_id +
                 ", postalCode='" + postalCode + '\'' +
                 ", municipality='" + municipality + '\'' +
                 ", county='" + county + '\'' +

@@ -1,5 +1,6 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.CustomerTests;
 
+import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Checkpoint;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.TestConfiguration;
@@ -16,7 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@DataJpaTest
+@DataJpaTest(showSql = false)
 @Import(TestConfiguration.class) //to load the required beans for the services
 public class CreateCustomerTest {
 
@@ -48,21 +49,28 @@ public class CreateCustomerTest {
             customerService.add(customer);
 
             Shipment shipment = new Shipment(customer, customer, customer);
-
-            //shipment.addParcel(new Parcel(shipment, 28.5));
-
             shipmentService.add(shipment);
-            System.out.println(shipment.toString());
+
+            System.out.println(shipment);
             shipmentService.findByID(shipment.getShipment_id()).printParcels();
 
-
-            shipmentService.addParcels(shipment.getShipment_id());
             shipmentService.findByID(shipment.getShipment_id()).printParcels();
 
             assertNotNull(shipmentService.findByID(shipment.getShipment_id()));
+        }
 
+        @Test
+        public void addCheckpointToParcel() {
+            Customer customer = new Customer("Ålesund", "Stian", "6008");
 
+            customerService.add(customer);
 
+            Shipment shipment = new Shipment(customer, customer, customer);
+            shipmentService.add(shipment);
+            shipment.printParcels();
+            Checkpoint checkpoint = new Checkpoint("NTNU", Checkpoint.CheckpointType.Collected);
+            shipmentService.updateCheckpointsOnParcels(shipment, checkpoint);
+            shipment.printParcels();
         }
 
     }

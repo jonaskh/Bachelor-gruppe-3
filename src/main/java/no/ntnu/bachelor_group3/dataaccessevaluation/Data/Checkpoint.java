@@ -27,7 +27,7 @@ public class Checkpoint {
 
     private double cost;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "terminal_id")
     private Terminal terminal;
 
@@ -41,6 +41,20 @@ public class Checkpoint {
         this.time = new Date();
         this.checkpoint_id = counter++;
         this.type = type;
+        switch (type) {
+            case Collected -> this.cost = 1;
+            case ReceivedFinalTerminal, ReceivedFirstTerminal -> this.cost = 1.25;
+            case LoadedOnCar -> this.cost = 1.5;
+            case UnderDelivery -> this.cost = 1.8;
+            case Delivered -> this.cost = 2;
+        }
+    }
+
+    public Checkpoint(Terminal terminal, CheckpointType type) {
+        this.time = new Date();
+        this.checkpoint_id = counter++;
+        this.type = type;
+        this.terminal = terminal;
         switch (type) {
             case Collected -> this.cost = 1;
             case ReceivedFinalTerminal, ReceivedFirstTerminal -> this.cost = 1.25;

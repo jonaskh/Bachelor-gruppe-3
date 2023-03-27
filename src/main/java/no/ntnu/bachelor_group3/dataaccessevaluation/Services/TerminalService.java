@@ -35,5 +35,14 @@ public class TerminalService {
         }
     }
 
+    public Terminal returnTerminalFromZip(String zip) {
+        Terminal terminal = null;
+        if (validPostalCodeRepository.findByPostalCode(zip).isPresent()) {
+            terminal = validPostalCodeRepository.findByPostalCode(zip).get().getTerminal_id();
+        } else {
+            System.out.println("No terminal connected to that zip");
+        }
+        return terminal;
+    }
 
 }

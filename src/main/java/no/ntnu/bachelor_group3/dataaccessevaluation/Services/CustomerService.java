@@ -65,6 +65,7 @@ public class CustomerService {
      * @param payer_id id of payer customer
      * @return if successful or not
      */
+    //TODO: If sender = receiver, set sender terminal to Oslo?
     public boolean addShipment(Long sender_id, Long receiver_id, Long payer_id) {
         boolean success = false;
 
