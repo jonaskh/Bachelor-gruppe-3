@@ -4,10 +4,8 @@ import com.github.javafaker.Faker;
 import jakarta.persistence.*;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 
 
 @Entity
@@ -19,6 +17,8 @@ public class Shipment {
     private static Faker faker = new Faker(new Locale("nb-NO"));
 
     private static Long counter = 1L;
+
+
 
     @Id
     private Long shipment_id;
@@ -41,6 +41,10 @@ public class Shipment {
     @JoinColumn(name = "parcel_id")
     private List<Parcel> parcels = new ArrayList<>();
 
+    private LocalDateTime timeCreated;
+
+    private LocalDateTime expectedDeliveryDate;
+
 
 
     // if customer is both sender and receiver
@@ -56,6 +60,8 @@ public class Shipment {
     // if receiver is not an existing customer
     public Shipment(Customer sender, Customer payer, Customer receiver) {
         this.shipment_id = counter++;
+        this.timeCreated = LocalDateTime.now();
+        this.expectedDeliveryDate = LocalDateTime.now().plusSeconds(10); //sets expected delivery date 10s from creation
         this.sender = sender.getCustomerID();
         this.payer = payer.getCustomerID();
         this.receiver = receiver.getCustomerID();
@@ -168,6 +174,7 @@ public class Shipment {
                 ", sender_id='" + sender + '\'' +
                 ", receiver_zip='" + receiver + '\'' +
                 "nr of parcels: " + parcels.size() +
+                ", expected delivery: " + expectedDeliveryDate +
                 '}';
     }
 }

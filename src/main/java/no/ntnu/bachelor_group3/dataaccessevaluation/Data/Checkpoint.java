@@ -1,9 +1,11 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
 import jakarta.persistence.*;
+import net.bytebuddy.asm.Advice;
 import org.hibernate.annotations.Check;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -32,13 +34,13 @@ public class Checkpoint {
     private Terminal terminal;
 
 
-    private Date time;
+    private LocalDateTime time;
 
     public Checkpoint() {
     }
 
     public Checkpoint(String location, CheckpointType type) {
-        this.time = new Date();
+        this.time = LocalDateTime.now();
         this.checkpoint_id = counter++;
         this.type = type;
         switch (type) {
@@ -51,7 +53,7 @@ public class Checkpoint {
     }
 
     public Checkpoint(Terminal terminal, CheckpointType type) {
-        this.time = new Date();
+        this.time = LocalDateTime.now();
         this.checkpoint_id = counter++;
         this.type = type;
         this.terminal = terminal;
@@ -92,7 +94,7 @@ public class Checkpoint {
                 ", type=" + type +
                 ", cost=" + cost +
                 ", terminal=" + terminal +
-                ", time=" + sdf3.format(time) +
+                ", time=" + time +
                 '}';
     }
 }
