@@ -93,15 +93,13 @@ public class LifecycleTest {
         shipmentService.findByID(shipment.getShipment_id()).printParcels();
 
         try {
-            Thread.sleep(2000);
+            Thread.sleep(5);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
 
         shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), checkpoint3);
         shipmentService.findByID(shipment.getShipment_id()).printParcels();
-
-
 
     }
 }

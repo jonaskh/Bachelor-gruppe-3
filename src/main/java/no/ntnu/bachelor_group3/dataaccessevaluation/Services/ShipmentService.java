@@ -35,6 +35,7 @@ public class ShipmentService {
     public Shipment add(Shipment shipment) {
         if (shipmentRepository.findById(shipment.getShipment_id()).isEmpty()) {
             addParcels(shipment);
+            //TODO: EVALUATE
             shipmentRepository.save(shipment);
         }
         return shipment;
@@ -52,6 +53,7 @@ public class ShipmentService {
                 double weight = random.nextDouble(5) + 1;
                 Parcel parcel = new Parcel(weight);
                 shipment.addParcel(parcel);
+                //TODO: EVALUATION
                 parcelService.save(parcel);
             }
 
