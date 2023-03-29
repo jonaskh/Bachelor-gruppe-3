@@ -53,7 +53,7 @@ public class LifecycleTest {
     public void OneShipmentFullLifecycleTest() {
 
         createTerminals();
-        validPostalCodeService.addCodesFromMap();
+        validPostalCodeService.ReadCSVFile();
 
         System.out.println(validPostalCodeService.findByZip("6300").toString());
 

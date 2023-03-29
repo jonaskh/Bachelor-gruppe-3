@@ -44,7 +44,7 @@ public class ValidPostalCodeTest {
     @Test
     public void AddValidPostalCodesToDatabase() {
         createTerminals();
-        validPostalCodeService.addCodesFromMap();
+        validPostalCodeService.ReadCSVFile();
 
         System.out.println(validPostalCodeService.findByZip("6300").toString());
 

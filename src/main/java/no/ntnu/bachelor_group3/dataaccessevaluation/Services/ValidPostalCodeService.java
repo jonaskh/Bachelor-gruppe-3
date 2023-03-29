@@ -1,5 +1,7 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Services;
 
+import jakarta.transaction.Transactional;
+import net.bytebuddy.asm.Advice;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.ValidPostalCode;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.ValidPostalCodeRepository;
@@ -9,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -41,24 +45,6 @@ public class ValidPostalCodeService {
 //    }
 
 
-    //Adds the codes from the CSV to the database
-    public void addCodesFromMap() {
-        HashMap<String, ValidPostalCode> mapWithPostalCodes = new HashMap<>();
-
-        mapWithPostalCodes = ReadCSVFile();
-        mapWithPostalCodes.forEach((key, value) -> {
-            int failed = 0;
-            if (validPostalCodeRepository.findByPostalCode(key).isEmpty()) {
-                validPostalCodeRepository.save(value);
-            } else {
-                failed++;
-                System.out.println(failed);
-            }});
-
-
-
-    }
-
     public TerminalService getTerminalService() {
         return terminalService;
     }
@@ -67,10 +53,12 @@ public class ValidPostalCodeService {
      * Stores all zip codes in a hashmap with link to terminal ID. Returns a hashmap where the zip codes are the keys,
      * @return hashmap with keys as zip codes and values as ValidPostalCodes objects with zip, municipality and terminal id.
      */
+    @Transactional
     public HashMap<String, ValidPostalCode> ReadCSVFile() {
         String csvFile = "Postnummerregister.csv";
         String line = "";
         String cvsSplitBy = ",";
+        LocalDateTime start = LocalDateTime.now();
 
         HashMap<String,ValidPostalCode> postalcodes = new HashMap<>(); // or any other desired size
 
@@ -84,6 +72,10 @@ public class ValidPostalCodeService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        LocalDateTime after = LocalDateTime.now();
+        long timeTaken = ChronoUnit.SECONDS.between(start,after);
+        validPostalCodeRepository.saveAll(postalcodes.values());
+        System.out.println("Time taken in READCSV method:  " + timeTaken + " seconds");
         return postalcodes;
     }
 
