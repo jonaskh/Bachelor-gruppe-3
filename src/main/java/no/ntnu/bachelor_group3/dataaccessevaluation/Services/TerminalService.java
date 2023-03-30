@@ -35,6 +35,8 @@ public class TerminalService {
         }
     }
 
+
+
     public Terminal returnTerminalFromZip(String zip) {
         Terminal terminal = null;
         if (validPostalCodeRepository.findByPostalCode(zip).isPresent()) {

@@ -52,7 +52,6 @@ public class LifecycleTest {
     @DisplayName("Checks the full lifecycle of one shipment to ensure it works as expected")
     public void OneShipmentFullLifecycleTest() {
 
-        createTerminals();
         validPostalCodeService.ReadCSVFile();
 
         System.out.println(validPostalCodeService.findByZip("6300").toString());

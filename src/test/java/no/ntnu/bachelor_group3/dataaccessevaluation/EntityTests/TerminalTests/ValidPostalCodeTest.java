@@ -34,7 +34,6 @@ public class ValidPostalCodeTest {
                 "ROGALAND", "VEST-AGDER", "AUST-AGDER", "HORDALAND", "SOGN OG FJORDANE", "MØRE OG ROMSDAL", "SØR-TRØNDELAG", "NORD-TRØNDELAG",
                 "NORDLAND", "TROMS", "FINNMARK"};
 
-
         for (int i=0; i<=17; i++) {
             Terminal terminal = new Terminal(terminalAddresses[i]);
             validPostalCodeService.getTerminalService().addTerminal(terminal);

@@ -1,7 +1,6 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
 import jakarta.persistence.*;
-import net.bytebuddy.asm.Advice;
 import org.hibernate.annotations.Check;
 
 import java.text.SimpleDateFormat;

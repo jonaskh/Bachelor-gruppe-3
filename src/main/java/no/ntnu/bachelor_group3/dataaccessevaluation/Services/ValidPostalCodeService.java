@@ -1,7 +1,6 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Services;
 
 import jakarta.transaction.Transactional;
-import net.bytebuddy.asm.Advice;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.ValidPostalCode;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.ValidPostalCodeRepository;
@@ -45,17 +44,34 @@ public class ValidPostalCodeService {
 //    }
 
 
+    public void createTerminals(){
+
+        String[] terminalAddresses = {"OSLO", "AKERSHUS", "ØSTFOLD", "HEDMARK", "OPPLAND", "BUSKERUD", "VESTFOLD", "TELEMARK",
+                "ROGALAND", "VEST-AGDER", "AUST-AGDER", "HORDALAND", "SOGN OG FJORDANE", "MØRE OG ROMSDAL", "SØR-TRØNDELAG", "NORD-TRØNDELAG",
+                "NORDLAND", "TROMS", "FINNMARK"};
+
+        for (int i=0; i<terminalAddresses.length; i++) {
+            Terminal terminal = new Terminal(terminalAddresses[i]);
+            getTerminalService().addTerminal(terminal);
+        }
+    }
+
     public TerminalService getTerminalService() {
         return terminalService;
     }
 
+    public long countAll() {
+        return validPostalCodeRepository.count();
+    }
+
     /**
-     * Stores all zip codes in a hashmap with link to terminal ID. Returns a hashmap where the zip codes are the keys,
+     * Stores all zip codes in a hashmap with link to terminal ID. saves the values in hashmap to database
      * @return hashmap with keys as zip codes and values as ValidPostalCodes objects with zip, municipality and terminal id.
      */
     @Transactional
     public HashMap<String, ValidPostalCode> ReadCSVFile() {
         String csvFile = "Postnummerregister.csv";
+        createTerminals();
         String line = "";
         String cvsSplitBy = ",";
         LocalDateTime start = LocalDateTime.now();
@@ -73,9 +89,9 @@ public class ValidPostalCodeService {
             e.printStackTrace();
         }
         LocalDateTime after = LocalDateTime.now();
-        long timeTaken = ChronoUnit.SECONDS.between(start,after);
+        long timeTaken = ChronoUnit.MILLIS.between(start,after);
         validPostalCodeRepository.saveAll(postalcodes.values());
-        System.out.println("Time taken in READCSV method:  " + timeTaken + " seconds");
+        System.out.println("Time taken in READCSV method:  " + timeTaken + " milliseconds");
         return postalcodes;
     }
 
