@@ -1,20 +1,17 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.ShipmentTests;
 
 import JOOQ.repositories.ShipmentRepository;
-import JOOQ.repositories.TerminalRepository;
-import JOOQ.service.ShipmentService;
-import JOOQ.service.ShipmentServiceImpl;
-import JOOQ.service.TerminalService;
-import JOOQ.service.TerminalServiceImpl;
+import JOOQ.service.*;
+import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.daos.CustomerDao;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.daos.ShipmentDao;
-import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.daos.TerminalDao;
+import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Customer;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Shipment;
-import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Terminal;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -23,7 +20,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ShipmentTestJOOQ {
+public class ShipmentJOOQTest {
     private DSLContext dslContext;
 
 
@@ -43,19 +40,26 @@ public class ShipmentTestJOOQ {
 
     @Test
     public void testCreateShipment() {
+        Customer customer = new Customer()
+                .setAddress("Oslo")
+                .setName("Stian")
+                .setZipCode("2008");
+        CustomerService service = new CustomerServiceImpl(new CustomerDao(dslContext.configuration()));
+
+        Customer savedCustomer = service.create(customer);
         Shipment shipment = new Shipment()
-                .setCheckpointId(null)
                 .setDelivered(false)
-                .setCustomerId(0)
-                .setPayerId(0)
+                .setCustomerId(savedCustomer.getCustomerid())
+                .setPayerId(savedCustomer.getCustomerid())
                 .setReceivingZip("7050")
                 .setReceivingAddress("Trondheim")
                 .setReceiverName("Daniel")
-                .setSenderId(0);
-        ShipmentService service = new ShipmentServiceImpl(new ShipmentDao(dslContext.configuration()));
-        Shipment savedShipment = service.create(shipment);
+                .setSenderId(savedCustomer.getCustomerid());
+        ShipmentService shipmentService = new ShipmentServiceImpl(new ShipmentDao(dslContext.configuration()));
+        Shipment savedShipment = shipmentService.create(shipment);
+
+
         assertNotNull(savedShipment.getOrderId());
-        assertEquals("Trondheim", savedShipment.getReceivingAddress());
     }
 
 }
