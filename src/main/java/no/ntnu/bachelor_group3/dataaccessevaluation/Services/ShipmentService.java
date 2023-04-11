@@ -1,9 +1,7 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Services;
 
-import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Checkpoint;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Parcel;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Data.*;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.CustomerRepository;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.ShipmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +12,7 @@ import java.util.Optional;
 import java.util.Random;
 
 @Service
-public class ShipmentService {
+public class ShipmentService{
 
     @Autowired
     private ShipmentRepository shipmentRepository;
@@ -24,6 +22,16 @@ public class ShipmentService {
 
     @Autowired
     private CheckpointService checkpointService;
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
+    private TerminalService terminalService;
+
+    public ShipmentService() {
+
+    }
 
 
     public Shipment findByID(Long id) {
@@ -80,16 +88,43 @@ public class ShipmentService {
                 checkpointService.addCheckpoint(checkpoint);
             }
         } else {
-            System.out.println("No parcels in shipment");
+            System.out.println("No parcels in shipment, couldn't update checkpoint");
+        }
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    //TODO: Update checkpoint method
-
-
-    //TODO:Terminals
-
-    //returns the terminal that matches the given zip code
-    public void findNearestTerminalByZip(String zip) {
+    public String getShipmentSenderAddress(Shipment shipment) {
+        Optional<Customer> customerOpt = customerRepository.findById(shipmentRepository.findById(shipment.getShipment_id()).get().getSender());
+        if (customerOpt.isPresent()) {
+            return customerOpt.get().getAddress();
+        } else {
+            return "Could not find sender address";
+        }
     }
+
+    public String getShipmentReceiverAddress(Shipment shipment) {
+        Optional<Customer> customerOpt = customerRepository.findById(shipmentRepository.findById(shipment.getShipment_id()).get().getReceiver());
+        if (customerOpt.isPresent()) {
+            return customerOpt.get().getAddress();
+        } else {
+            return "Could not find receiver address";
+        }
+    }
+
+    //returns the terminal connected to zip code of the shipments sender
+    public Terminal findFirstTerminalToShipment(Shipment shipment) {
+        return terminalService.returnTerminalFromZip(customerRepository.findById(shipmentRepository.findById(shipment.getShipment_id()).get().getSender()).get().getZip_code());
+    }
+
+    //returns the terminal connected to zip code of the shipments receiver
+    public Terminal findFinalTerminalToShipment(Shipment shipment) {
+        return terminalService.returnTerminalFromZip(customerRepository.findById(shipmentRepository.findById(shipment.getShipment_id()).get().getReceiver()).get().getZip_code());
+    }
+
+
+
 }

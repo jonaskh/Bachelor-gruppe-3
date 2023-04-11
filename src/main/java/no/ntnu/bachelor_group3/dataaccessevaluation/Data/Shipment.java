@@ -32,6 +32,14 @@ public class Shipment {
     @JoinColumn(name = "customer_id")
     private Long payer;
 
+    @OneToOne
+    @JoinColumn(name = "terminal_id")
+    private Terminal firstTerminal;
+
+    @OneToOne
+    @JoinColumn(name = "terminal_id")
+    private Terminal finalTerminal;
+
     private boolean delivered;
 
     @JoinColumn(name = "customer_id")

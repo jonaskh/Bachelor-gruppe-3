@@ -49,7 +49,6 @@ public class Terminal {
         return shipments_passed;
     }
 
-    //TODO: Add shipments from checkpoints to each terminal
     public boolean addShipment(Shipment shipment) {
         for (Shipment ship: shipments_passed) {
             if (shipment.getShipment_id() == ship.getShipment_id()) {
