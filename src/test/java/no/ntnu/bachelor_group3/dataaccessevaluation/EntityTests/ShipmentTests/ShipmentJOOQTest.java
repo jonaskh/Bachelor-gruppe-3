@@ -45,8 +45,8 @@ public class ShipmentJOOQTest {
                 .setName("Stian")
                 .setZipCode("2008");
         CustomerService service = new CustomerServiceImpl(new CustomerDao(dslContext.configuration()));
-
         Customer savedCustomer = service.create(customer);
+
         Shipment shipment = new Shipment()
                 .setDelivered(false)
                 .setCustomerId(savedCustomer.getCustomerid())
