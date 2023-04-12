@@ -8,14 +8,31 @@ import org.springframework.stereotype.Service;
 
 public class ShipmentRunnable implements Runnable{
 
-    public Shipment shipment;
+    private Shipment shipment;
 
-    public ShipmentService shipmentService;
+    private ShipmentService shipmentService;
 
     public ShipmentRunnable(Shipment shipment, ShipmentService shipmentService) {
         this.shipment = shipment;
         this.shipmentService = shipmentService;
     }
+
+    public Shipment getShipment() {
+        return shipment;
+    }
+
+    public void setShipment(Shipment shipment) {
+        this.shipment = shipment;
+    }
+
+    public ShipmentService getShipmentService() {
+        return shipmentService;
+    }
+
+    public void setShipmentService(ShipmentService shipmentService) {
+        this.shipmentService = shipmentService;
+    }
+
     /**
      * Simulates the lifecycle of a shipment, where it simulates traveling through different checkpoints
      * to the final terminal. The time is relative to real time.
@@ -38,6 +55,7 @@ public class ShipmentRunnable implements Runnable{
         this.shipmentService.updateCheckpointsOnParcels(shipment, new Checkpoint(shipmentService.findFinalTerminalToShipment(shipment).getAddress(), Checkpoint.CheckpointType.LoadedOnCar));
 
         this.shipmentService.updateCheckpointsOnParcels(shipment, new Checkpoint(shipmentService.findFinalTerminalToShipment(shipment).getAddress(), Checkpoint.CheckpointType.UnderDelivery));
+
 
 
 

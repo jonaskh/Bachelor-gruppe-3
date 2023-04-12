@@ -1,9 +1,7 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
-import com.github.javafaker.Faker;
 import jakarta.persistence.*;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -11,10 +9,6 @@ import java.util.*;
 @Entity
 public class Shipment {
 
-    //how to display the date
-    private static final SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    private static Faker faker = new Faker(new Locale("nb-NO"));
 
     private static Long counter = 1L;
 
@@ -23,27 +17,28 @@ public class Shipment {
     @Id
     private Long shipment_id;
 
-    @JoinColumn(name = "customer_id")
-    private Long sender;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender_id")
+    private Customer sender;
 
-    @JoinColumn(name = "customer_id")
-    private Long receiver;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "receiver_id")
+    private Customer receiver;
 
-    @JoinColumn(name = "customer_id")
-    private Long payer;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payer_id")
+    private Customer payer;
 
-    @OneToOne
-    @JoinColumn(name = "terminal_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "start_terminal_id")
     private Terminal firstTerminal;
 
-    @OneToOne
-    @JoinColumn(name = "terminal_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "end_terminal_id")
     private Terminal finalTerminal;
 
     private boolean delivered;
 
-    @JoinColumn(name = "customer_id")
-    private Long payer_id;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "parcel_id")
@@ -70,15 +65,15 @@ public class Shipment {
         this.shipment_id = counter++;
         this.timeCreated = LocalDateTime.now();
         this.expectedDeliveryDate = LocalDateTime.now().plusSeconds(10); //sets expected delivery date 10s from creation
-        this.sender = sender.getCustomerID();
-        this.payer = payer.getCustomerID();
-        this.receiver = receiver.getCustomerID();
+        this.sender = sender;
+        this.payer = payer;
+        this.receiver = receiver;
     }
 
     public Shipment(Customer sender, Customer payer, String receiver_address, String receiver_zip, String receiver_name) {
         this.shipment_id = counter++;
-        this.sender = sender.getCustomerID();
-        this.payer = payer.getCustomerID();
+        this.sender = sender;
+        this.payer = payer;
 
     }
 
@@ -89,27 +84,27 @@ public class Shipment {
     //TODO: Set terminals based on zip codes
 
 
-    public Long getSender() {
+    public Customer getSender() {
         return sender;
     }
 
-    public void setSender(Long sender) {
+    public void setSender(Customer sender) {
         this.sender = sender;
     }
 
-    public Long getReceiver() {
+    public Customer getReceiver() {
         return receiver;
     }
 
-    public void setReceiver(Long receiver) {
+    public void setReceiver(Customer receiver) {
         this.receiver = receiver;
     }
 
-    public Long getPayer() {
+    public Customer getPayer() {
         return payer;
     }
 
-    public void setPayer(Long payer) {
+    public void setPayer(Customer payer) {
         this.payer = payer;
     }
 
@@ -125,14 +120,6 @@ public class Shipment {
         this.delivered = delivered;
     }
 
-    public Long getPayer_id() {
-        return payer_id;
-    }
-
-    public void setPayer_id(Long payer_id) {
-        this.payer_id = payer_id;
-    }
-
     public List<Parcel> getParcels() {
         return parcels;
     }
@@ -141,8 +128,14 @@ public class Shipment {
         this.parcels = parcels;
     }
 
-    public void setShipment_id(Long shipment_id_id) {
-        this.shipment_id = shipment_id;
+    public Long getSenderID() {
+        return this.sender.getCustomerID();
+    }
+    public Long getReceiverID() {
+        return this.receiver.getCustomerID();
+    }
+    public Long getPayerID() {
+        return this.payer.getCustomerID();
     }
 
     public void addParcel(Parcel parcel) {

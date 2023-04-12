@@ -17,7 +17,7 @@ public class Terminal {
 
 
     //list of shipments for a period of time. Stored in a queue for first in first out.
-    @ManyToMany
+    @OneToMany
     @JoinTable(name = "shipment_id")
     private Queue<Shipment> shipments_passed;
 

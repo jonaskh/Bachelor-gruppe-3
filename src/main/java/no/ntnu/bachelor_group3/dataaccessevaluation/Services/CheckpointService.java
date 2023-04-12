@@ -14,7 +14,6 @@ public class CheckpointService {
     @Autowired
     private CheckpointRepository checkpointRepository;
 
-    private CustomerService
 
     public Optional<Checkpoint> getCurrent() {
         return checkpointRepository.findLastEntryInCheckpoint();

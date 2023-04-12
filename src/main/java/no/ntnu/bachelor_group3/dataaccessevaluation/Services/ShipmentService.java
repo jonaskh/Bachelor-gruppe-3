@@ -42,6 +42,13 @@ public class ShipmentService{
     //saves a shipment to the repository, and thus the database
     public Shipment add(Shipment shipment) {
         if (shipmentRepository.findById(shipment.getShipment_id()).isEmpty()) {
+            if (customerRepository.findById(findByID(shipment.getShipment_id()).getSenderID()).isEmpty()) {
+                customerRepository.save(shipment.getSender());
+            }
+            if (customerRepository.findById(findByID(shipment.getShipment_id()).getReceiverID()).isEmpty()) {
+                customerRepository.save(shipment.getReceiver());
+            }
+
             addParcels(shipment);
             //TODO: EVALUATE
             shipmentRepository.save(shipment);
@@ -51,7 +58,7 @@ public class ShipmentService{
 
     //add a random number of parcels to the shipment
     //TODO: Right now it crashes if you add more than 2 parcels.
-    public Shipment addParcels(Shipment shipment) {
+    public void addParcels(Shipment shipment) {
 
             Random random = new Random();
             int bound = random.nextInt(5) + 1; //generate random number of parcels added, always add 1 to avoid zero values
@@ -66,13 +73,12 @@ public class ShipmentService{
             }
 
             System.out.println("Added " + bound + " parcels to shipment");
-            return shipment;
         }
 
 
     //for testing
     public String printShipmentInfo(Shipment shipment) {
-        if (!shipmentRepository.findById(shipment.getShipment_id()).isPresent()) {
+        if (shipmentRepository.findById(shipment.getShipment_id()).isEmpty()) {
 
             return shipmentRepository.findById(shipment.getShipment_id()).get().toString();
 
@@ -86,11 +92,13 @@ public class ShipmentService{
             for (Parcel parcel : shipment.getParcels()) {
                 parcel.setLastCheckpoint(checkpoint);
                 checkpointService.addCheckpoint(checkpoint);
+                System.out.println("Last checkpoint is now : " + parcel.getLastCheckpoint());
             }
         } else {
             System.out.println("No parcels in shipment, couldn't update checkpoint");
         }
         try {
+            System.out.println("Shipment is now being transported to next checkpoint...");
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -98,31 +106,40 @@ public class ShipmentService{
     }
 
     public String getShipmentSenderAddress(Shipment shipment) {
-        Optional<Customer> customerOpt = customerRepository.findById(shipmentRepository.findById(shipment.getShipment_id()).get().getSender());
-        if (customerOpt.isPresent()) {
-            return customerOpt.get().getAddress();
+        if (shipmentRepository.findById(shipment.getShipment_id()).isPresent()) {
+            Optional<Customer> customerOpt = customerRepository.findById(shipmentRepository.findById(shipment.getShipment_id()).get().getSender().getCustomerID());
+            if (customerOpt.isPresent()) {
+                return customerOpt.get().getAddress();
+            } else {
+                return "Could not find address";
+            }
         } else {
-            return "Could not find sender address";
+            return "Could not find shipment";
         }
     }
 
+
     public String getShipmentReceiverAddress(Shipment shipment) {
-        Optional<Customer> customerOpt = customerRepository.findById(shipmentRepository.findById(shipment.getShipment_id()).get().getReceiver());
-        if (customerOpt.isPresent()) {
-            return customerOpt.get().getAddress();
+        if (shipmentRepository.findById(shipment.getShipment_id()).isPresent()) {
+            Optional<Customer> customerOpt = customerRepository.findById(shipmentRepository.findById(shipment.getShipment_id()).get().getReceiver().getCustomerID());
+            if (customerOpt.isPresent()) {
+                return customerOpt.get().getAddress();
+            } else {
+                return "Could not find receiver address";
+            }
         } else {
-            return "Could not find receiver address";
+            return "could not find shipment";
         }
     }
 
     //returns the terminal connected to zip code of the shipments sender
     public Terminal findFirstTerminalToShipment(Shipment shipment) {
-        return terminalService.returnTerminalFromZip(customerRepository.findById(shipmentRepository.findById(shipment.getShipment_id()).get().getSender()).get().getZip_code());
+        return terminalService.returnTerminalFromZip(customerRepository.findById(shipmentRepository.findById(shipment.getShipment_id()).get().getSenderID()).get().getZip_code());
     }
 
     //returns the terminal connected to zip code of the shipments receiver
     public Terminal findFinalTerminalToShipment(Shipment shipment) {
-        return terminalService.returnTerminalFromZip(customerRepository.findById(shipmentRepository.findById(shipment.getShipment_id()).get().getReceiver()).get().getZip_code());
+        return terminalService.returnTerminalFromZip(customerRepository.findById(shipmentRepository.findById(shipment.getShipment_id()).get().getReceiverID()).get().getZip_code());
     }
 
 
