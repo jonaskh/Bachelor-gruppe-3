@@ -16,7 +16,7 @@ public interface CheckpointService {
 
     List<Checkpoint> getAll();
 
-    Checkpoint getOne(int id);
+    Checkpoint getOne(long id);
 
-    void deleteById(int id);
+    void deleteById(long id);
 }

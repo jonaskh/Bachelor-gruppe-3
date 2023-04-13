@@ -38,7 +38,7 @@ public class ShipmentServiceImpl implements ShipmentService {
 
 
     @Override
-    public Shipment getOne(int id) {
+    public Shipment getOne(long id) {
         Shipment shipment = shipmentDao.findById(id);
         if(shipment == null){
             throw new NoSuchElementException(MessageFormat.format("Shipment id {0} not found", String.valueOf(id)));
@@ -47,7 +47,7 @@ public class ShipmentServiceImpl implements ShipmentService {
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(long id) {
         shipmentDao.deleteById(id);
     }
 }

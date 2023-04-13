@@ -17,7 +17,7 @@ public interface ShipmentService {
 
     List<Shipment> getAll();
 
-    Shipment getOne(int id);
+    Shipment getOne(long id);
 
-    void deleteById(int id);
+    void deleteById(long id);
 }

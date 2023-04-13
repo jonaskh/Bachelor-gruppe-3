@@ -1,28 +1,61 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Check;
 
-//TODO: ADD CONNECTION TO OTHER TABLES
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+
 @Entity
 @Table(name = "parcel")
 public class Parcel {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int parcel_id;
+    private static Long counter = 1L;
 
-    private int weight;
+    @Id
+    private Long parcel_id;
+
+    private double weight;
+
+    @OneToOne
+    private Checkpoint lastCheckpoint;
 
     //price is evaluated with weight times a constant
     private int weight_class;
 
-    public int getWeight() {
+
+
+    @JoinColumn(name = "checkpoint_id")
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Checkpoint> checkpoints = new ArrayList<>();
+
+
+//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinColumn(name = "shipment_id")
+//    private Shipment shipment_placed_in; //which shipment the parcel belongs to
+
+
+    public Parcel() {
+    }
+
+    public Parcel(double weight) {
+//        this.shipment_placed_in = shipment;
+        this.parcel_id = counter++;
+        this.weight = weight;
+    }
+
+    public double getWeight() {
         return weight;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Shipment order_placed_in; //which order the parcel belongs to
+
+
+    public Long getParcel_id() {
+        return this.parcel_id;
+    }
 
     //assigns a weight class depending on weight. Used at checkpoints to estimate cost.
     public void setWeight_class() {
@@ -41,5 +74,31 @@ public class Parcel {
         }
     }
 
+    //TODO: for each loop to generate cost through each checkpoint
 
+    public double generateCostForEachParcelBasedOnCheckpoints() {
+        double cost = 0;
+        for (Checkpoint checkpoint : checkpoints) {
+            cost += checkpoint.getCost() * this.weight;
+        }
+        return cost;
+    }
+
+    public void setLastCheckpoint(Checkpoint checkpoint) {
+        this.lastCheckpoint = checkpoint;
+    }
+
+
+    public Checkpoint getLastCheckpoint() {
+        return lastCheckpoint;
+    }
+
+    @Override
+    public String toString() {
+        return "Parcel{" +
+                "parcel_id=" + parcel_id +
+                ", weight=" + weight +
+                ", lastCheckpoint=" + lastCheckpoint +
+                '}';
+    }
 }

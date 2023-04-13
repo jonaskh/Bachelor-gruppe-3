@@ -37,8 +37,8 @@ public class TerminalServiceImpl implements TerminalService {
 
 
     @Override
-    public Terminal getOne(int id) {
-        Terminal terminal = terminalDao.findById(id);
+    public Terminal getOne(long id) {
+        Terminal terminal = terminalDao.findById((int) id);
         if(terminal == null){
             throw new NoSuchElementException(MessageFormat.format("Terminal id {0} not found", String.valueOf(id)));
         }
@@ -46,8 +46,8 @@ public class TerminalServiceImpl implements TerminalService {
     }
 
         @Override
-    public void deleteById(int id) {
-        terminalDao.deleteById(id);
+    public void deleteById(long id) {
+        terminalDao.deleteById((int) id);
         }
     }
 

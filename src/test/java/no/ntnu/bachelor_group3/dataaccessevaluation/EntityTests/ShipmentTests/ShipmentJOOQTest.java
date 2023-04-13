@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,26 +41,25 @@ public class ShipmentJOOQTest {
 
     @Test
     public void testCreateShipment() {
-        Customer customer = new Customer()
-                .setAddress("Oslo")
-                .setName("Stian")
-                .setZipCode("2008");
-        CustomerService service = new CustomerServiceImpl(new CustomerDao(dslContext.configuration()));
-        Customer savedCustomer = service.create(customer);
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime expectedDeliveryDate = LocalDateTime.now().plusDays(7);
+
+
 
         Shipment shipment = new Shipment()
                 .setDelivered(false)
-                .setCustomerId(savedCustomer.getCustomerid())
-                .setPayerId(savedCustomer.getCustomerid())
-                .setReceivingZip("7050")
-                .setReceivingAddress("Trondheim")
-                .setReceiverName("Daniel")
-                .setSenderId(savedCustomer.getCustomerid());
+                .setPayerId(10203009L)
+                .setReceiverId(2323L)
+                .setSenderId(62030203L)
+                .setTimeCreated(now)
+                .setEndTerminalId(2)
+                .setExpectedDeliveryDate(expectedDeliveryDate)
+                .setStartTerminalId(1);
         ShipmentService shipmentService = new ShipmentServiceImpl(new ShipmentDao(dslContext.configuration()));
         Shipment savedShipment = shipmentService.create(shipment);
 
 
-        assertNotNull(savedShipment.getOrderId());
+        assertNotNull(savedShipment.getShipmentId());
     }
 
 }

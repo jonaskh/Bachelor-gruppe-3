@@ -39,11 +39,12 @@ public class CustomerJOOQTest {
     @Test
     public void testCreateCustomer() {
         Customer Customer = new Customer()
-                .setAddress("Stavanger")
+                .setAddress("Oslo")
                 .setName("Frank")
-                .setZipCode("3009");
+                .setZipCode("3009")
+                .setTerminalId(1);
         CustomerService service = new CustomerServiceImpl(new CustomerDao(dslContext.configuration()));
         Customer savedCustomer = service.create(Customer);
-        assertNotNull(savedCustomer.getCustomerid());
+        assertNotNull(savedCustomer.getCustomerId());
     }
 }

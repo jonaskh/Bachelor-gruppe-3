@@ -16,7 +16,7 @@ public interface TerminalService {
 
     List<Terminal> getAll();
 
-     Terminal getOne(int id);
+     Terminal getOne(long id);
 
-    void deleteById(int id);
+    void deleteById(long id);
 }

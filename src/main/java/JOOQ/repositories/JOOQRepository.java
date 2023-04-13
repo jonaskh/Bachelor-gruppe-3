@@ -7,11 +7,11 @@ public interface JOOQRepository<T> {
 
     T save(T tablePojo);
 
-    T update(T tablePojo, int id);
+    T update(T tablePojo, long id);
 
     List<T> findAll();
 
-    Optional<T> findById(int id);
+    Optional<T> findById(long id);
 
-    boolean deleteById(int id);
+    boolean deleteById(long id);
 }

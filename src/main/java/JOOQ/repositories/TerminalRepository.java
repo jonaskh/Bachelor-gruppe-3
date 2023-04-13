@@ -23,7 +23,7 @@ public class TerminalRepository implements JOOQRepository<Terminal>{
 
     @Override
     public Terminal save(Terminal terminal){
-        TerminalRecord terminalRecord = (TerminalRecord) dslContext.insertInto(TERMINAL)
+        TerminalRecord terminalRecord = dslContext.insertInto(TERMINAL)
                 .set(TERMINAL.ADDRESS, terminal.getAddress())
                 .returning(TERMINAL.TERMINAL_ID).fetchOne();
 
@@ -36,10 +36,10 @@ public class TerminalRepository implements JOOQRepository<Terminal>{
     }
 
     @Override
-    public Terminal update(Terminal terminal, int id) {
+    public Terminal update(Terminal terminal, long id) {
         TerminalRecord terminalRecord = (TerminalRecord) dslContext.update(TERMINAL)
                 .set(TERMINAL.ADDRESS, terminal.getAddress())
-                .where(TERMINAL.TERMINAL_ID.eq(id));
+                .where(TERMINAL.TERMINAL_ID.eq((int) id));
 
         return (terminalRecord != null)  ? terminal : null;
 
@@ -53,14 +53,14 @@ public class TerminalRepository implements JOOQRepository<Terminal>{
     }
 
     @Override
-    public Optional<Terminal> findById(int id) {
-        Terminal terminal = dslContext.selectFrom(TERMINAL).where(TERMINAL.TERMINAL_ID.eq(id)).fetchOneInto(Terminal.class);
+    public Optional<Terminal> findById(long id) {
+        Terminal terminal = dslContext.selectFrom(TERMINAL).where(TERMINAL.TERMINAL_ID.eq((int) id)).fetchOneInto(Terminal.class);
         return (ObjectUtils.isEmpty(terminal)) ? Optional.empty() : Optional.of(terminal);
     }
 
-    public boolean deleteById(int id) {
+    public boolean deleteById(long id) {
         return dslContext.delete(TERMINAL)
-                .where(TERMINAL.TERMINAL_ID.eq(id))
+                .where(TERMINAL.TERMINAL_ID.eq((int) id))
                 .execute() == 1;
     }
 

@@ -37,7 +37,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     @Override
-    public Customer getOne(int id) {
+    public Customer getOne(long id) {
         Customer Customer = CustomerDao.findById(id);
         if(Customer == null){
             throw new NoSuchElementException(MessageFormat.format("Customer id {0} not found", String.valueOf(id)));
@@ -46,7 +46,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(long id) {
         CustomerDao.deleteById(id);
     }
 }

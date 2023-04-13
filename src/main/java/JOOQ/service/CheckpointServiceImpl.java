@@ -37,7 +37,7 @@ public class CheckpointServiceImpl implements CheckpointService {
 
 
     @Override
-    public Checkpoint getOne(int id) {
+    public Checkpoint getOne(long id) {
         Checkpoint Checkpoint = CheckpointDao.findById(id);
         if(Checkpoint == null){
             throw new NoSuchElementException(MessageFormat.format("Checkpoint id {0} not found", String.valueOf(id)));
@@ -46,7 +46,7 @@ public class CheckpointServiceImpl implements CheckpointService {
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(long id) {
         CheckpointDao.deleteById(id);
     }
 }

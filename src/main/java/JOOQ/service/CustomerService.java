@@ -17,7 +17,7 @@ public interface CustomerService {
 
     List<Customer> getAll();
 
-    Customer getOne(int id);
+    Customer getOne(long id);
 
-    void deleteById(int id);
+    void deleteById(long id);
 }

@@ -1,4 +1,14 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Repositories;
 
-public class ParcelRepository {
+import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Parcel;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface ParcelRepository extends CrudRepository<Parcel, Long> {
+
+    Optional<Parcel> findById(Long id);
 }

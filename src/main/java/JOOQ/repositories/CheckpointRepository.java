@@ -25,7 +25,6 @@ public class CheckpointRepository implements JOOQRepository<Checkpoint>{
     public Checkpoint save(Checkpoint Checkpoint){
         CheckpointRecord CheckpointRecord = (CheckpointRecord) dslContext.insertInto(CHECKPOINT)
                 .set(CHECKPOINT.COST, Checkpoint.getCost())
-                .set(CHECKPOINT.LOCATION, Checkpoint.getLocation())
                 .set(CHECKPOINT.TIME, Checkpoint.getTime())
                 .set(CHECKPOINT.TYPE, Checkpoint.getType())
                 .set(CHECKPOINT.TERMINAL_ID, Checkpoint.getTerminalId())
@@ -40,10 +39,9 @@ public class CheckpointRepository implements JOOQRepository<Checkpoint>{
     }
 
     @Override
-    public Checkpoint update(Checkpoint Checkpoint, int id) {
+    public Checkpoint update(Checkpoint Checkpoint, long id) {
         CheckpointRecord CheckpointRecord = (CheckpointRecord) dslContext.update(CHECKPOINT)
                 .set(CHECKPOINT.COST, Checkpoint.getCost())
-                .set(CHECKPOINT.LOCATION, Checkpoint.getLocation())
                 .set(CHECKPOINT.TIME, Checkpoint.getTime())
                 .set(CHECKPOINT.TYPE, Checkpoint.getType())
                 .set(CHECKPOINT.TERMINAL_ID, Checkpoint.getTerminalId())
@@ -61,12 +59,12 @@ public class CheckpointRepository implements JOOQRepository<Checkpoint>{
     }
 
     @Override
-    public Optional<Checkpoint> findById(int id) {
+    public Optional<Checkpoint> findById(long id) {
         Checkpoint Checkpoint = dslContext.selectFrom(CHECKPOINT).where(CHECKPOINT.CHECKPOINT_ID.eq(id)).fetchOneInto(Checkpoint.class);
         return (ObjectUtils.isEmpty(Checkpoint)) ? Optional.empty() : Optional.of(Checkpoint);
     }
 
-    public boolean deleteById(int id) {
+    public boolean deleteById(long id) {
         return dslContext.delete(CHECKPOINT)
                 .where(CHECKPOINT.CHECKPOINT_ID.eq(id))
                 .execute() == 1;

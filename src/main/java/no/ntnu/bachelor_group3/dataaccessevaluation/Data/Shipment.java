@@ -2,75 +2,149 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-
+import java.time.LocalDateTime;
+import java.util.*;
 
 
 @Entity
 public class Shipment {
 
-    //static variable that is incremented each time a new shipment is created to provide a unique id.
-    private static int counter = 1;
+
+    private static Long counter = 1L;
+
+
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int order_id;
+    private Long shipment_id;
 
-    // foreign key to sending customer id so can link to zip code for receiving terminal
-    private int sender_id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender_id")
+    private Customer sender;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "receiver_id")
+    private Customer receiver;
 
-    @JoinColumn(name = "customer_id")
-    private int customer_id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payer_id")
+    private Customer payer;
 
-    private String receiving_address;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "start_terminal_id")
+    private Terminal firstTerminal;
 
-    private String receiving_zip;
-
-    private String receiver_name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "end_terminal_id")
+    private Terminal finalTerminal;
 
     private boolean delivered;
 
-    @JoinColumn(name = "customer_id")
-    private int payer_id;
 
-    @JoinColumn(name = "checkpoint_id")
-    @OneToOne
-    private Checkpoint current_checkpoint; //current checkpoint so customer can see where order is
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "parcel_id")
+    private List<Parcel> parcels = new ArrayList<>();
 
-    @JoinColumn(name = "checkpoint_id")
-    @OneToMany
-    private ArrayList<Checkpoint> total_checkpoints; //total checkpoints, estimate cost from each.
+    private LocalDateTime timeCreated;
+
+    private LocalDateTime expectedDeliveryDate;
 
 
+
+    // if customer is both sender and receiver
     public Shipment() {
+        this.shipment_id = counter++;
+    }
+
+    // if receiver is another customer than the one making the shipment
+    public Shipment(Long customer_id) {
+        this.shipment_id = counter++;
+    }
+
+    // if receiver is not an existing customer
+    public Shipment(Customer sender, Customer payer, Customer receiver) {
+        this.shipment_id = counter++;
+        this.timeCreated = LocalDateTime.now();
+        this.expectedDeliveryDate = LocalDateTime.now().plusSeconds(10); //sets expected delivery date 10s from creation
+        this.sender = sender;
+        this.payer = payer;
+        this.receiver = receiver;
+    }
+
+    public Shipment(Customer sender, Customer payer, String receiver_address, String receiver_zip, String receiver_name) {
+        this.shipment_id = counter++;
+        this.sender = sender;
+        this.payer = payer;
 
     }
 
-    public Shipment(int sender_id, String receiving_address,
-                    String receiving_zip, String receiver_name, int payer_id) {
-        this.order_id = counter++;
-        this.sender_id = sender_id;
-        this.receiving_address = receiving_address;
-        this.receiving_zip = receiving_zip;
-        this.receiver_name = receiver_name;
-
-    }
 
     //TODO: add total cost => weight * checkpoint cost
 
-    @OneToMany
-    @JoinColumn(name = "parcel_id")
-    private ArrayList<Parcel> parcels;
 
-    public void addparcel(Parcel parcel) {
-        parcels.add(parcel);
+    //TODO: Set terminals based on zip codes
+
+
+    public Customer getSender() {
+        return sender;
+    }
+
+    public void setSender(Customer sender) {
+        this.sender = sender;
+    }
+
+    public Customer getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(Customer receiver) {
+        this.receiver = receiver;
+    }
+
+    public Customer getPayer() {
+        return payer;
+    }
+
+    public void setPayer(Customer payer) {
+        this.payer = payer;
+    }
+
+    public Long getShipment_id() {
+        return shipment_id;
+    }
+
+    public boolean isDelivered() {
+        return delivered;
+    }
+
+    public void setDelivered(boolean delivered) {
+        this.delivered = delivered;
+    }
+
+    public List<Parcel> getParcels() {
+        return parcels;
+    }
+
+    public void setParcels(ArrayList<Parcel> parcels) {
+        this.parcels = parcels;
+    }
+
+    public Long getSenderID() {
+        return this.sender.getCustomerID();
+    }
+    public Long getReceiverID() {
+        return this.receiver.getCustomerID();
+    }
+    public Long getPayerID() {
+        return this.payer.getCustomerID();
+    }
+
+    public void addParcel(Parcel parcel) {
+
+        this.parcels.add(parcel);
     }
 
     public void setDelivered() {
-
     }
-
 
 
     public int getTotalWeight() {
@@ -81,4 +155,27 @@ public class Shipment {
         return total_weight;
     }
 
+    //for testing
+    public String printParcels() {
+        if (parcels.isEmpty()) {
+            System.out.println("Could not find any parcels");
+        } else {
+            for (Parcel parcel : parcels) {
+                System.out.println(parcel.toString());
+            }
+        }
+        return "Number of parcels: " +parcels.size();
+    }
+
+
+    @Override
+    public String toString() {
+        return "Shipment{" +
+                "shipment_id=" + shipment_id +
+                ", sender_id='" + sender + '\'' +
+                ", receiver_zip='" + receiver + '\'' +
+                "nr of parcels: " + parcels.size() +
+                ", expected delivery: " + expectedDeliveryDate +
+                '}';
+    }
 }

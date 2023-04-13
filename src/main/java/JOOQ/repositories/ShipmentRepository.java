@@ -23,37 +23,37 @@ public class ShipmentRepository implements JOOQRepository<Shipment>{
 
     @Override
     public Shipment save(Shipment shipment){
-        ShipmentRecord shipmentRecord = (ShipmentRecord) dslContext.insertInto(SHIPMENT)
-                .set(SHIPMENT.CUSTOMER_ID, shipment.getCustomerId())
+        ShipmentRecord shipmentRecord = dslContext.insertInto(SHIPMENT)
                 .set(SHIPMENT.DELIVERED, shipment.getDelivered())
+                .set(SHIPMENT.EXPECTED_DELIVERY_DATE, shipment.getExpectedDeliveryDate())
+                .set(SHIPMENT.TIME_CREATED, shipment.getTimeCreated())
+                .set(SHIPMENT.END_TERMINAL_ID, shipment.getEndTerminalId())
+                .set(SHIPMENT.START_TERMINAL_ID, shipment.getStartTerminalId())
                 .set(SHIPMENT.PAYER_ID, shipment.getPayerId())
-                .set(SHIPMENT.RECEIVER_NAME, shipment.getReceiverName())
-                .set(SHIPMENT.RECEIVING_ADDRESS, shipment.getReceivingAddress())
-                .set(SHIPMENT.RECEIVING_ZIP, shipment.getReceivingZip())
+                .set(SHIPMENT.RECEIVER_ID, shipment.getReceiverId())
                 .set(SHIPMENT.SENDER_ID, shipment.getSenderId())
-                .set(SHIPMENT.CHECKPOINT_ID, shipment.getCheckpointId())
-                .returning(SHIPMENT.ORDER_ID).fetchOne();
+                .returning(SHIPMENT.SHIPMENT_ID).fetchOne();
 
 
         if (shipmentRecord != null) {
-            shipment.setOrderId(shipmentRecord.getOrderId());
+            shipment.setShipmentId(shipmentRecord.getShipmentId());
             return shipment;
         }
         return null;
     }
 
     @Override
-    public Shipment update(Shipment shipment, int id) {
+    public Shipment update(Shipment shipment, long id) {
         ShipmentRecord shipmentRecord = (ShipmentRecord) dslContext.update(SHIPMENT)
-                .set(SHIPMENT.CUSTOMER_ID, shipment.getCustomerId())
                 .set(SHIPMENT.DELIVERED, shipment.getDelivered())
+                .set(SHIPMENT.EXPECTED_DELIVERY_DATE, shipment.getExpectedDeliveryDate())
+                .set(SHIPMENT.TIME_CREATED, shipment.getTimeCreated())
+                .set(SHIPMENT.END_TERMINAL_ID, shipment.getEndTerminalId())
+                .set(SHIPMENT.START_TERMINAL_ID, shipment.getStartTerminalId())
                 .set(SHIPMENT.PAYER_ID, shipment.getPayerId())
-                .set(SHIPMENT.RECEIVER_NAME, shipment.getReceiverName())
-                .set(SHIPMENT.RECEIVING_ADDRESS, shipment.getReceivingAddress())
-                .set(SHIPMENT.RECEIVING_ZIP, shipment.getReceivingZip())
+                .set(SHIPMENT.RECEIVER_ID, shipment.getReceiverId())
                 .set(SHIPMENT.SENDER_ID, shipment.getSenderId())
-                .set(SHIPMENT.CHECKPOINT_ID, shipment.getCheckpointId())
-                .where(SHIPMENT.ORDER_ID.eq(id));
+                .where(SHIPMENT.SHIPMENT_ID.eq(id));
 
         return (shipmentRecord != null)  ? shipment : null;
 
@@ -67,14 +67,14 @@ public class ShipmentRepository implements JOOQRepository<Shipment>{
     }
 
     @Override
-    public Optional<Shipment> findById(int id) {
-        Shipment shipment = dslContext.selectFrom(SHIPMENT).where(SHIPMENT.ORDER_ID.eq(id)).fetchOneInto(Shipment.class);
+    public Optional<Shipment> findById(long id) {
+        Shipment shipment = dslContext.selectFrom(SHIPMENT).where(SHIPMENT.SHIPMENT_ID.eq(id)).fetchOneInto(Shipment.class);
         return (ObjectUtils.isEmpty(shipment)) ? Optional.empty() : Optional.of(shipment);
     }
 
-    public boolean deleteById(int id) {
+    public boolean deleteById(long id) {
         return dslContext.delete(SHIPMENT)
-                .where(SHIPMENT.ORDER_ID.eq(id))
+                .where(SHIPMENT.SHIPMENT_ID.eq(id))
                 .execute() == 1;
     }
 

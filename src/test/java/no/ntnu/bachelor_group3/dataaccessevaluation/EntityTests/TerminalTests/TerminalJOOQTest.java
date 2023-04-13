@@ -36,11 +36,11 @@ public class TerminalJOOQTest {
     @Test
     public void testCreateTerminal() {
         Terminal terminal = new Terminal()
-                .setAddress("Trondheim");
+                .setAddress("Oslo");
         TerminalService service = new TerminalServiceImpl(new TerminalDao(dslContext.configuration()));
         Terminal savedTerminal = service.create(terminal);
         assertNotNull(savedTerminal.getTerminalId());
-        assertEquals("Trondheim", savedTerminal.getAddress());
+        assertEquals("Oslo", savedTerminal.getAddress());
     }
 }
 

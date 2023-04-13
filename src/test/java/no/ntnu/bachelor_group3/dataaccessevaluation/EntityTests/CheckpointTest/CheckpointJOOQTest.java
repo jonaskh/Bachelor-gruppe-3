@@ -44,14 +44,14 @@ public class CheckpointJOOQTest {
 
         LocalDateTime now = LocalDateTime.now();
         Checkpoint Checkpoint = new Checkpoint()
-                .setCost(100)
-                .setLocation("Trondheim")
+                .setCost(100.0)
                 .setTime(now)
+                .setType((short) 1)
                 .setTerminalId(1);
         CheckpointService service = new CheckpointServiceImpl(new CheckpointDao(dslContext.configuration()));
         Checkpoint savedCheckpoint = service.create(Checkpoint);
         assertNotNull(savedCheckpoint.getCheckpointId());
-        assertEquals("Trondheim", savedCheckpoint.getLocation());
+        assertEquals(100.0, savedCheckpoint.getCost());
     }
 
 }
