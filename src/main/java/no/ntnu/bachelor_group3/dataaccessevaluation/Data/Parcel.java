@@ -24,7 +24,7 @@ public class Parcel {
 
 
 
-    @JoinColumn(name = "checkpoint_id")
+    @JoinColumn(name = "fk_parcel")
     @OneToMany
     private ArrayList<Checkpoint> checkpoints;
 

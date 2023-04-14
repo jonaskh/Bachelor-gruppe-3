@@ -13,7 +13,7 @@ public class SetCheckpointOnParcel {
 
             Parcel parcel = db.getParcelById(1L);
 
-            Checkpoint checkpoint = new Checkpoint(0L, 10, "Bøgata 6008", new Date());
+            Checkpoint checkpoint = new Checkpoint(0L, 10, "Bøgata 6008", new Date(), parcel);
 
             db.setCheckpointOnParcel(parcel, checkpoint);
             db.commit();

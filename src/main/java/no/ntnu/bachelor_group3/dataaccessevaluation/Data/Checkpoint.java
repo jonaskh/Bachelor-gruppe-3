@@ -16,6 +16,9 @@ public class Checkpoint {
 
     enum CheckpointType{Collected, ReceivedFirstTerminal,LoadedOnCar,ReceivedFinalTerminal,UnderDelivery,Delivered}
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_parcel")
+    private Parcel parcel;
 
 
     private CheckpointType type;

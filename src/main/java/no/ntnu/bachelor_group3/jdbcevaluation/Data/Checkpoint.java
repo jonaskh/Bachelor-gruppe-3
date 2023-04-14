@@ -10,11 +10,12 @@ public class Checkpoint {
     private Parcel parcel;
     private Terminal terminal;
 
-    public Checkpoint(Long id, double cost, String location, Date time) {
+    public Checkpoint(Long id, double cost, String location, Date time, Parcel parcel) {
         this.id = id;
         this.cost = cost;
         this.location = location;
         this.time = time;
+        this.parcel = parcel;
     }
 
     public Long getId() {

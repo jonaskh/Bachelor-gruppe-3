@@ -1,6 +1,7 @@
 package no.ntnu.bachelor_group3.jdbcevaluation.Services;
 
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Checkpoint;
+import no.ntnu.bachelor_group3.jdbcevaluation.Data.Parcel;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,13 +19,16 @@ public class CheckpointService {
 
     public CheckpointService() {}
 
-    public Checkpoint getCheckpointById(int checkpointId, Connection conn) throws SQLException {
+    public Checkpoint getCheckpointById(int checkpointId, ParcelService parcelService, ShipmentService shipmentService,
+                                        CustomerService customerService, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(GET_CHECKPOINT_BY_ID_QUERY);
         stmt.setInt(1, checkpointId);
         ResultSet rs = stmt.executeQuery();
+        Parcel parcel = parcelService.getParcelById(rs.getLong("fk_parcel"),
+                customerService, shipmentService, conn);
         if (rs.next()) {
             Checkpoint checkpoint = new Checkpoint(rs.getLong("checkpoint_id"), rs.getDouble("cost"),
-                    rs.getString("location"), rs.getTimestamp("time"));
+                    rs.getString("location"), rs.getTimestamp("time"), parcel);
             return checkpoint;
         }
         return null;
@@ -53,7 +57,6 @@ public class CheckpointService {
             stmt.setDouble(1, checkpoint.getCost());
             stmt.setString(2, checkpoint.getLocation());
             stmt.setTimestamp(3, new Timestamp(checkpoint.getTime().getTime()));
-            stmt.setLong(4, id);
             stmt.executeUpdate();
         }
     }
