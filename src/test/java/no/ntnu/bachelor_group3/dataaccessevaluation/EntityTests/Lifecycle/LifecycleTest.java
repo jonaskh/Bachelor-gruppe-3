@@ -34,6 +34,9 @@ public class LifecycleTest {
     @Autowired
     private CheckpointService checkpointService;
 
+    @Autowired
+    private ParcelService parcelService;
+
 
     public void createTerminals(){
 
@@ -58,10 +61,10 @@ public class LifecycleTest {
 
         Customer sender = new Customer("Myrteigen 5", "Jonas", "6300");
         Customer receiver = new Customer("NTNU", "Stian", "6008");
-        Shipment shipment = new Shipment(sender, receiver, sender);
+        Shipment shipment = new Shipment(sender, sender, receiver);
 
-        customerService.add(sender);
-        customerService.add(receiver);
+//        customerService.add(sender);
+//        customerService.add(receiver);
         shipmentService.add(shipment);
 
         Checkpoint checkpoint = new Checkpoint(sender.getAddress(), Checkpoint.CheckpointType.Collected);
@@ -73,29 +76,18 @@ public class LifecycleTest {
         shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), checkpoint);
         shipmentService.findByID(shipment.getShipment_id()).printParcels();
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+
+
 
         shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), checkpoint1);
         shipmentService.findByID(shipment.getShipment_id()).printParcels();
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+
 
         shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), checkpoint2);
         shipmentService.findByID(shipment.getShipment_id()).printParcels();
 
-        try {
-            Thread.sleep(5);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+
 
         shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), checkpoint3);
         shipmentService.findByID(shipment.getShipment_id()).printParcels();

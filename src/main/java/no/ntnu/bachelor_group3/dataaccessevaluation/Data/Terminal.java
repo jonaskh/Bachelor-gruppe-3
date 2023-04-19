@@ -3,6 +3,7 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 import jakarta.persistence.*;
 
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Entity
 @Table(name = "terminal")
@@ -15,11 +16,14 @@ public class Terminal {
 
     private String address;
 
+    @Version
+    private Long terminal_version = null;
+
 
     //list of shipments for a period of time. Stored in a queue for first in first out.
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "shipment_id")
-    private Queue<Shipment> shipments_passed;
+    private ConcurrentLinkedQueue<Shipment> shipments_passed;
 
     public Terminal() {
     }

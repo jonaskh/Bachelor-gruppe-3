@@ -1,11 +1,13 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.ParcelTests;
 
 
+import jakarta.transaction.Transactional;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Parcel;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.TestConfiguration;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.CustomerService;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ParcelService;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,23 +29,28 @@ public class CreateParcelTest {
     @Autowired
     CustomerService customerService;
 
+    @Autowired
+    ParcelService parcelService;
+
 
 
     @Test
+    @Transactional
     public void addParcelsToShipment() {
         Customer customer = new Customer();
-        Shipment shipment = new Shipment(customer, customer, customer);
+        Shipment shipment = new Shipment(new Customer(), new Customer(), new Customer());
 
+ //       customerService.add(customer);
         shipmentService.add(shipment);
-        customerService.add(customer);
+
 
 
         assertTrue(shipmentService.findByID(shipment.getShipment_id()) != null);
 
 
         if (shipmentService.findByID(shipment.getShipment_id()) != null) {
-            shipmentService.addParcels(shipment);
-            System.out.println(shipmentService.printShipmentInfo(shipment));
+            shipmentService.printShipmentInfo(shipment);
+            //System.out.println(parcelService.count());
         }
     }
 }

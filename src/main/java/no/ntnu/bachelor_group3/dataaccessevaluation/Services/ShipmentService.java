@@ -1,15 +1,16 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Services;
 
+import jakarta.transaction.Transactional;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.*;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.CustomerRepository;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.ShipmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionTemplate;
+
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
+
 
 @Service
 public class ShipmentService{
@@ -24,14 +25,18 @@ public class ShipmentService{
     private CheckpointService checkpointService;
 
     @Autowired
-    private CustomerRepository customerRepository;
+    private CustomerService customerService;
 
     @Autowired
     private TerminalService terminalService;
 
+    @Autowired
+    private TransactionTemplate transactionTemplate;
+
     public ShipmentService() {
 
     }
+
 
 
     public Shipment findByID(Long id) {
@@ -39,64 +44,79 @@ public class ShipmentService{
 
         return shipment.orElse(null);
     }
+
     //saves a shipment to the repository, and thus the database
-    public Shipment add(Shipment shipment) {
-        if (shipmentRepository.findById(shipment.getShipment_id()).isEmpty()) {
-            if (customerRepository.findById(findByID(shipment.getShipment_id()).getSenderID()).isEmpty()) {
-                customerRepository.save(shipment.getSender());
+    public void add(Shipment shipment) {
+        if (findByID(shipment.getShipment_id()) == null) {
+            if (customerService.findByID(shipment.getSenderID()).isEmpty()) {
+                customerService.add(shipment.getSender());
             }
-            if (customerRepository.findById(findByID(shipment.getShipment_id()).getReceiverID()).isEmpty()) {
-                customerRepository.save(shipment.getReceiver());
+            if (customerService.findByID(shipment.getReceiverID()).isEmpty()) {
+                customerService.add(shipment.getReceiver());
             }
 
-            addParcels(shipment);
-            //TODO: EVALUATE
             shipmentRepository.save(shipment);
+            System.out.println("Shipment: " + shipment.getShipment_id() + " has been added to the database");
+            saveParcelsToDatabaseFromShipment(shipment);
+
+            //TODO: EVALUATE
+
+        } else {
+            System.out.println("Shipment already exists in database");
+
         }
-        return shipment;
     }
 
-    //add a random number of parcels to the shipment
-    //TODO: Right now it crashes if you add more than 2 parcels.
-    public void addParcels(Shipment shipment) {
+    public long returnNrOfParcels(Shipment ship) {
+        return ship.getParcels().size();
+    }
 
-            Random random = new Random();
-            int bound = random.nextInt(5) + 1; //generate random number of parcels added, always add 1 to avoid zero values
-
-            System.out.println("Adding " + bound + " parcels to the shipment");
-            for (int i = 0; i < bound; i++) {
-                double weight = random.nextDouble(5) + 1;
-                Parcel parcel = new Parcel(weight);
-                shipment.addParcel(parcel);
-                //TODO: EVALUATION
-                parcelService.save(parcel);
-            }
-
-            System.out.println("Added " + bound + " parcels to shipment");
-        }
+    public void saveParcelsToDatabaseFromShipment(Shipment shipment) {
+        parcelService.saveAll(findByID(shipment.getShipment_id()).getParcels());
+    }
 
 
     //for testing
-    public String printShipmentInfo(Shipment shipment) {
-        if (shipmentRepository.findById(shipment.getShipment_id()).isEmpty()) {
+    public void printShipmentInfo(Shipment shipment) {
+        if (shipmentRepository.findById(shipment.getShipment_id()).isPresent()) {
+            if (customerService.findByID(shipment.getSenderID()).isPresent()) {
+                System.out.println("Shipment "+ shipment.getShipment_id() + " has sender as customer: " + findByID(shipment.getShipment_id()).getSenderID());
+            } else {
+                System.out.println("Shipment " + shipment.getShipment_id() + " has no sender in database");
+            }
+            if (customerService.findByID(shipment.getReceiverID()).isPresent()) {
+                System.out.println("Shipment "+ shipment.getShipment_id() + " has receiver as customer: " + findByID(shipment.getShipment_id()).getReceiverID());
+            } else {
+                System.out.println("Shipment " + shipment.getShipment_id() + " has no receiver in database");
+            }
 
-            return shipmentRepository.findById(shipment.getShipment_id()).get().toString();
-
-        } else {
-            return "No shipment found";
         }
     }
 
+    @Transactional
+    public void concurrentAdd(Shipment shipment) {
+        shipmentRepository.save(shipment);
+    }
+
+    /**
+     * Adds a checkpoint to all parcels in the shipment, with a 2s delay to simulate travel time
+     * @param shipment to add checkpoint to
+     * @param checkpoint which checkpoint to add
+     */
+
     public void updateCheckpointsOnParcels(Shipment shipment, Checkpoint checkpoint) {
-        if (!shipment.getParcels().isEmpty()) {
+        if (!findByID(shipment.getShipment_id()).getParcels().isEmpty()) {
             for (Parcel parcel : shipment.getParcels()) {
                 parcel.setLastCheckpoint(checkpoint);
                 checkpointService.addCheckpoint(checkpoint);
-                System.out.println("Last checkpoint is now : " + parcel.getLastCheckpoint());
+                System.out.println("Successfully updated checkpoint on parcel " + parcelService.findByID(
+                        parcel.getParcel_id()) + " to " + checkpoint);
             }
         } else {
             System.out.println("No parcels in shipment, couldn't update checkpoint");
         }
+
+
         try {
             System.out.println("Shipment is now being transported to next checkpoint...");
             Thread.sleep(2000);
@@ -107,7 +127,7 @@ public class ShipmentService{
 
     public String getShipmentSenderAddress(Shipment shipment) {
         if (shipmentRepository.findById(shipment.getShipment_id()).isPresent()) {
-            Optional<Customer> customerOpt = customerRepository.findById(shipmentRepository.findById(shipment.getShipment_id()).get().getSender().getCustomerID());
+            Optional<Customer> customerOpt = customerService.findByID(shipmentRepository.findById(shipment.getShipment_id()).get().getSender().getCustomerID());
             if (customerOpt.isPresent()) {
                 return customerOpt.get().getAddress();
             } else {
@@ -121,7 +141,7 @@ public class ShipmentService{
 
     public String getShipmentReceiverAddress(Shipment shipment) {
         if (shipmentRepository.findById(shipment.getShipment_id()).isPresent()) {
-            Optional<Customer> customerOpt = customerRepository.findById(shipmentRepository.findById(shipment.getShipment_id()).get().getReceiver().getCustomerID());
+            Optional<Customer> customerOpt = customerService.findByID(shipmentRepository.findById(shipment.getShipment_id()).get().getReceiver().getCustomerID());
             if (customerOpt.isPresent()) {
                 return customerOpt.get().getAddress();
             } else {
@@ -133,15 +153,18 @@ public class ShipmentService{
     }
 
     //returns the terminal connected to zip code of the shipments sender
+
     public Terminal findFirstTerminalToShipment(Shipment shipment) {
-        return terminalService.returnTerminalFromZip(customerRepository.findById(shipmentRepository.findById(shipment.getShipment_id()).get().getSenderID()).get().getZip_code());
+        return terminalService.returnTerminalFromZip(customerService.findByID(shipmentRepository.findById(shipment.getShipment_id()).get().getSenderID()).get().getZip_code());
     }
 
     //returns the terminal connected to zip code of the shipments receiver
-    public Terminal findFinalTerminalToShipment(Shipment shipment) {
-        return terminalService.returnTerminalFromZip(customerRepository.findById(shipmentRepository.findById(shipment.getShipment_id()).get().getReceiverID()).get().getZip_code());
+    public Terminal  findFinalTerminalToShipment(Shipment shipment) {
+
+        return terminalService.returnTerminalFromZip(customerService.findByID(shipmentRepository.findById(shipment.getShipment_id()).get().getReceiverID()).get().getZip_code());
     }
 
-
-
+    public long count() {
+        return shipmentRepository.count();
+    }
 }

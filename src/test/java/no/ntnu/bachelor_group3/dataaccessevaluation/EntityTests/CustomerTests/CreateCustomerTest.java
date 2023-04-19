@@ -50,11 +50,11 @@ public class CreateCustomerTest {
 
             Shipment shipment = new Shipment(customer, customer, customer);
             shipmentService.add(shipment);
+            System.out.println("Customers in db: " + customerService.count());
 
-            System.out.println(shipment);
-            shipmentService.findByID(shipment.getShipment_id()).printParcels();
+        //    customerService.printShipments(customer);
 
-            shipmentService.findByID(shipment.getShipment_id()).printParcels();
+        //    System.out.println(shipmentService.findByID(shipment.getShipment_id()));
 
             assertNotNull(shipmentService.findByID(shipment.getShipment_id()));
         }
