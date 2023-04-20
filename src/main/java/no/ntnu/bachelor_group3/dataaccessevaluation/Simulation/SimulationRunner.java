@@ -15,17 +15,15 @@ public class SimulationRunner {
     public SimulationRunner(){
     }
 
+    public ExecutorService getExecutor() {
+        return executor;
+    }
+
     public void work(Shipment shipment, ShipmentService shipmentService) {
 
             ShipmentRunnable shipmentRunnable = new ShipmentRunnable(shipment, shipmentService);
             var future = executor.submit(shipmentRunnable);
-            System.out.println(shipmentRunnable.getShipment().getParcels());
-
         }
-
-    public ExecutorService getExecutor() {
-        return executor;
-    }
 }
 
 

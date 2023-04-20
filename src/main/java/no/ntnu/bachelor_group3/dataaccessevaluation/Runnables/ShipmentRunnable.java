@@ -47,8 +47,6 @@ public class ShipmentRunnable implements Runnable{
     public void catchRun() {
 
         shipmentService.concurrentAdd(shipment);
-
-
         //first checkpoint, 2s travel time
         //this.shipmentService.updateCheckpointsOnParcels(shipment, new Checkpoint(shipmentService.getShipmentSenderAddress(shipment), Checkpoint.CheckpointType.Collected));
 
@@ -60,7 +58,6 @@ public class ShipmentRunnable implements Runnable{
 
         //third checkpoint, loaded on car from first terminal
         //this.shipmentService.updateCheckpointsOnParcels(shipment, new Checkpoint(shipmentService.findFirstTerminalToShipment(shipment).getAddress(), Checkpoint.CheckpointType.LoadedOnCar));
-
 
 
         //fourth checkpoint, received at final terminal

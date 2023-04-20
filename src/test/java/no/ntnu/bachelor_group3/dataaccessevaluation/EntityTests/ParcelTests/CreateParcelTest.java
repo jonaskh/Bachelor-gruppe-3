@@ -9,6 +9,7 @@ import no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.TestConfiguratio
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.CustomerService;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ParcelService;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
@@ -32,6 +37,7 @@ public class CreateParcelTest {
     @Autowired
     ParcelService parcelService;
 
+    private static List<String> timestamps = new ArrayList<>();
 
 
     @Test
@@ -40,11 +46,8 @@ public class CreateParcelTest {
         Customer customer = new Customer();
         Shipment shipment = new Shipment(new Customer(), new Customer(), new Customer());
 
- //       customerService.add(customer);
+        //       customerService.add(customer);
         shipmentService.add(shipment);
-
-
-
         assertTrue(shipmentService.findByID(shipment.getShipment_id()) != null);
 
 

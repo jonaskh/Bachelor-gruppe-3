@@ -37,6 +37,13 @@ public class ShipmentService{
 
     }
 
+    public void printParcelsFromDB(Shipment shipment) {
+        if (findByID(shipment.getShipment_id())!= null) {
+            for (Parcel parcel : findByID(shipment.getShipment_id()).getParcels()) {
+                System.out.println(parcel.getParcel_id());
+            }
+        }
+    }
 
 
     public Shipment findByID(Long id) {
@@ -46,7 +53,8 @@ public class ShipmentService{
     }
 
     //saves a shipment to the repository, and thus the database
-    public void add(Shipment shipment) {
+    public long add(Shipment shipment) {
+        long saveShipmentTimeEval = 0;
         if (findByID(shipment.getShipment_id()) == null) {
             if (customerService.findByID(shipment.getSenderID()).isEmpty()) {
                 customerService.add(shipment.getSender());
@@ -55,7 +63,9 @@ public class ShipmentService{
                 customerService.add(shipment.getReceiver());
             }
 
+            var beforeSaveShipment = System.currentTimeMillis();
             shipmentRepository.save(shipment);
+            saveShipmentTimeEval = System.currentTimeMillis() - beforeSaveShipment;
             System.out.println("Shipment: " + shipment.getShipment_id() + " has been added to the database");
             saveParcelsToDatabaseFromShipment(shipment);
 
@@ -65,6 +75,7 @@ public class ShipmentService{
             System.out.println("Shipment already exists in database");
 
         }
+        return saveShipmentTimeEval;
     }
 
     public long returnNrOfParcels(Shipment ship) {
@@ -93,9 +104,12 @@ public class ShipmentService{
         }
     }
 
+    //TODO: CASCADING SAVE CHILD ENTITIES VS MANUAL
     @Transactional
-    public void concurrentAdd(Shipment shipment) {
+    public String concurrentAdd(Shipment shipment) {
+        var current = System.currentTimeMillis();
         shipmentRepository.save(shipment);
+        return System.currentTimeMillis() - current + ", saveShipmentCascading";
     }
 
     /**
@@ -103,7 +117,6 @@ public class ShipmentService{
      * @param shipment to add checkpoint to
      * @param checkpoint which checkpoint to add
      */
-
     public void updateCheckpointsOnParcels(Shipment shipment, Checkpoint checkpoint) {
         if (!findByID(shipment.getShipment_id()).getParcels().isEmpty()) {
             for (Parcel parcel : shipment.getParcels()) {

@@ -73,6 +73,7 @@ public class MultiThreadTests {
     }
 
     @Test
+    @DisplayName("Adding multiple shipments and their corresponding entities to database concurrently")
     public void concurrentShipmentAddTest() {
         List<Shipment> shipments = new ArrayList<>();
 
@@ -85,24 +86,30 @@ public class MultiThreadTests {
             shipments.add(shipment);
 
         }
-        ExecutorService executor = Executors.newFixedThreadPool(5);
+        ExecutorService executor = Executors.newFixedThreadPool(5); //5 threads
 
+        var timeTakenToAdd500 = System.currentTimeMillis();
         for (Shipment shipment : shipments) {
             ShipmentRunnable sr = new ShipmentRunnable(shipment, shipmentService);
-            var future = executor.submit(sr);
+            var future = executor.submit(() -> {
+                shipmentService.concurrentAdd(shipment);
+            });
         }
 
-        executor.shutdown();
+        executor.shutdown(); //shutdown the service, it will not take any more tasks but finish existing ones
 
         try {
             executor.awaitTermination(2, TimeUnit.MINUTES);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-
         for (Shipment shipment: shipments) {
-            shipmentService.printShipmentInfo(shipment);
+            shipmentService.printParcelsFromDB(shipment);
         }
+        var timeTaken = System.currentTimeMillis() - timeTakenToAdd500;
+
+        System.out.println("Time taken to add 500 shipments: " + timeTaken + "ms");
+
         System.out.println("shipment count: " + shipmentService.count());
         System.out.println("customer count: " + customerService.count());
         System.out.println("parcel count: " + parcelService.count());
@@ -110,13 +117,13 @@ public class MultiThreadTests {
 
 
     @Test
+    @DisplayName("Assert 20 customers are added to the database concurrently")
     public void concurrentAddCustomerTest() {
         ExecutorService executor = Executors.newFixedThreadPool(5);
 
         for (int i = 0; i < 20; i++) {
             CustomerRunnable customerRunnable = new CustomerRunnable(new Customer(), customerService);
             executor.submit(customerRunnable);
-
         }
         assertEquals("Number of customers", 20, customerService.count());
     }
