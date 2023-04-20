@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -26,6 +27,14 @@ public class CustomerService {
     private ShipmentService shipmentService;
 
     private static final Logger logger = LoggerFactory.getLogger("CustomerServiceLogger");
+
+
+    public List<Customer> listAll() {return(List<Customer>) customerRepository.findAll();}
+
+    public void save(Customer customer) {
+        customerRepository.save(customer);
+    }
+
 
     public Customer findByID(Long id) {
         Optional<Customer> customer = customerRepository.findById(id);
