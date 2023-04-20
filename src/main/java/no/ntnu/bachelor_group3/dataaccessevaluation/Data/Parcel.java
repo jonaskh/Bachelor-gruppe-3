@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 @Entity
@@ -20,29 +21,25 @@ public class Parcel {
 
     private double weight;
 
-    @OneToOne
-    private Checkpoint lastCheckpoint;
+    @Version
+    private Long parcel_version = null;
 
     //price is evaluated with weight times a constant
-    private int weight_class;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "checkpoint_id")
+    private List<Checkpoint> checkpoints = new CopyOnWriteArrayList<>();
 
 
-
-    @JoinColumn(name = "checkpoint_id")
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Checkpoint> checkpoints = new ArrayList<>();
-
-
-//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinColumn(name = "shipment_id")
-//    private Shipment shipment_placed_in; //which shipment the parcel belongs to
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "shipment_id")
+    private Shipment shipment;
 
 
     public Parcel() {
+        this.parcel_id = counter++;
     }
 
-    public Parcel(double weight) {
-//        this.shipment_placed_in = shipment;
+    public Parcel(Shipment shipment, double weight) {
+        this.shipment = shipment;
         this.parcel_id = counter++;
         this.weight = weight;
     }
@@ -58,21 +55,7 @@ public class Parcel {
     }
 
     //assigns a weight class depending on weight. Used at checkpoints to estimate cost.
-    public void setWeight_class() {
-        if (weight <= 5) {
-            weight_class = 1;
 
-        }
-        else if(weight <= 20) {
-            weight_class = 2;
-        }
-        else if(weight <= 50) {
-            weight_class = 3;
-        }
-        else {
-            weight_class = 4;
-        }
-    }
 
     //TODO: for each loop to generate cost through each checkpoint
 
@@ -85,12 +68,17 @@ public class Parcel {
     }
 
     public void setLastCheckpoint(Checkpoint checkpoint) {
-        this.lastCheckpoint = checkpoint;
+        checkpoints.remove(checkpoint);
+        checkpoints.add(checkpoint);
     }
 
 
     public Checkpoint getLastCheckpoint() {
-        return lastCheckpoint;
+        if (!checkpoints.isEmpty()) {
+            return checkpoints.get(checkpoints.size() - 1);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -98,7 +86,7 @@ public class Parcel {
         return "Parcel{" +
                 "parcel_id=" + parcel_id +
                 ", weight=" + weight +
-                ", lastCheckpoint=" + lastCheckpoint +
+                ", lastCheckpoint=" + getLastCheckpoint() +
                 '}';
     }
 }

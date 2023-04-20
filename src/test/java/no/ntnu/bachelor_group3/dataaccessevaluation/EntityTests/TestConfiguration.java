@@ -2,7 +2,12 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests;
 
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.*;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+@EnableAsync
+@EnableTransactionManagement
 public class TestConfiguration {
 
     @Bean

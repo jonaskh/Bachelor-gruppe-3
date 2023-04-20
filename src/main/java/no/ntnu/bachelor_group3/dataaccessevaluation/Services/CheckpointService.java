@@ -6,6 +6,7 @@ import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.CheckpointRepos
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -23,12 +24,14 @@ public class CheckpointService {
         return checkpointRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public boolean addCheckpoint(Checkpoint checkpoint) {
         Optional<Checkpoint> existingCheckpoint = checkpointRepository.findById(checkpoint.getCheckpoint_id());
         if (existingCheckpoint.isPresent()) {
             return false;
         } else {
             checkpointRepository.save(checkpoint);
+            System.out.println("Checkpoint has been saved to database");
             return true;
         }
     }

@@ -3,8 +3,9 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 import com.github.javafaker.Faker;
 import jakarta.persistence.*;
 
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Entity
 @Table(name = "customer")
@@ -22,14 +23,18 @@ public class Customer {
     private String name;
     private String zip_code;
 
-    @OneToOne
+    @Version
+    private Long customer_version = null;
+
+
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "terminal_id")
     private Terminal nearest_Terminal;
 
     //Set of shipments for each customer
-    @OneToMany
-    @JoinColumn(name = "shipment_id")
-    private Set<Shipment> shipments;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "shipment_id")
+    private Map<Long,Shipment> shipments = new ConcurrentHashMap<>();
 
     /**
      * Constructor that user JavaFaker to generate values
@@ -82,13 +87,15 @@ public class Customer {
         this.address = address;
     }
 
+    public Map<Long,Shipment> getShipments() {
+        return this.shipments;
+    }
+
 
     /**
      * Add a shipment to the customer
      */
-    public void createShipment(Shipment shipment) {
-        shipments.add(shipment);
-    }
+
 
 
     @Override
@@ -97,7 +104,6 @@ public class Customer {
                 "customer_id=" + customer_id +
                 ", address='" + address + '\'' +
                 ", name='" + name + '\'' +
-                ", zip='" + zip_code + '\'' +
                 '}';
     }
 
