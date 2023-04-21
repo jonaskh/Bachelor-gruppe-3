@@ -2,14 +2,21 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.Services;
 
 import jakarta.transaction.Transactional;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.*;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Generators.WriteToEval;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.ShipmentRepository;
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 @Service
@@ -33,8 +40,16 @@ public class ShipmentService{
     @Autowired
     private TransactionTemplate transactionTemplate;
 
+    private static final WriteToEval writeToEval = new WriteToEval();
+
+    private static List<String> shipmentEvals = new CopyOnWriteArrayList<>();
+
     public ShipmentService() {
 
+    }
+
+    public List<String> getShipmentEvals() {
+        return shipmentEvals;
     }
 
     public void printParcelsFromDB(Shipment shipment) {
@@ -47,8 +62,10 @@ public class ShipmentService{
 
 
     public Shipment findByID(Long id) {
+        var before = Instant.now();
         Optional<Shipment> shipment = shipmentRepository.findById(id);
-
+        var duration = Duration.between(before,Instant.now());
+        shipmentEvals.add(duration.get(ChronoUnit.NANOS) + " shipment find");
         return shipment.orElse(null);
     }
 
@@ -104,12 +121,34 @@ public class ShipmentService{
         }
     }
 
+    /**
+     * returns void to use in runnable interface
+     * @param shipment
+     */
     //TODO: CASCADING SAVE CHILD ENTITIES VS MANUAL
     @Transactional
-    public String concurrentAdd(Shipment shipment) {
-        var current = System.currentTimeMillis();
+    public void cascadingAdd(Shipment shipment){
+        var before = Instant.now();
+        try {
+            shipmentRepository.save(shipment);
+        } catch (HibernateException e) {
+            System.out.println("Shipment with that ID already exists");
+        }
+        var duration = Duration.between(before, Instant.now());
+        shipmentEvals.add(duration.get(ChronoUnit.NANOS) + " shipment create");
+    }
+
+    /**
+     * returns a string containing the time used by the save method to use in a callable
+     * @param shipment
+     * @return time taken by save method and type of CRUD operation
+     */
+    @Transactional
+    public void cascadingAddCallable(Shipment shipment) {
+        var before = Instant.now();
         shipmentRepository.save(shipment);
-        return System.currentTimeMillis() - current + ", saveShipmentCascading";
+        var duration = Duration.between(before, Instant.now());
+        shipmentEvals.add(duration.get(ChronoUnit.NANOS) + ", shipment create");
     }
 
     /**
@@ -121,22 +160,21 @@ public class ShipmentService{
         if (!findByID(shipment.getShipment_id()).getParcels().isEmpty()) {
             for (Parcel parcel : shipment.getParcels()) {
                 parcel.setLastCheckpoint(checkpoint);
-                checkpointService.addCheckpoint(checkpoint);
-                System.out.println("Successfully updated checkpoint on parcel " + parcelService.findByID(
-                        parcel.getParcel_id()) + " to " + checkpoint);
+//                checkpointService.addCheckpoint(checkpoint);
             }
+            System.out.println("Successfully added checkpoint" + checkpointService.findByID(checkpoint.getCheckpoint_id()).getType() + " to all parcels in shipment" + findByID(shipment.getShipment_id()));
         } else {
             System.out.println("No parcels in shipment, couldn't update checkpoint");
         }
 
-
         try {
             System.out.println("Shipment is now being transported to next checkpoint...");
-            Thread.sleep(2000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
+
 
     public String getShipmentSenderAddress(Shipment shipment) {
         if (shipmentRepository.findById(shipment.getShipment_id()).isPresent()) {
@@ -178,6 +216,12 @@ public class ShipmentService{
     }
 
     public long count() {
-        return shipmentRepository.count();
+        var before = Instant.now();
+        var count = shipmentRepository.count();
+        var duration = Duration.between(before, Instant.now());
+        var result = duration + ", shipment read all";
+
+        shipmentEvals.add(result);
+        return count;
     }
 }

@@ -53,7 +53,7 @@ public class CustomerGenerator {
     public void writeFakeDataToCsv(int numLines) throws IOException, CsvValidationException {
         List<String> zips = createZips();
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter("existing_data.csv", true));
+            CSVWriter writer = new CSVWriter(new FileWriter("customers.csv", true));
 
             for (int i = 0; i < numLines; i++) {
                 String[] data = generateFakeData(zips);

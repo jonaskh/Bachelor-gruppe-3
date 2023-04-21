@@ -66,7 +66,7 @@ public class CreateCustomerTest {
             customerService.add(customer);
 
             Shipment shipment = new Shipment(customer, customer, customer);
-            shipmentService.add(shipment);
+            shipmentService.cascadingAdd(shipment);
             shipment.printParcels();
             Checkpoint checkpoint = new Checkpoint("NTNU", Checkpoint.CheckpointType.Collected);
             shipmentService.updateCheckpointsOnParcels(shipment, checkpoint);

@@ -9,14 +9,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.management.InstanceNotFoundException;
 import javax.transaction.Transactional;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 public class CustomerService {
 
     private static final Faker faker = new Faker(new Locale("nb-NO"));
+
+    private static List<String> customerEval = new CopyOnWriteArrayList<>();
 
     @Autowired
     private CustomerRepository customerRepository;
@@ -27,8 +37,17 @@ public class CustomerService {
 
     private static final Logger logger = LoggerFactory.getLogger("CustomerServiceLogger");
 
+    public List<String> getCustomerEval() {
+        return customerEval;
+    }
+
+    @Transactional
     public Optional<Customer> findByID(Long id) {
-        return customerRepository.findById(id);
+        var before = Instant.now();
+        Optional<Customer> customerOptional = customerRepository.findById(id);
+        var duration = Duration.between(before, Instant.now());
+        customerEval.add(duration.get(ChronoUnit.NANOS) + ", customer read");
+        return customerOptional;
     }
 
     public void printShipments(Customer customer) {
@@ -41,27 +60,33 @@ public class CustomerService {
 
     @jakarta.transaction.Transactional
     public long count() {
-        return customerRepository.count();
+        var before = Instant.now();
+        var count = customerRepository.count();
+        var duration = Duration.between(before, Instant.now());
+
+        customerEval.add(duration.get(ChronoUnit.NANOS) + " , customer read all");
+        return count;
     }
 
+    @jakarta.transaction.Transactional
     public Customer findByName(String name) {
         Optional<Customer> customer = customerRepository.findCustomerByName(name);
 
         return customer.orElse(null);
     }
 
-    @Transactional
+    @jakarta.transaction.Transactional
     //saves a customer to the customerepo, and thus the database
-    public boolean add(Customer customer) {
-        boolean success = false;
+    public void add(Customer customer) {
 
         Optional<Customer> ifAlreadyExists = findByID(customer.getCustomerID());
         if (ifAlreadyExists.isEmpty()) {
+            var before = Instant.now();
             customerRepository.save(customer);
+            var duration = Duration.between(before, Instant.now());
+            customerEval.add(duration.get(ChronoUnit.NANOS) + " , customer create");
             System.out.println("Customer: " + customer.getCustomerID() + " has been saved to database");
-            success = true;
         }
-        return success;
     }
 
     public void createShipment(Shipment shipment,Customer customer) {

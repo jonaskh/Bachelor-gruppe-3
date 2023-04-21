@@ -1,5 +1,6 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Runnables;
 
+import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Checkpoint;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;
 
@@ -46,13 +47,13 @@ public class ShipmentRunnable implements Runnable{
      */
     public void catchRun() {
 
-        shipmentService.concurrentAdd(shipment);
+         shipmentService.cascadingAdd(shipment);
         //first checkpoint, 2s travel time
-        //this.shipmentService.updateCheckpointsOnParcels(shipment, new Checkpoint(shipmentService.getShipmentSenderAddress(shipment), Checkpoint.CheckpointType.Collected));
+        this.shipmentService.updateCheckpointsOnParcels(shipment, new Checkpoint(shipmentService.getShipmentSenderAddress(shipment), Checkpoint.CheckpointType.Collected));
 
 
         //second checkpoint, this goes to first terminal so add the shipment to the terminal queue.
-        //this.shipmentService.updateCheckpointsOnParcels(shipment, new Checkpoint(shipmentService.findFirstTerminalToShipment(shipment), Checkpoint.CheckpointType.ReceivedFirstTerminal));
+        this.shipmentService.updateCheckpointsOnParcels(shipment, new Checkpoint(shipmentService.findFirstTerminalToShipment(shipment), Checkpoint.CheckpointType.ReceivedFirstTerminal));
 
         //this.shipmentService.findFirstTerminalToShipment(shipment).addShipment(shipment);
 

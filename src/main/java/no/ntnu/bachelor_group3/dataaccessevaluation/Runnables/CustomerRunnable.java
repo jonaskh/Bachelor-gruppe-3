@@ -5,7 +5,10 @@ import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.CustomerService;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;
 
-public class CustomerRunnable implements Runnable{
+import java.util.concurrent.Callable;
+
+public class CustomerRunnable implements Callable {
+
     private Customer customer;
 
     private CustomerService customerService;
@@ -34,20 +37,20 @@ public class CustomerRunnable implements Runnable{
 
     @Override
     //this method runs another in order to catch exceptions, else they are ignored.
-    public void run() {
+    public String call() throws Exception {
+        String result = "";
         try {
-            catchRun();
+            //result = catchRun();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return result;
     }
+
     /**
-     * Simulates the lifecycle of a shipment, where it simulates traveling through different checkpoints
-     * to the final terminal. The time is relative to real time.
+     * Adds a customer to the database and returns the timestamp for each query
      */
     public void catchRun() {
-
         customerService.add(customer);
-
     }
-    }
+}

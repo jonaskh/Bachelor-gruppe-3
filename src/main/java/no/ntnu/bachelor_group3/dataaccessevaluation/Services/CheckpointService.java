@@ -21,7 +21,10 @@ public class CheckpointService {
     }
 
     public Checkpoint findByID(Long id) {
-        return checkpointRepository.findById(id).orElse(null);
+        var current = System.currentTimeMillis();
+        Checkpoint cp = checkpointRepository.findById(id).orElse(null);
+        var timeTaken = System.currentTimeMillis() - current + " , read checkpoint";
+        return cp;
     }
 
     @Transactional
