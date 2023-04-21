@@ -1,19 +1,11 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation;
 
-import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.CustomerRepository;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Services.CustomerService;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
+
 
 
 @SpringBootApplication

@@ -1,23 +1,51 @@
 package JOOQ.service;
+import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.daos.ShipmentDao;
+import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.daos.TerminalDao;
 
-import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.Tables;
+import lombok.RequiredArgsConstructor;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Shipment;
-import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Terminal;
-import org.jooq.DSLContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.text.MessageFormat;
 import java.util.List;
+import java.util.NoSuchElementException;
+
+@RequiredArgsConstructor
+@Transactional
+@Service(value = "ShipmentServiceDAO")
+public class ShipmentService{
+
+    private final ShipmentDao shipmentDao;
+
+    public Shipment create(Shipment shipment) {
+        shipmentDao.insert(shipment);
+
+        return shipment;
+    }
+
+    public Shipment update(Shipment shipment) {
+        shipmentDao.update(shipment);
+        return shipment;
+    }
+
+    public List<Shipment> getAll() {
+        return shipmentDao.findAll();
+    }
 
 
-public interface ShipmentService {
-    Shipment create(Shipment shipment);
+    public Shipment getOne(long id) {
+        Shipment shipment = shipmentDao.findById(id);
+        if(shipment == null){
+            throw new NoSuchElementException(MessageFormat.format("Shipment id {0} not found", String.valueOf(id)));
+        }
+        return shipment;
+    }
 
-    Shipment update(Shipment shipment);
-
-    List<Shipment> getAll();
-
-    Shipment getOne(long id);
-
-    void deleteById(long id);
+    public void deleteById(long id) {
+        shipmentDao.deleteById(id);
+    }
 }
+
+
+

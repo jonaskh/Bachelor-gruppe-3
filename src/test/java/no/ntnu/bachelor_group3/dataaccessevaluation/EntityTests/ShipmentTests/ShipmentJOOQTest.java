@@ -1,7 +1,7 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.ShipmentTests;
 
 import JOOQ.repositories.ShipmentRepository;
-import JOOQ.service.*;
+import JOOQ.service.ShipmentService;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.daos.CustomerDao;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.daos.ShipmentDao;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Customer;
@@ -55,7 +55,7 @@ public class ShipmentJOOQTest {
                 .setEndTerminalId(2)
                 .setExpectedDeliveryDate(expectedDeliveryDate)
                 .setStartTerminalId(1);
-        ShipmentService shipmentService = new ShipmentServiceImpl(new ShipmentDao(dslContext.configuration()));
+        ShipmentService shipmentService = new ShipmentService(new ShipmentDao(dslContext.configuration()));
         Shipment savedShipment = shipmentService.create(shipment);
 
 

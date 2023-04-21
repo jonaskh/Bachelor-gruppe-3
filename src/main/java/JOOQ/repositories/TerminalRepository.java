@@ -58,6 +58,8 @@ public class TerminalRepository implements JOOQRepository<Terminal>{
         return (ObjectUtils.isEmpty(terminal)) ? Optional.empty() : Optional.of(terminal);
     }
 
+
+
     public boolean deleteById(long id) {
         return dslContext.delete(TERMINAL)
                 .where(TERMINAL.TERMINAL_ID.eq((int) id))

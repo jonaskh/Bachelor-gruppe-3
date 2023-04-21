@@ -2,7 +2,6 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.TerminalTests;
 
 import JOOQ.repositories.TerminalRepository;
 import JOOQ.service.TerminalService;
-import JOOQ.service.TerminalServiceImpl;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.daos.TerminalDao;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Terminal;
 import org.jooq.*;
@@ -37,7 +36,7 @@ public class TerminalJOOQTest {
     public void testCreateTerminal() {
         Terminal terminal = new Terminal()
                 .setAddress("Oslo");
-        TerminalService service = new TerminalServiceImpl(new TerminalDao(dslContext.configuration()));
+        TerminalService service = new TerminalService(new TerminalDao(dslContext.configuration()));
         Terminal savedTerminal = service.create(terminal);
         assertNotNull(savedTerminal.getTerminalId());
         assertEquals("Oslo", savedTerminal.getAddress());

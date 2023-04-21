@@ -2,7 +2,6 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.CheckpointTest;
 
 import JOOQ.repositories.CheckpointRepository;
 import JOOQ.service.CheckpointService;
-import JOOQ.service.CheckpointServiceImpl;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.daos.CheckpointDao;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Checkpoint;
 import org.jooq.DSLContext;
@@ -48,7 +47,7 @@ public class CheckpointJOOQTest {
                 .setTime(now)
                 .setType((short) 1)
                 .setTerminalId(1);
-        CheckpointService service = new CheckpointServiceImpl(new CheckpointDao(dslContext.configuration()));
+        CheckpointService service = new CheckpointService(new CheckpointDao(dslContext.configuration()));
         Checkpoint savedCheckpoint = service.create(Checkpoint);
         assertNotNull(savedCheckpoint.getCheckpointId());
         assertEquals(100.0, savedCheckpoint.getCost());
