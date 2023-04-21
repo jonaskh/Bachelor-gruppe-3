@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 import com.opencsv.exceptions.CsvException;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Terminal;
 import org.jooq.DSLContext;
+import static org.jooq.impl.DSL.rowNumber;
+
 import org.jooq.Query;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
@@ -34,6 +36,10 @@ public class CsvImporterV2 {
     private final String url;
     private final String username;
     private final String password;
+
+    int postCode = 0;
+
+    int terminalCounter = 1;
 
     public CsvImporterV2(String filename, String url, String username, String password) {
         this.filename = filename;
@@ -80,18 +86,35 @@ public class CsvImporterV2 {
             List<Query> queries = Arrays.stream(terminalAddresses)
                     .map(a -> {
                         // Insert into terminal table and get the primary key
-                        int terminalId = Objects.requireNonNull(dsl.insertInto(TERMINAL).set(TERMINAL.ADDRESS, a).returning(TERMINAL.TERMINAL_ID).fetchOne()).getTerminalId();
+                        int terminalId = Objects.requireNonNull(dsl.insertInto(TERMINAL)
+                                        .set(TERMINAL.ADDRESS, a)
+                                        .set(TERMINAL.TERMINAL_ID, terminalCounter++)
+                                        .onConflict(TERMINAL.TERMINAL_ID)
+                                        .doNothing()
+                                        .returning(TERMINAL.TERMINAL_ID)
+                                        .fetchOne())
+                                .getTerminalId();
                         // Get the primary key of the valid_postal_codes row with postal_code = a
-                        var postalCodeId = dsl.select(VALID_POSTAL_CODES.POSTAL_CODE).from(VALID_POSTAL_CODES).where(VALID_POSTAL_CODES.POSTAL_CODE.eq(a)).fetchOne(VALID_POSTAL_CODES.POSTAL_CODE);
+                        var postalCodeId = dsl.select(VALID_POSTAL_CODES.POSTAL_CODE)
+                                .from(VALID_POSTAL_CODES)
+                                .where(VALID_POSTAL_CODES.COUNTY.eq(a))
+                                .fetch(VALID_POSTAL_CODES.POSTAL_CODE);
                         // Insert into terminal_id table with the primary keys of terminal and valid_postal_codes rows
-                        return dsl.insertInto(TERMINAL_ID).set(TERMINAL_ID.TERMINAL_ID_TERMINAL_ID, terminalId).set(VALID_POSTAL_CODES.POSTAL_CODE, postalCodeId);
+
+                        return dsl.insertInto(TERMINAL_ID)
+                                .set(TERMINAL_ID.TERMINAL_ID_TERMINAL_ID, terminalId)
+                                .set(VALID_POSTAL_CODES.POSTAL_CODE, postalCodeId.get(postCode++));
                     })
                     .collect(Collectors.toList());
             dsl.batch(queries).execute();
         } catch (SQLException e) {
+            // Handle the exception here
+            System.err.println("Error: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
+
 
 
 
