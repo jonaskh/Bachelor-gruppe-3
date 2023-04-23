@@ -1,6 +1,7 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import org.hibernate.annotations.Check;
 
 import java.text.SimpleDateFormat;
@@ -29,7 +30,6 @@ public class Checkpoint {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "terminal_id")
     private Terminal terminal;
-
 
     private LocalDateTime time;
 

@@ -7,7 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 public class CheckpointService {
@@ -15,27 +19,36 @@ public class CheckpointService {
     @Autowired
     private CheckpointRepository checkpointRepository;
 
+    private static List<String> checkpointEvals = new CopyOnWriteArrayList<>();
 
-    public Optional<Checkpoint> getCurrent() {
-        return checkpointRepository.findLastEntryInCheckpoint();
+    public List<String> getCheckpointEvals() {
+        return checkpointEvals;
     }
 
+    @jakarta.transaction.Transactional
     public Checkpoint findByID(Long id) {
-        var current = System.currentTimeMillis();
+        var current = Instant.now();
         Checkpoint cp = checkpointRepository.findById(id).orElse(null);
-        var timeTaken = System.currentTimeMillis() - current + " , read checkpoint";
+        var duration = Duration.between(current, Instant.now()).toNanos() + " , checkpoint read";
+        checkpointEvals.add(duration);
         return cp;
     }
 
     @Transactional
-    public boolean addCheckpoint(Checkpoint checkpoint) {
-        Optional<Checkpoint> existingCheckpoint = checkpointRepository.findById(checkpoint.getCheckpoint_id());
-        if (existingCheckpoint.isPresent()) {
-            return false;
-        } else {
-            checkpointRepository.save(checkpoint);
-            System.out.println("Checkpoint has been saved to database");
-            return true;
-        }
+    public void addCheckpoint(Checkpoint checkpoint) {
+        var before = Instant.now();
+        checkpointRepository.save(checkpoint);
+        var duration = Duration.between(before, Instant.now()).getNano() + " , checkpoint create";
+        checkpointEvals.add(duration);
+        System.out.println("Checkpoint has been saved to database");
+    }
+
+    @jakarta.transaction.Transactional
+    public long count() {
+        var before = Instant.now();
+        var count = checkpointRepository.count();
+        var duration = Duration.between(before, Instant.now()).toNanos() + " , checkpoint read all";
+        checkpointEvals.add(duration);
+        return count;
     }
 }

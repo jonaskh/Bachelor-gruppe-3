@@ -25,10 +25,6 @@ import java.util.concurrent.*;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 import static org.springframework.test.util.AssertionErrors.assertNotEquals;
 
-@State(Scope.Benchmark)
-@BenchmarkMode(Mode.AverageTime)
-@OutputTimeUnit(TimeUnit.MILLISECONDS)
-@Fork(1)
 @ExtendWith(SpringExtension.class)
 @DataJpaTest(showSql = false)
 @Import(TestConfiguration.class) //to load the required beans for the services
@@ -65,6 +61,7 @@ public class MultiThreadTests {
     @Test
     @DisplayName("Adding multiple shipments and their corresponding entities to database concurrently")
     public void concurrentShipmentRunnableAddTest() {
+        validPostalCodeService.ReadCSVFile();
         List<Shipment> shipments = new ArrayList<>();
 
         for (int i = 0; i < 500; i++) {
@@ -74,7 +71,7 @@ public class MultiThreadTests {
             Shipment shipment = new Shipment(customer, customer, customer2);
             shipments.add(shipment);
         }
-        ExecutorService executor = Executors.newFixedThreadPool(5); //5 threads
+        ExecutorService executor = Executors.newScheduledThreadPool(5); //5 threads
 
         for (Shipment shipment : shipments) {
             ShipmentRunnable sr = new ShipmentRunnable(shipment, shipmentService);
@@ -95,20 +92,45 @@ public class MultiThreadTests {
             throw new RuntimeException(e);
         }
 
-        shipmentService.findByID(1L);
-        shipmentService.findByID(2L);
 
         evals.addAll(shipmentService.getShipmentEvals());
         evals.addAll(parcelService.getParcelEvals());
         evals.addAll(customerService.getCustomerEval());
+        evals.addAll(checkpointService.getCheckpointEvals());
+
+        evals.forEach(System.out::println);
+
+        System.out.println("\n \n shipment count: " + shipmentService.count());
+        System.out.println("customer count: " + customerService.count());
+        System.out.println("parcel count: " + parcelService.count());
+        System.out.println("checkpoint count: " + checkpointService.count());
+        System.out.println("terminal count: " + terminalService.count());
+
+        System.out.println(shipments.get(0).getShipment_id() + " has " + shipments.get(0).getParcels().size());
+        System.out.println(shipmentService.findByID(1L).getParcels().size());
+
 
 
 
         System.out.println("Number of evaluations: " + evals.size());
-        evals.forEach(System.out::println);
-        System.out.println("\n \n shipment count: " + shipmentService.count());
-        System.out.println("customer count: " + customerService.count());
-        System.out.println("parcel count: " + parcelService.count());
+
+    }
+
+    @Test
+    @DisplayName("Print timer for a positive and a negative findByID call to see difference in time")
+    public void testFindByIDTimer() {
+        Customer customer = new Customer();
+        Shipment shipment = new Shipment(customer, customer, customer);
+        shipmentService.cascadingAdd(shipment);
+        System.out.println("Positive find: " + shipmentService.findByID(1L));
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("Negative find: " + shipmentService.findByID(2L));
+
     }
 
 

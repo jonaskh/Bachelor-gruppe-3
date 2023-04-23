@@ -24,7 +24,7 @@ public class RunSimulation {
             throw new RuntimeException(e);
         }
         var duration = Duration.between(before, Instant.now());
-        System.out.println(duration.get(ChronoUnit.NANOS));
+        System.out.println(duration.getNano());
         System.out.println("\n" + duration);
 
     }

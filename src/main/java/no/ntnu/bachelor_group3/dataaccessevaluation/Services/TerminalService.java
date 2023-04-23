@@ -6,7 +6,12 @@ import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.TerminalReposit
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.ValidPostalCodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 @Service
@@ -19,6 +24,13 @@ public class TerminalService {
     @Autowired
     ValidPostalCodeRepository validPostalCodeRepository;
 
+    private List<String> terminalEvals = new CopyOnWriteArrayList<>();
+
+    public List<String> getTerminalEvals() {
+        return terminalEvals;
+    }
+
+    @Transactional
     //finds a terminal in database based on id, return null if no matching id
     public Terminal findByID(Integer id) {
         return terminalRepository.findById(id).orElse(null);
@@ -38,8 +50,18 @@ public class TerminalService {
         }
     }
 
+    @jakarta.transaction.Transactional
+    public long count() {
+        var before = Instant.now();
+        var count = terminalRepository.count();
+        var duration = Duration.between(before, Instant.now()).toNanos() + " , checkpoint read all";
+        terminalEvals.add(duration);
+        return count;
+    }
 
 
+
+    @Transactional
     public Terminal returnTerminalFromZip(String zip) {
         Terminal terminal;
         if (validPostalCodeRepository.findByPostalCode(zip).isPresent()) {

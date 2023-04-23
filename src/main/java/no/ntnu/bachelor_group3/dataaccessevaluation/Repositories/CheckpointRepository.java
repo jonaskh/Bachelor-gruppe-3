@@ -1,5 +1,6 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Repositories;
 
+import jakarta.transaction.Transactional;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Checkpoint;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
 import org.springframework.data.jpa.repository.Query;
@@ -19,6 +20,7 @@ public interface CheckpointRepository extends CrudRepository<Checkpoint, Long> {
 
     Optional<Checkpoint> findById(Long id);
 
+    @Transactional
     @Override
     <S extends Checkpoint> S save(S entity);
 

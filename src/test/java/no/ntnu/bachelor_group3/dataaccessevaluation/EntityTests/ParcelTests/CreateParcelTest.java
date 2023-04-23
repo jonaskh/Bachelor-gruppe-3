@@ -48,12 +48,10 @@ public class CreateParcelTest {
 
         //       customerService.add(customer);
         shipmentService.add(shipment);
-        assertTrue(shipmentService.findByID(shipment.getShipment_id()) != null);
+        assertEquals(shipmentService.findByID(shipment.getShipment_id()).getParcels().size(),3);
 
+        shipment.printParcels();
+        shipmentService.findByID(shipment.getShipment_id()).printParcels();
 
-        if (shipmentService.findByID(shipment.getShipment_id()) != null) {
-            shipmentService.printShipmentInfo(shipment);
-            //System.out.println(parcelService.count());
-        }
     }
 }

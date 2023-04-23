@@ -1,5 +1,6 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Runnables;
 
+import jakarta.transaction.Transactional;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Checkpoint;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;
@@ -9,11 +10,16 @@ public class ShipmentRunnable implements Runnable{
     private Shipment shipment;
 
     private ShipmentService shipmentService;
+    private Checkpoint cp1;
+    private Checkpoint cp2;
+
 
     public ShipmentRunnable(Shipment shipment, ShipmentService shipmentService) {
-
         this.shipment = shipment;
         this.shipmentService = shipmentService;
+        this.cp1 = new Checkpoint(shipment.getSender().getAddress(), Checkpoint.CheckpointType.Collected);
+        this.cp2 = new Checkpoint(shipment.getSender().getAddress(), Checkpoint.CheckpointType.ReceivedFirstTerminal);
+
     }
 
     public Shipment getShipment() {
@@ -47,13 +53,17 @@ public class ShipmentRunnable implements Runnable{
      */
     public void catchRun() {
 
-         shipmentService.cascadingAdd(shipment);
+
+        shipmentService.cascadingAdd(shipment);
         //first checkpoint, 2s travel time
-        this.shipmentService.updateCheckpointsOnParcels(shipment, new Checkpoint(shipmentService.getShipmentSenderAddress(shipment), Checkpoint.CheckpointType.Collected));
+        this.shipmentService.updateCheckpointsOnParcels(shipment,cp1);
+        this.shipmentService.updateCheckpointsOnParcels(shipment,cp2);
+
+
 
 
         //second checkpoint, this goes to first terminal so add the shipment to the terminal queue.
-        this.shipmentService.updateCheckpointsOnParcels(shipment, new Checkpoint(shipmentService.findFirstTerminalToShipment(shipment), Checkpoint.CheckpointType.ReceivedFirstTerminal));
+        //this.shipmentService.updateCheckpointsOnParcels(shipment, new Checkpoint(shipmentService.findFirstTerminalToShipment(shipment), Checkpoint.CheckpointType.ReceivedFirstTerminal));
 
         //this.shipmentService.findFirstTerminalToShipment(shipment).addShipment(shipment);
 

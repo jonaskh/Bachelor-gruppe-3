@@ -15,7 +15,7 @@ import javax.transaction.Transactional;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -40,6 +40,15 @@ public class CustomerService {
     public List<String> getCustomerEval() {
         return customerEval;
     }
+
+    @Transactional
+    public List<Customer> listAll() {return(List<Customer>) customerRepository.findAll();}
+
+    @jakarta.transaction.Transactional
+    public void save(Customer customer) {
+        customerRepository.save(customer);
+    }
+
 
     @Transactional
     public Optional<Customer> findByID(Long id) {

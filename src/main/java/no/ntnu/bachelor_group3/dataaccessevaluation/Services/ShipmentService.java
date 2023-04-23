@@ -64,8 +64,8 @@ public class ShipmentService{
     public Shipment findByID(Long id) {
         var before = Instant.now();
         Optional<Shipment> shipment = shipmentRepository.findById(id);
-        var duration = Duration.between(before,Instant.now());
-        shipmentEvals.add(duration.get(ChronoUnit.NANOS) + " shipment find");
+        var duration = Duration.between(before,Instant.now()).toNanos();
+        shipmentEvals.add(duration + ", shipment find");
         return shipment.orElse(null);
     }
 
@@ -135,7 +135,7 @@ public class ShipmentService{
             System.out.println("Shipment with that ID already exists");
         }
         var duration = Duration.between(before, Instant.now());
-        shipmentEvals.add(duration.get(ChronoUnit.NANOS) + " shipment create");
+        shipmentEvals.add(duration.get(ChronoUnit.NANOS) + ", shipment create");
     }
 
     /**
@@ -152,15 +152,16 @@ public class ShipmentService{
     }
 
     /**
-     * Adds a checkpoint to all parcels in the shipment, with a 2s delay to simulate travel time
+      * Adds a checkpoint to all parcels in the shipment, with a 2s delay to simulate travel time
      * @param shipment to add checkpoint to
-     * @param checkpoint which checkpoint to add
      */
-    public void updateCheckpointsOnParcels(Shipment shipment, Checkpoint checkpoint) {
+    @Transactional
+    public void updateFirstCheckpointOnParcels(Shipment shipment) {
+        Checkpoint checkpoint = new Checkpoint(shipment.getSender().getAddress(), Checkpoint.CheckpointType.Collected);
         if (!findByID(shipment.getShipment_id()).getParcels().isEmpty()) {
             for (Parcel parcel : shipment.getParcels()) {
                 parcel.setLastCheckpoint(checkpoint);
-//                checkpointService.addCheckpoint(checkpoint);
+                checkpointService.addCheckpoint(checkpoint);
             }
             System.out.println("Successfully added checkpoint" + checkpointService.findByID(checkpoint.getCheckpoint_id()).getType() + " to all parcels in shipment" + findByID(shipment.getShipment_id()));
         } else {
@@ -169,13 +170,38 @@ public class ShipmentService{
 
         try {
             System.out.println("Shipment is now being transported to next checkpoint...");
-            Thread.sleep(500);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
+    /**
+     * Adds a checkpoint to all parcels in the shipment, with a 2s delay to simulate travel time
+     * @param shipment to add checkpoint to
+     * @param checkpoint which checkpoint to add
+     */
+    @Transactional
+    public void updateCheckpointsOnParcels(Shipment shipment, Checkpoint checkpoint) {
+        if (!findByID(shipment.getShipment_id()).getParcels().isEmpty()) {
+            for (Parcel parcel : shipment.getParcels()) {
+                parcel.setLastCheckpoint(checkpoint);
+                checkpointService.addCheckpoint(checkpoint);
+            }
+            System.out.println("Successfully added checkpoint" + checkpointService.findByID(checkpoint.getCheckpoint_id()).getType() + " to all parcels in shipment" + findByID(shipment.getShipment_id()));
+        } else {
+            System.out.println("No parcels in shipment, couldn't update checkpoint");
+        }
 
+        try {
+            System.out.println("Shipment is now being transported to next checkpoint...");
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Transactional
     public String getShipmentSenderAddress(Shipment shipment) {
         if (shipmentRepository.findById(shipment.getShipment_id()).isPresent()) {
             Optional<Customer> customerOpt = customerService.findByID(shipmentRepository.findById(shipment.getShipment_id()).get().getSender().getCustomerID());
@@ -190,6 +216,7 @@ public class ShipmentService{
     }
 
 
+    @Transactional
     public String getShipmentReceiverAddress(Shipment shipment) {
         if (shipmentRepository.findById(shipment.getShipment_id()).isPresent()) {
             Optional<Customer> customerOpt = customerService.findByID(shipmentRepository.findById(shipment.getShipment_id()).get().getReceiver().getCustomerID());

@@ -16,6 +16,7 @@ public class Customer {
 
     //private static int counter_id = 1; //unique id, incremented each time a new customer is made.
     @Id
+    @Column(nullable = false)
     private Long customer_id;
 
     private String address;

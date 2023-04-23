@@ -36,28 +36,41 @@ public class SimulationRunner {
                 long timeSinceLastPrint = currentTime - lastPrintTime;
                 if (timeSinceLastPrint >= 7000) {
                     System.out.println("Sunday");
+                    timeSinceLastPrint = currentTime;
 
                 } else if (timeSinceLastPrint >= 6000) {
                     System.out.println("Saturday");
+                    timeSinceLastPrint = currentTime;
+
 
                 }
                 else if (timeSinceLastPrint >= 5000) {
                     System.out.println("Friday");
+                    timeSinceLastPrint = currentTime;
+
 
                 }
                 else if (timeSinceLastPrint >= 4000) {
                     System.out.println("Thursday");
+                    timeSinceLastPrint = currentTime;
+
                 }
                 else if (timeSinceLastPrint >= 3000) {
                     System.out.println("Wednesday");
+                    timeSinceLastPrint = currentTime;
+
 
                 }
                 else if (timeSinceLastPrint >= 2000) {
                     System.out.println("Tuesday");
+                    timeSinceLastPrint = currentTime;
+
 
                 }
                 else if (timeSinceLastPrint >= 1000) {
                     System.out.println("Monday");
+                    timeSinceLastPrint = currentTime;
+
 
                 }
             }

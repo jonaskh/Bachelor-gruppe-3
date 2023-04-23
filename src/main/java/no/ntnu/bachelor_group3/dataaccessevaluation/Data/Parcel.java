@@ -1,6 +1,7 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import org.hibernate.annotations.Check;
 
 import java.util.ArrayList;
@@ -67,6 +68,7 @@ public class Parcel {
         return cost;
     }
 
+    @Transactional
     public void setLastCheckpoint(Checkpoint checkpoint) {
         checkpoints.remove(checkpoint);
         checkpoints.add(checkpoint);

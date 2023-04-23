@@ -26,6 +26,7 @@ public class ValidPostalCodeService {
     private TerminalService terminalService;
 
 
+    @Transactional
     public ValidPostalCode findByZip(String zip) {
         return validPostalCodeRepository.findByPostalCode(zip).orElse(null);
     }
@@ -44,6 +45,7 @@ public class ValidPostalCodeService {
 //    }
 
 
+    @Transactional
     public void createTerminals(){
 
         String[] terminalAddresses = {"OSLO", "AKERSHUS", "ØSTFOLD", "HEDMARK", "OPPLAND", "BUSKERUD", "VESTFOLD", "TELEMARK",
@@ -60,6 +62,7 @@ public class ValidPostalCodeService {
         return terminalService;
     }
 
+    @Transactional
     public long countAll() {
         return validPostalCodeRepository.count();
     }
@@ -95,13 +98,4 @@ public class ValidPostalCodeService {
         return postalcodes;
     }
 
-//    public Terminal returnTerminalFromZip(String zip) {
-//        Terminal terminal = null;
-//        if (validPostalCodeRepository.findByPostalCode(zip).isPresent()) {
-//            terminal = validPostalCodeRepository.findByPostalCode(zip).get().getTerminal_id();
-//        } else {
-//            System.out.println("No terminal connected to that zip");
-//        }
-//        return terminal;
-//    }
 }

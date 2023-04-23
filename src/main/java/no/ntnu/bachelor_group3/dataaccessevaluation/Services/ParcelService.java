@@ -32,11 +32,7 @@ public class ParcelService {
     }
 
 
-    //returns the last checkpoint registered for tracking. This is the only way a customer can track the parcel.
-    private Checkpoint getCurrentCheckpoint() {
-        Optional<Checkpoint> current = checkpointService.getCurrent();
-        return current.orElse(null);
-    }
+
 
     public long findAllParcels() {
 
