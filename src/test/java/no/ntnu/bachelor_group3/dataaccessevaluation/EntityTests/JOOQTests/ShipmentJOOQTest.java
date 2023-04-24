@@ -1,4 +1,4 @@
-package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.ShipmentTests;
+package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.JOOQTests;
 
 import JOOQ.repositories.ShipmentRepository;
 import JOOQ.service.ShipmentService;

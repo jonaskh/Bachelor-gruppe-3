@@ -1,4 +1,4 @@
-package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.ParcelTests;
+package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.JOOQTests;
 
 import JOOQ.repositories.CustomerRepository;
 import JOOQ.repositories.ParcelRepository;

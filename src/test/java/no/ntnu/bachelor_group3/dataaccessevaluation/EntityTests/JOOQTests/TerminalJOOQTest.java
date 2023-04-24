@@ -1,4 +1,4 @@
-package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.TerminalTests;
+package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.JOOQTests;
 
 import JOOQ.repositories.TerminalRepository;
 import JOOQ.service.TerminalService;

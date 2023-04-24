@@ -15,11 +15,10 @@ import java.util.stream.Collectors;
 
 import com.opencsv.exceptions.CsvException;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Terminal;
-import org.jooq.DSLContext;
+import org.jooq.*;
+
 import static org.jooq.impl.DSL.rowNumber;
 
-import org.jooq.Query;
-import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
 import com.opencsv.CSVReader;
@@ -37,7 +36,6 @@ public class CsvImporterV2 {
     private final String username;
     private final String password;
 
-    int postCode = 0;
 
     int terminalCounter = 1;
 
@@ -84,7 +82,7 @@ public class CsvImporterV2 {
                     "ROGALAND", "VEST-AGDER", "AUST-AGDER", "HORDALAND", "SOGN OG FJORDANE", "MØRE OG ROMSDAL", "SØR-TRØNDELAG", "NORD-TRØNDELAG",
                     "NORDLAND", "TROMS", "FINNMARK"};
             List<Query> queries = Arrays.stream(terminalAddresses)
-                    .map(a -> {
+                    .flatMap(a -> {
                         // Insert into terminal table and get the primary key
                         int terminalId = Objects.requireNonNull(dsl.insertInto(TERMINAL)
                                         .set(TERMINAL.ADDRESS, a)
@@ -94,16 +92,15 @@ public class CsvImporterV2 {
                                         .returning(TERMINAL.TERMINAL_ID)
                                         .fetchOne())
                                 .getTerminalId();
-                        // Get the primary key of the valid_postal_codes row with postal_code = a
-                        var postalCodeId = dsl.select(VALID_POSTAL_CODES.POSTAL_CODE)
+                        // Get the primary keys of the valid_postal_codes rows with county = a
+                        Result<Record1<String>> postalCodeIds = dsl.select(VALID_POSTAL_CODES.POSTAL_CODE)
                                 .from(VALID_POSTAL_CODES)
                                 .where(VALID_POSTAL_CODES.COUNTY.eq(a))
-                                .fetch(VALID_POSTAL_CODES.POSTAL_CODE);
+                                .fetch();
                         // Insert into terminal_id table with the primary keys of terminal and valid_postal_codes rows
-
-                        return dsl.insertInto(TERMINAL_ID)
-                                .set(TERMINAL_ID.TERMINAL_ID_TERMINAL_ID, terminalId)
-                                .set(VALID_POSTAL_CODES.POSTAL_CODE, postalCodeId.get(postCode++));
+                        return postalCodeIds.stream()
+                                .map(postalCodeId -> dsl.insertInto(TERMINAL_ID)
+                                        .values(terminalId, postalCodeId.get(VALID_POSTAL_CODES.POSTAL_CODE)));
                     })
                     .collect(Collectors.toList());
             dsl.batch(queries).execute();
@@ -113,6 +110,7 @@ public class CsvImporterV2 {
             e.printStackTrace();
         }
     }
+
 
 
 

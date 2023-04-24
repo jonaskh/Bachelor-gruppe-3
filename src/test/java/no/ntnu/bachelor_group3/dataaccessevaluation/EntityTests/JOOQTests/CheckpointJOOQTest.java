@@ -1,4 +1,4 @@
-package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.CheckpointTest;
+package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.JOOQTests;
 
 import JOOQ.repositories.CheckpointRepository;
 import JOOQ.service.CheckpointService;
