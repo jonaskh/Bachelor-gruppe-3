@@ -73,6 +73,32 @@ public class CsvImporterV2 {
         }
     }
 
+    public void importCustomers() {
+        try (Connection conn = DriverManager.getConnection(url, username, password)) {
+            DSLContext dsl = DSL.using(conn, SQLDialect.POSTGRES);
+            try (CSVReader reader = new CSVReader(new FileReader(filename))) {
+                List<String[]> rows = reader.readAll();
+                int batchSize = 1000;
+                for (int i = 0; i < rows.size(); i += batchSize) {
+                    List<String[]> batchRows = rows.subList(i, Math.min(i + batchSize, rows.size()));
+                    dsl.batch(batchRows.stream().map(row -> {
+                        return dsl.insertInto(table("valid_postal_codes"))
+                                .set(field("postal_code"), row[0])
+                                .set(field("county"), row[4])
+                                .set(field("municipality"), row[3])
+                                .onConflict(field("postal_code")).doNothing(); // add ON CONFLICT clause
+                    }).collect(Collectors.toList())).execute();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (CsvException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
     public void insertTerminals() {
