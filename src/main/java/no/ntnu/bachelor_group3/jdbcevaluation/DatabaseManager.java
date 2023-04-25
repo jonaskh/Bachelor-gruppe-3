@@ -4,10 +4,12 @@ import no.ntnu.bachelor_group3.jdbcevaluation.Data.Checkpoint;
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Parcel;
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Shipment;
+import no.ntnu.bachelor_group3.jdbcevaluation.Data.Terminal;
 import no.ntnu.bachelor_group3.jdbcevaluation.Services.CheckpointService;
 import no.ntnu.bachelor_group3.jdbcevaluation.Services.CustomerService;
 import no.ntnu.bachelor_group3.jdbcevaluation.Services.ParcelService;
 import no.ntnu.bachelor_group3.jdbcevaluation.Services.ShipmentService;
+import no.ntnu.bachelor_group3.jdbcevaluation.Services.TerminalService;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ public class DatabaseManager implements AutoCloseable {
     private final ShipmentService shipmentService;
     private final ParcelService parcelService;
     private final CheckpointService checkpointService;
+    private final TerminalService terminalService;
 
     private Connection conn;
 
@@ -29,6 +32,7 @@ public class DatabaseManager implements AutoCloseable {
         shipmentService = new ShipmentService();
         parcelService = new ParcelService();
         checkpointService = new CheckpointService();
+        terminalService = new TerminalService();
 
         conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
         conn.setAutoCommit(false); // Start a new transaction
@@ -76,6 +80,10 @@ public class DatabaseManager implements AutoCloseable {
 
     public Long saveParcel(Parcel parcel) throws SQLException {
         return parcelService.save(parcel, conn);
+    }
+
+    public Terminal getTerminalById(int terminalId) throws SQLException {
+        return terminalService.getTerminalById(terminalId, conn);
     }
 
     public void deleteParcel(Parcel parcel) throws SQLException {
@@ -164,4 +172,7 @@ public class DatabaseManager implements AutoCloseable {
         stmt.execute(sql);
     }
 
+    public void saveTerminal(Terminal terminal) throws SQLException {
+        terminalService.save(terminal, conn);
+    }
 }

@@ -46,11 +46,19 @@ public class CustomerService {
      * @throws SQLException
      */
     public void save(Customer customer, Connection conn) throws SQLException {
+        long executionTime = 0;
+        long startTime = System.nanoTime();
+        long endTime;
         if (customerExists(customer.getId(), conn)) {
             update(customer, conn);
+            endTime = System.nanoTime();
+            executionTime = endTime - startTime;
         } else {
             insert(customer, conn);
+            endTime = System.nanoTime();
+            executionTime = endTime - startTime;
         }
+        System.out.println(executionTime);
     }
 
     /**
