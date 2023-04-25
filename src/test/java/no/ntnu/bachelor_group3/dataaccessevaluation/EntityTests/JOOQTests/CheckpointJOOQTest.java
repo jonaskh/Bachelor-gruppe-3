@@ -39,8 +39,6 @@ public class CheckpointJOOQTest {
     @Test
     public void testCreateCheckpoint() {
 
-
-
         LocalDateTime now = LocalDateTime.now();
         Checkpoint Checkpoint = new Checkpoint()
                 .setCost(100.0)

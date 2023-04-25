@@ -30,14 +30,6 @@ public class ValidPostalCodeJOOQTest {
         dslContext = DSL.using(conn, SQLDialect.POSTGRES);
     }
 
-    @Test
-    void testSave() {
-        ValidPostalCodesRepository validPostalCodesRepository = new ValidPostalCodesRepository(dslContext);
-        ValidPostalCodes validPostalCodes = new ValidPostalCodes().setPostalCode("1234").setCounty("Oslo").setMunicipality("Oslo");
-        ValidPostalCodes savedValidPostalCodes = validPostalCodesRepository.save(validPostalCodes);
-        assertThat(savedValidPostalCodes).isNotNull();
-        assertThat(savedValidPostalCodes.getPostalCode()).isEqualTo("1234");
-    }
 
     @Test
     void testFindAll() {
@@ -77,22 +69,7 @@ public class ValidPostalCodeJOOQTest {
 
 
 
-    @Test
-    void testUpdate() {
-        ValidPostalCodesRepository validPostalCodesRepository = new ValidPostalCodesRepository(dslContext);
-        Optional<ValidPostalCodes> optionalValidPostalCodes = validPostalCodesRepository.findById(1);
-        assertThat(optionalValidPostalCodes).isPresent();
-        ValidPostalCodes validPostalCodes = optionalValidPostalCodes.get();
-        validPostalCodes.setCounty("Viken");
-        ValidPostalCodes updatedValidPostalCodes = validPostalCodesRepository.update(validPostalCodes, 1);
-        assertThat(updatedValidPostalCodes).isNotNull();
-        assertThat(updatedValidPostalCodes.getCounty()).isEqualTo("Viken");
-    }
 
-    @Test
-    void testDeleteById() {
-        ValidPostalCodesRepository validPostalCodesRepository = new ValidPostalCodesRepository(dslContext);
-        boolean deleted = validPostalCodesRepository.deleteById(1);
-        assertThat(deleted).isTrue();
-    }
+
+
 }

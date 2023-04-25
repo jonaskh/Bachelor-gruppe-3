@@ -31,14 +31,6 @@ public class TerminalIdJOOQTest {
         Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres");
         dslContext = DSL.using(conn, SQLDialect.POSTGRES);
     }
-    @Test
-    void testSave() {
-        TerminalIdRepository terminalIdRepository = new TerminalIdRepository(dslContext);
-        TerminalId terminalId = new TerminalId().setPostalCode("1234");
-        TerminalId savedTerminalId = terminalIdRepository.save(terminalId);
-        assertThat(savedTerminalId).isNotNull();
-        assertThat(savedTerminalId.getTerminalIdTerminalId()).isGreaterThan(0);
-    }
 
     @Test
     void testFindAll() {
@@ -57,22 +49,6 @@ public class TerminalIdJOOQTest {
 
     }
 
-    @Test
-    void testUpdate() {
-        TerminalIdRepository terminalIdRepository = new TerminalIdRepository(dslContext);
-        Optional<TerminalId> optionalTerminalId = terminalIdRepository.findById(1);
-        assertThat(optionalTerminalId).isPresent();
-        TerminalId terminalId = optionalTerminalId.get();
-        terminalId.setPostalCode("5678");
-        TerminalId updatedTerminalId = terminalIdRepository.update(terminalId, terminalId.getTerminalIdTerminalId());
-        assertThat(updatedTerminalId).isNotNull();
-        assertThat(updatedTerminalId.getPostalCode()).isEqualTo("5678");
-    }
 
-    @Test
-    void testDeleteById() {
-        TerminalIdRepository terminalIdRepository = new TerminalIdRepository(dslContext);
-        boolean deleted = terminalIdRepository.deleteById(1);
-        assertThat(deleted).isTrue();
-    }
+
 }

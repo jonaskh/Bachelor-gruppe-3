@@ -48,9 +48,9 @@ public class ShipmentJOOQTest {
 
         Shipment shipment = new Shipment()
                 .setDelivered(false)
-                .setPayerId(10203009L)
-                .setReceiverId(2323L)
-                .setSenderId(62030203L)
+                .setPayerId(5L)
+                .setReceiverId(6L)
+                .setSenderId(6L)
                 .setTimeCreated(now)
                 .setEndTerminalId(2)
                 .setExpectedDeliveryDate(expectedDeliveryDate)
