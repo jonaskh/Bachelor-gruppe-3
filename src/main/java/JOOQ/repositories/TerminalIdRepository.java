@@ -60,6 +60,13 @@ public class TerminalIdRepository implements JOOQRepository<TerminalId>{
     }
 
 
+    public Optional<TerminalId> findByPostalCode(String postalCode) {
+        TerminalId terminalId = dslContext.selectFrom(TERMINAL_ID).where(TERMINAL_ID.POSTAL_CODE.eq(postalCode)).fetchOneInto(TerminalId.class);
+        return (ObjectUtils.isEmpty(terminalId)) ? Optional.empty() : Optional.of(terminalId);
+    }
+
+
+
 
     public boolean deleteById(long id) {
         return dslContext.delete(TERMINAL_ID)

@@ -51,13 +51,31 @@ public class ValidPostalCodeJOOQTest {
     @Test
     void testFindById() {
         ValidPostalCodesRepository validPostalCodesRepository = new ValidPostalCodesRepository(dslContext);
-        Optional<ValidPostalCodes> optionalValidPostalCodes = validPostalCodesRepository.findById(1);
+        Optional<ValidPostalCodes> optionalValidPostalCodes = validPostalCodesRepository.findById(1453);
+        assertThat(optionalValidPostalCodes).isPresent();
+        ValidPostalCodes validPostalCodes = optionalValidPostalCodes.get();
+        assertThat(validPostalCodes.getPostalCode()).isEqualTo("1453");
+        assertThat(validPostalCodes.getCounty()).isEqualTo("AKERSHUS");
+        assertThat(validPostalCodes.getMunicipality()).isEqualTo("NESODDEN");
+    }
+
+
+    //For when the postalcode starts with 0, needs to use String so the leading 0´s don´t get deleted.
+    @Test
+    void testFindByIdWithLeading0() {
+        ValidPostalCodesRepository validPostalCodesRepository = new ValidPostalCodesRepository(dslContext);
+        String paddedPostalCode = String.format("%04d", Integer.parseInt("0001"));
+        Optional<ValidPostalCodes> optionalValidPostalCodes = validPostalCodesRepository.findById("0001");
         assertThat(optionalValidPostalCodes).isPresent();
         ValidPostalCodes validPostalCodes = optionalValidPostalCodes.get();
         assertThat(validPostalCodes.getPostalCode()).isEqualTo("0001");
-        assertThat(validPostalCodes.getCounty()).isEqualTo("Oslo");
-        assertThat(validPostalCodes.getMunicipality()).isEqualTo("Oslo");
-    }
+        assertThat(validPostalCodes.getCounty()).isEqualTo("OSLO");
+        assertThat(validPostalCodes.getMunicipality()).isEqualTo("OSLO");
+        }
+
+
+
+
 
     @Test
     void testUpdate() {

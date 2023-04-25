@@ -41,6 +41,18 @@ public class ValidPostalCodesRepository implements JOOQRepository<ValidPostalCod
         return validPostalCodes;
     }
 
+
+    public ValidPostalCodes update(ValidPostalCodes validPostalCodes, String id) {
+        dslContext.update(VALID_POSTAL_CODES)
+                .set(VALID_POSTAL_CODES.POSTAL_CODE, validPostalCodes.getPostalCode())
+                .set(VALID_POSTAL_CODES.COUNTY, validPostalCodes.getCounty())
+                .set(VALID_POSTAL_CODES.MUNICIPALITY, validPostalCodes.getMunicipality())
+                .where(VALID_POSTAL_CODES.POSTAL_CODE.eq(validPostalCodes.getPostalCode()))
+                .execute();
+
+        return validPostalCodes;
+    }
+
     @Override
     public List<ValidPostalCodes> findAll() {
         return dslContext
@@ -56,10 +68,27 @@ public class ValidPostalCodesRepository implements JOOQRepository<ValidPostalCod
         return (validPostalCodes == null) ? Optional.empty() : Optional.of(validPostalCodes);
     }
 
+
+    public Optional<ValidPostalCodes> findById(String id) {
+        ValidPostalCodes validPostalCodes = dslContext.selectFrom(VALID_POSTAL_CODES)
+                .where(VALID_POSTAL_CODES.POSTAL_CODE.eq(id))
+                .fetchOneInto(ValidPostalCodes.class);
+        return (validPostalCodes == null) ? Optional.empty() : Optional.of(validPostalCodes);
+    }
+
+
+
     @Override
     public boolean deleteById(long id) {
         return dslContext.delete(VALID_POSTAL_CODES)
                 .where(VALID_POSTAL_CODES.POSTAL_CODE.eq(String.valueOf((int) id)))
+                .execute() == 1;
+    }
+
+    //For postnummer med 0 på starten
+    public boolean deleteById(String id) {
+        return dslContext.delete(VALID_POSTAL_CODES)
+                .where(VALID_POSTAL_CODES.POSTAL_CODE.eq(id))
                 .execute() == 1;
     }
 }

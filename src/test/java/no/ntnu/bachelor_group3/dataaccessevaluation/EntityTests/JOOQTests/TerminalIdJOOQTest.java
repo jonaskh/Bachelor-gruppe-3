@@ -48,12 +48,13 @@ public class TerminalIdJOOQTest {
     }
 
     @Test
-    void testFindById() {
+    void testFindByPostalCode() {
         TerminalIdRepository terminalIdRepository = new TerminalIdRepository(dslContext);
-        Optional<TerminalId> optionalTerminalId = terminalIdRepository.findById(1);
+        Optional<TerminalId> optionalTerminalId = terminalIdRepository.findByPostalCode("0001");
         assertThat(optionalTerminalId).isPresent();
         TerminalId terminalId = optionalTerminalId.get();
-        assertThat(terminalId.getPostalCode()).isEqualTo("1234");
+        assertThat(terminalId.getPostalCode()).isEqualTo("0001");
+
     }
 
     @Test
