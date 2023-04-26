@@ -6,6 +6,9 @@ import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Cust
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.records.CustomerRecord;
 import org.apache.commons.lang3.ObjectUtils;
 import org.jooq.DSLContext;
+import org.jooq.Record1;
+import org.jooq.Result;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -68,6 +71,12 @@ public class CustomerRepository implements JOOQRepository<Customer>{
         return dslContext.delete(CUSTOMER)
                 .where(CUSTOMER.CUSTOMER_ID.eq(id))
                 .execute() == 1;
+    }
+
+    public Long getNextCustomerId() {
+        Result<Record1<Long>> result = dslContext.select(DSL.max(CUSTOMER.CUSTOMER_ID)).from(CUSTOMER).fetch();
+        Long maxCustomerId = result.get(0).value1();
+        return maxCustomerId + 1;
     }
 
 

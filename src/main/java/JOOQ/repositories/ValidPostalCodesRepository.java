@@ -2,13 +2,19 @@ package JOOQ.repositories;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.TerminalId;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.ValidPostalCodes;
 import org.jooq.DSLContext;
+import org.jooq.Record1;
+import org.jooq.Result;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
+import static no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.Tables.TERMINAL_ID;
 import static no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.Tables.VALID_POSTAL_CODES;
 
 @RequiredArgsConstructor
@@ -91,4 +97,19 @@ public class ValidPostalCodesRepository implements JOOQRepository<ValidPostalCod
                 .where(VALID_POSTAL_CODES.POSTAL_CODE.eq(id))
                 .execute() == 1;
     }
+
+    public String getRandomZipCode() {
+        Result<Record1<String>> result = dslContext.select(VALID_POSTAL_CODES.POSTAL_CODE)
+                .from(VALID_POSTAL_CODES)
+                .orderBy(DSL.rand())
+                .limit(1)
+                .fetch();
+
+        if (result.isEmpty()) {
+            throw new IllegalStateException("No valid postal codes found");
+        }
+
+        return result.get(0).value1();
+    }
+
 }

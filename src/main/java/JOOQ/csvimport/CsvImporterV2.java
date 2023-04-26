@@ -74,7 +74,7 @@ public class CsvImporterV2 {
 
 
     //Imports the customers from a .csv with given batch size, has a onConflict clause that changes nothing if a customer with the given customer_id already exisits.
-    
+
     public void importCustomers() {
         try (Connection conn = DriverManager.getConnection(url, username, password)) {
             DSLContext dsl = DSL.using(conn, SQLDialect.POSTGRES);
