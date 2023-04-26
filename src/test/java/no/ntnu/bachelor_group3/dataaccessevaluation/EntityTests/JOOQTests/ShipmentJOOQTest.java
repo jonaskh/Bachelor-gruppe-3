@@ -52,9 +52,7 @@ public class ShipmentJOOQTest {
                 .setReceiverId(6L)
                 .setSenderId(6L)
                 .setTimeCreated(now)
-                .setEndTerminalId(2)
-                .setExpectedDeliveryDate(expectedDeliveryDate)
-                .setStartTerminalId(1);
+                .setExpectedDeliveryDate(expectedDeliveryDate);
         ShipmentService shipmentService = new ShipmentService(new ShipmentDao(dslContext.configuration()));
         Shipment savedShipment = shipmentService.create(shipment);
 

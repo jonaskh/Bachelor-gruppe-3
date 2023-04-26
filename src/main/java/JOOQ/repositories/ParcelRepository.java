@@ -29,7 +29,6 @@ public class ParcelRepository implements JOOQRepository<Parcel>{
         ParcelRecord ParcelRecord = dslContext.insertInto(PARCEL)
                 .set(PARCEL.WEIGHT, Parcel.getWeight())
                 .set(PARCEL.WEIGHT_CLASS, Parcel.getWeightClass())
-                .set(PARCEL.LAST_CHECKPOINT_CHECKPOINT_ID, Parcel.getLastCheckpointCheckpointId())
                 .returning(PARCEL.PARCEL_ID).fetchOne();
 
 
@@ -47,7 +46,6 @@ public class ParcelRepository implements JOOQRepository<Parcel>{
         ParcelRecord ParcelRecord = (ParcelRecord) dslContext.update(PARCEL)
                 .set(PARCEL.WEIGHT, Parcel.getWeight())
                 .set(PARCEL.WEIGHT_CLASS, Parcel.getWeightClass())
-                .set(PARCEL.LAST_CHECKPOINT_CHECKPOINT_ID, Parcel.getLastCheckpointCheckpointId())
                 .where(PARCEL.PARCEL_ID.eq(id));
 
         return (ParcelRecord != null)  ? Parcel : null;

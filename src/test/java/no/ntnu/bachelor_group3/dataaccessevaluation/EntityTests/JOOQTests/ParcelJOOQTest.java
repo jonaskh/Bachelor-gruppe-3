@@ -45,8 +45,7 @@ public class ParcelJOOQTest {
     public void testCreateParcel() {
         Parcel Parcel = new Parcel()
                 .setWeight(200.0)
-                .setWeightClass(1)
-                .setLastCheckpointCheckpointId(2L);
+                .setWeightClass(1);
         ParcelService service = new ParcelService(new ParcelDao(dslContext.configuration()));
         Parcel savedParcel = service.create(Parcel);
         assertNotNull(savedParcel.getParcelId());

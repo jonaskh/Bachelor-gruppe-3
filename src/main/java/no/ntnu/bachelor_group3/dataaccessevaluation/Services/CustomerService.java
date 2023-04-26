@@ -3,93 +3,107 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.Services;
 import com.github.javafaker.Faker;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.CustomerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
+import javax.management.InstanceNotFoundException;
 import javax.transaction.Transactional;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 public class CustomerService {
 
     private static final Faker faker = new Faker(new Locale("nb-NO"));
 
+    private static List<String> customerEval = new CopyOnWriteArrayList<>();
+
     @Autowired
     private CustomerRepository customerRepository;
 
+
     @Autowired
-    private ShipmentService shipmentService;
+    private TerminalService terminalService;
 
     private static final Logger logger = LoggerFactory.getLogger("CustomerServiceLogger");
 
-    public Customer findByID(Long id) {
-        Optional<Customer> customer = customerRepository.findById(id);
-
-        return customer.orElse(null);
+    public List<String> getCustomerEval() {
+        return customerEval;
     }
 
+    @Transactional
+    public List<Customer> listAll() {return(List<Customer>) customerRepository.findAll();}
+
+    @jakarta.transaction.Transactional
+    public void save(Customer customer) {
+        customerRepository.save(customer);
+    }
+
+
+    @Transactional
+    public Optional<Customer> findByID(Long id) {
+        var before = Instant.now();
+        Optional<Customer> customerOptional = customerRepository.findById(id);
+        var duration = Duration.between(before, Instant.now());
+        customerEval.add(duration.get(ChronoUnit.NANOS) + ", customer read");
+        return customerOptional;
+    }
+
+    public void printShipments(Customer customer) {
+        if (findByID(customer.getCustomerID()).isPresent()) {
+            System.out.println(findByID(customer.getCustomerID()).get().getShipments().values());
+        }
+
+    }
+
+
+    @jakarta.transaction.Transactional
+    public long count() {
+        var before = Instant.now();
+        var count = customerRepository.count();
+        var duration = Duration.between(before, Instant.now());
+
+        customerEval.add(duration.get(ChronoUnit.NANOS) + " , customer read all");
+        return count;
+    }
+
+    @jakarta.transaction.Transactional
     public Customer findByName(String name) {
         Optional<Customer> customer = customerRepository.findCustomerByName(name);
 
         return customer.orElse(null);
     }
 
-    public Shipment findShipment(Long id) {
-        Shipment shipment = shipmentService.findByID(id);
-
-        return shipment;
-    }
-
+    @jakarta.transaction.Transactional
     //saves a customer to the customerepo, and thus the database
-    @Transactional
-    public boolean add(Customer customer) {
-        boolean success = false;
+    public void add(Customer customer) {
 
-        Customer ifAlreadyExists = findByID(customer.getCustomerID());
-        if (ifAlreadyExists == null) {
+        Optional<Customer> ifAlreadyExists = findByID(customer.getCustomerID());
+        if (ifAlreadyExists.isEmpty()) {
+            var before = Instant.now();
             customerRepository.save(customer);
-            success = true;
+            var duration = Duration.between(before, Instant.now());
+            customerEval.add(duration.get(ChronoUnit.NANOS) + " , customer create");
+            System.out.println("Customer: " + customer.getCustomerID() + " has been saved to database");
         }
-        return success;
     }
 
-    /**
-     * Add a shipment to a customer, setting receiver and payer and sender to corresponding ids
-     * @param sender_id id of sender customer
-     * @param receiver_id id of receiver customer
-     * @param payer_id id of payer customer
-     * @return if successful or not
-     */
-    //TODO: If sender = receiver, set sender terminal to Oslo?
-    public boolean addShipment(Long sender_id, Long receiver_id, Long payer_id) {
-        boolean success = false;
+    public void createShipment(Shipment shipment,Customer customer) {
+        customer.getShipments().put(shipment.getShipment_id(), shipment);
+    }
 
-        Optional<Customer> sender = customerRepository.findById(sender_id);
-        Optional<Customer> receiver = customerRepository.findById(receiver_id);
-        Optional<Customer> payer = customerRepository.findById(payer_id);
 
-        //same sender and receiver
-        if (sender.isPresent() && payer.isPresent() && (sender == receiver)) {
-            Shipment shipment = new Shipment(sender.get(), payer.get(), receiver.get());
-            success = true;
-            shipmentService.add(shipment);
-
-        }
-
-        // if receiver is not an existing customer, address and name is generated at random
-        //TODO: generate proper zip values
-        if (sender.isPresent() && payer.isPresent() && receiver.isEmpty()) {
-            Shipment shipment = new Shipment(sender.get(), payer.get(), faker.name().fullName(), faker.address().streetAddress(), faker.address().zipCode());
-            success = true;
-            shipmentService.add(shipment);
-        } else {
-            logger.error("Could not add shipment");
-        }
-        return success;
+    public Terminal findNearestTerminalToCustomer(Customer customer) {
+        return terminalService.returnTerminalFromZip(customer.getZip_code());
     }
 }

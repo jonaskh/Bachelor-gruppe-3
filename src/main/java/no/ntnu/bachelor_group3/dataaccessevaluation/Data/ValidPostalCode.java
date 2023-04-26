@@ -17,7 +17,10 @@ public class ValidPostalCode {
 
     private String county;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Version
+    private Long zip_version = null;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "terminal_id")
     private Terminal terminal_id;
 

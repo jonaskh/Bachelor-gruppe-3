@@ -51,8 +51,7 @@ public class CustomerJOOQTest {
             Customer Customer = new Customer()
                     .setAddress("Oslo")
                     .setName(name)
-                    .setZipCode(postalCode)
-                    .setTerminalId(terminalId.getTerminalIdTerminalId());
+                    .setZipCode(postalCode);
             CustomerService service = new CustomerService(new CustomerDao(dslContext.configuration()));
             Customer savedCustomer = service.create(Customer);
             assertNotNull(savedCustomer.getCustomerId());

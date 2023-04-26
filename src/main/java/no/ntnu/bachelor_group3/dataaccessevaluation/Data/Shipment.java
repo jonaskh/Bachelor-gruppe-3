@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 @Entity
@@ -12,37 +13,38 @@ public class Shipment {
 
     private static Long counter = 1L;
 
-
+    @Version
+    private Long shipment_version = null;
 
     @Id
     private Long shipment_id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "sender_id")
     private Customer sender;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "receiver_id")
     private Customer receiver;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "payer_id")
     private Customer payer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "start_terminal_id")
-    private Terminal firstTerminal;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "end_terminal_id")
-    private Terminal finalTerminal;
+//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinColumn(name = "start_terminal_id")
+//    private Terminal firstTerminal;
+//
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "end_terminal_id")
+//    private Terminal finalTerminal;
 
     private boolean delivered;
 
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "parcel_id")
-    private List<Parcel> parcels = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,
+            fetch = FetchType.LAZY, mappedBy = "parcel_id")
+    private List<Parcel> parcels = new CopyOnWriteArrayList<>();
 
     private LocalDateTime timeCreated;
 
@@ -50,13 +52,10 @@ public class Shipment {
 
 
 
+
+
     // if customer is both sender and receiver
     public Shipment() {
-        this.shipment_id = counter++;
-    }
-
-    // if receiver is another customer than the one making the shipment
-    public Shipment(Long customer_id) {
         this.shipment_id = counter++;
     }
 
@@ -68,12 +67,14 @@ public class Shipment {
         this.sender = sender;
         this.payer = payer;
         this.receiver = receiver;
+        addParcels();
     }
 
     public Shipment(Customer sender, Customer payer, String receiver_address, String receiver_zip, String receiver_name) {
         this.shipment_id = counter++;
         this.sender = sender;
         this.payer = payer;
+        addParcels();
 
     }
 
@@ -146,6 +147,19 @@ public class Shipment {
     public void setDelivered() {
     }
 
+    public void addParcels() {
+
+        Random random = new Random();
+        int bound = random.nextInt(5) + 1; //generate random number of parcels added, always add 1 to avoid zero values
+
+
+        for (int i = 0; i < 3; i++) {
+            double weight = random.nextInt(1000) / 100.0; //returns a double value up to 10kg with 2 decimal places
+            Parcel parcel = new Parcel(this, weight);
+            addParcel(parcel);
+        }
+    }
+
 
     public int getTotalWeight() {
         int total_weight = 0;
@@ -156,7 +170,7 @@ public class Shipment {
     }
 
     //for testing
-    public String printParcels() {
+    public void printParcels() {
         if (parcels.isEmpty()) {
             System.out.println("Could not find any parcels");
         } else {
@@ -164,7 +178,6 @@ public class Shipment {
                 System.out.println(parcel.toString());
             }
         }
-        return "Number of parcels: " +parcels.size();
     }
 
 

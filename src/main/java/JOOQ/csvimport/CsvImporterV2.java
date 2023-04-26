@@ -17,15 +17,13 @@ import com.opencsv.exceptions.CsvException;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Terminal;
 import org.jooq.*;
 
+import static no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.Tables.*;
 import static org.jooq.impl.DSL.rowNumber;
 
 import org.jooq.impl.DSL;
 
 import com.opencsv.CSVReader;
 
-import static no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.Tables.TERMINAL;
-import static no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.Tables.TERMINAL_ID;
-import static no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.Tables.VALID_POSTAL_CODES;
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.table;
 
@@ -38,6 +36,7 @@ public class CsvImporterV2 {
 
 
     int terminalCounter = 1;
+    int customerCounter = 1;
 
     public CsvImporterV2(String filename, String url, String username, String password) {
         this.filename = filename;
@@ -82,11 +81,12 @@ public class CsvImporterV2 {
                 for (int i = 0; i < rows.size(); i += batchSize) {
                     List<String[]> batchRows = rows.subList(i, Math.min(i + batchSize, rows.size()));
                     dsl.batch(batchRows.stream().map(row -> {
-                        return dsl.insertInto(table("valid_postal_codes"))
-                                .set(field("postal_code"), row[0])
-                                .set(field("county"), row[4])
-                                .set(field("municipality"), row[3])
-                                .onConflict(field("postal_code")).doNothing(); // add ON CONFLICT clause
+                        return dsl.insertInto(table("customer"))
+                                .set(field("customer_id"), customerCounter++)
+                                .set(field("name"), row[0])
+                                .set(field("address"), row[1])
+                                .set(field("zip_code"), row[2]);
+                                 // add ON CONFLICT clause
                     }).collect(Collectors.toList())).execute();
                 }
             } catch (IOException e) {
@@ -98,7 +98,6 @@ public class CsvImporterV2 {
             e.printStackTrace();
         }
     }
-
 
 
     public void insertTerminals() {
@@ -150,10 +149,12 @@ public class CsvImporterV2 {
 
         LocalDateTime start = LocalDateTime.now();
 
-        CsvImporterV2 importer = new CsvImporterV2("Postnummerregister.csv",
-                "jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres");
-        importer.importData();
-        importer.insertTerminals();
+        CsvImporterV2 importer = new CsvImporterV2("customers.csv",
+               "jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres");
+        //importer.importData();
+        //importer.insertTerminals();
+        //importer.importCustomers();
+
 
         LocalDateTime after = LocalDateTime.now();
         long timeTaken = ChronoUnit.MILLIS.between(start,after);

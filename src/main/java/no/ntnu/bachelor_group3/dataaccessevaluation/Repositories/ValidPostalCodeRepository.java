@@ -9,7 +9,6 @@ import java.util.Optional;
 @Repository
 public interface ValidPostalCodeRepository extends CrudRepository<ValidPostalCode, String> {
 
-    //@Query(value = "SELECT * FROM valid_postal_codes WHERE postalCode = ?", nativeQuery = true)
     Optional<ValidPostalCode> findByPostalCode(String zip);
 
     long count();

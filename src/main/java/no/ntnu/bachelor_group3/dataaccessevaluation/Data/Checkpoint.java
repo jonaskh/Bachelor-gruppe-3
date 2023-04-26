@@ -1,6 +1,7 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import org.hibernate.annotations.Check;
 
 import java.text.SimpleDateFormat;
@@ -22,18 +23,18 @@ public class Checkpoint {
 
     public enum CheckpointType{Collected, ReceivedFirstTerminal,LoadedOnCar,ReceivedFinalTerminal,UnderDelivery,Delivered}
 
-
-
     private CheckpointType type;
 
     private double cost;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "terminal_id")
     private Terminal terminal;
 
-
     private LocalDateTime time;
+
+    @Version
+    private Long cp_version = null;
 
     public Checkpoint() {
     }
