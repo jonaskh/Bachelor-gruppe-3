@@ -72,6 +72,9 @@ public class CsvImporterV2 {
         }
     }
 
+
+    //Imports the customers from a .csv with given batch size, has a onConflict clause that changes nothing if a customer with the given customer_id already exisits.
+    
     public void importCustomers() {
         try (Connection conn = DriverManager.getConnection(url, username, password)) {
             DSLContext dsl = DSL.using(conn, SQLDialect.POSTGRES);
@@ -85,8 +88,11 @@ public class CsvImporterV2 {
                                 .set(field("customer_id"), customerCounter++)
                                 .set(field("name"), row[0])
                                 .set(field("address"), row[1])
-                                .set(field("zip_code"), row[2]);
-                                 // add ON CONFLICT clause
+                                .set(field("zip_code"), row[2])
+                                .onConflict(CUSTOMER.CUSTOMER_ID)
+                                .doNothing();
+
+                        // add ON CONFLICT clause
                     }).collect(Collectors.toList())).execute();
                 }
             } catch (IOException e) {
@@ -153,7 +159,7 @@ public class CsvImporterV2 {
                "jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres");
         //importer.importData();
         //importer.insertTerminals();
-        //importer.importCustomers();
+        importer.importCustomers();
 
 
         LocalDateTime after = LocalDateTime.now();
