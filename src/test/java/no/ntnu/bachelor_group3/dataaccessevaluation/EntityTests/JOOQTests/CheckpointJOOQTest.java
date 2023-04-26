@@ -43,7 +43,6 @@ public class CheckpointJOOQTest {
         Checkpoint Checkpoint = new Checkpoint()
                 .setCost(100.0)
                 .setTime(now)
-                .setType((short) 1)
                 .setTerminalId(1);
         CheckpointService service = new CheckpointService(new CheckpointDao(dslContext.configuration()));
         Checkpoint savedCheckpoint = service.create(Checkpoint);

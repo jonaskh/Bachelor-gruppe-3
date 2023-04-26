@@ -79,8 +79,12 @@ public class LifecycleJOOQTest {
 
 
 
-        //Create checkpoints
-        Checkpoint checkpoint = new Checkpoint(savedSender.getAddress(), );
+        // Define the checkpoint type and sender address
+        Checkpoint.CHECKPOINT_TYPE checkpointType = Checkpoint.CHECKPOINT_TYPE.NEW_CHECKPOINT;
+        String senderAddress = "123 Main St.";
+
+        Checkpoint checkpoint = new Checkpoint(senderAddress, checkpointType);
+
 
     }
     }
