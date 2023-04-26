@@ -31,10 +31,21 @@ public class Checkpoint {
     @JoinColumn(name = "terminal_id")
     private Terminal terminal;
 
+    @ManyToOne
+    @JoinColumn(name = "fk_parcel")
+    private Parcel parcel;
     private LocalDateTime time;
 
     @Version
     private Long cp_version = null;
+
+    public Parcel getParcel() {
+        return parcel;
+    }
+
+    public void setParcel(Parcel parcel) {
+        this.parcel = parcel;
+    }
 
     public Checkpoint() {
     }

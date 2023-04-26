@@ -42,6 +42,7 @@ public class SimulationJOOQTest {
     /**
      * Tries to import customers from the customer.csv file while using multithreading
      * The method adds around 49k costumers when the customer.csv file contains 50k, why? No idea
+     * I get all 50k customers ;) - Daniel
      * @throws SQLException
      */
     @Test

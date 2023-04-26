@@ -27,6 +27,7 @@ public class CheckpointRepository implements JOOQRepository<Checkpoint>{
                 .set(CHECKPOINT.COST, Checkpoint.getCost())
                 .set(CHECKPOINT.TIME, Checkpoint.getTime())
                 .set(CHECKPOINT.TERMINAL_ID, Checkpoint.getTerminalId())
+                .set(CHECKPOINT.FK_PARCEL, Checkpoint.getFkParcel())
                 .returning(CHECKPOINT.CHECKPOINT_ID).fetchOne();
 
 
@@ -43,6 +44,7 @@ public class CheckpointRepository implements JOOQRepository<Checkpoint>{
                 .set(CHECKPOINT.COST, Checkpoint.getCost())
                 .set(CHECKPOINT.TIME, Checkpoint.getTime())
                 .set(CHECKPOINT.TERMINAL_ID, Checkpoint.getTerminalId())
+                .set(CHECKPOINT.FK_PARCEL, Checkpoint.getFkParcel())
                 .where(CHECKPOINT.CHECKPOINT_ID.eq(id));
 
         return (CheckpointRecord != null)  ? Checkpoint : null;

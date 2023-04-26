@@ -2,6 +2,7 @@ package JOOQ.repositories;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.Checkpoint;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Shipment;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.records.ShipmentRecord;
 import org.apache.commons.lang3.ObjectUtils;
@@ -11,7 +12,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+import static no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.Tables.PARCEL;
 import static no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.Tables.SHIPMENT;
+import static no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.Checkpoint.CHECKPOINT;
 
 
 @RequiredArgsConstructor
@@ -73,6 +76,17 @@ public class ShipmentRepository implements JOOQRepository<Shipment>{
                 .where(SHIPMENT.SHIPMENT_ID.eq(id))
                 .execute() == 1;
     }
+
+    public List<Checkpoint> getCheckpointsForShipment(long shipmentId) {
+        return dslContext.selectFrom(CHECKPOINT)
+                .where(CHECKPOINT.FK_PARCEL.in(
+                        dslContext.select(PARCEL.PARCEL_ID)
+                                .from(PARCEL)
+                                .where(PARCEL.SHIPMENT_ID.eq(shipmentId))
+                ))
+                .fetchInto(Checkpoint.class);
+    }
+
 
 
 

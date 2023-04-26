@@ -68,6 +68,7 @@ public class TerminalIdRepository implements JOOQRepository<TerminalId>{
 
 
 
+
     public boolean deleteById(long id) {
         return dslContext.delete(TERMINAL_ID)
                 .where(TERMINAL_ID.TERMINAL_ID_TERMINAL_ID.eq((int) id))

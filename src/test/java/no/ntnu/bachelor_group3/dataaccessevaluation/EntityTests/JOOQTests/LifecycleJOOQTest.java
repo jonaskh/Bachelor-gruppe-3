@@ -1,18 +1,20 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.JOOQTests;
 
 import JOOQ.repositories.CustomerRepository;
+import JOOQ.repositories.ShipmentRepository;
+import JOOQ.repositories.TerminalIdRepository;
 import JOOQ.repositories.ValidPostalCodesRepository;
 import JOOQ.service.CheckpointService;
 import JOOQ.service.CustomerService;
+import JOOQ.service.ParcelService;
 import JOOQ.service.ShipmentService;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.enums.CheckpointType;
-import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Checkpoint;
+import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.daos.ParcelDao;
+import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.*;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.daos.CheckpointDao;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.daos.CustomerDao;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.daos.ShipmentDao;
-import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Customer;
-import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Shipment;
-import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.TerminalId;
+import org.glassfish.jaxb.core.v2.TODO;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
@@ -23,6 +25,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 public class LifecycleJOOQTest {
     private DSLContext dslContext;
     private CustomerRepository customerRepository;
@@ -45,6 +54,11 @@ public class LifecycleJOOQTest {
         LocalDateTime expectedDeliveryDate = LocalDateTime.now().plusDays(7);
         ShipmentService shipmentService = new ShipmentService(new ShipmentDao(dslContext.configuration()));
         CheckpointService checkpointService = new CheckpointService(new CheckpointDao(dslContext.configuration()));
+        ParcelService parcelService = new ParcelService(new ParcelDao(dslContext.configuration()));
+        TerminalIdRepository terminalIdRepository = new TerminalIdRepository(dslContext);
+        ShipmentRepository shipmentRepository = new ShipmentRepository(dslContext);
+
+
 
 
 
@@ -77,19 +91,71 @@ public class LifecycleJOOQTest {
                 .setExpectedDeliveryDate(expectedDeliveryDate);
         Shipment savedShipment = shipmentService.create(shipment);
 
+        Parcel parcel = new Parcel()
+                .setWeight(200.0)
+                .setWeightClass(1)
+                .setShipmentId(savedShipment.getShipmentId());
+        Parcel savedParcel = parcelService.create(parcel);
+        assertNotNull(savedParcel.getParcelId());
+        System.out.println(savedParcel.toString());
 
+
+        //TODO: Må finne en måte å gjøre slik at vi kan sette TerminalType til den String versjonen av Enumet slik at vi får mer kontroll.
+
+        //Creates a basic checkpoint with terminal for when it is collected, maybe a customers address is needed in this table aswell?
         Checkpoint checkpoint = new Checkpoint()
                 .setCost(100.0)
                 .setTime(now)
-                .setTerminalId(1);
+                .setFkParcel(savedParcel.getParcelId());
         checkpoint.setType((short) 0);
         Checkpoint savedCheckpoint = checkpointService.create(checkpoint);
         System.out.println(savedCheckpoint.toString());
 
+        //Creates a checkpoint with the terminal id connected to the senders zipcode - recieved at first terminal.
+        String senderPostalCode = savedSender.getZipCode();
+        Optional<TerminalId> senderTerminalId = terminalIdRepository.findByPostalCode(senderPostalCode);
+            Checkpoint checkpoint1 = new Checkpoint()
+                    .setCost(100.0)
+                    .setTime(now)
+                    .setTerminalId(senderTerminalId.get().getTerminalIdTerminalId())
+                    .setFkParcel(savedParcel.getParcelId());
+            checkpoint.setType((short) 1);
+            Checkpoint savedCheckpoint1 = checkpointService.create(checkpoint1);
+            System.out.println(savedCheckpoint1.toString());
+
+        //Creates a checkpoint for when the package is loaded for transport. Does not change terminal id.
+        Checkpoint checkpoint2 = new Checkpoint()
+                .setCost(100.0)
+                .setTime(now)
+                .setFkParcel(savedParcel.getParcelId())
+                .setTerminalId(checkpoint1.getTerminalId());
+        checkpoint.setType((short) 2);
+        Checkpoint savedCheckpoint2 = checkpointService.create(checkpoint2);
+        System.out.println(savedCheckpoint.toString());
+
+        String receiverPostalCode = savedReceiver.getZipCode();
+        Optional<TerminalId> receiverTerminalId = terminalIdRepository.findByPostalCode(receiverPostalCode);
+        Checkpoint checkpoint3 = new Checkpoint()
+                .setCost(100.0)
+                .setTime(now)
+                .setTerminalId(receiverTerminalId.get().getTerminalIdTerminalId())
+                .setFkParcel(savedParcel.getParcelId());
+        checkpoint.setType((short) 1);
+        Checkpoint savedCheckpoint3 = checkpointService.create(checkpoint3);
+        System.out.println(savedCheckpoint3.toString());
+
+        
+
+        }
+
 
 
 
     }
-    }
+
+
+
+
+
 
 
