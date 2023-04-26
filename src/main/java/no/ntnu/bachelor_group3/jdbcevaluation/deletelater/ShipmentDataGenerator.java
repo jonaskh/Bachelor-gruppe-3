@@ -34,7 +34,7 @@ public class ShipmentDataGenerator {
 
 
                 // Create a new Shipment object with the generated data
-                Shipment shipment = new Shipment(0L, sender, receiver.getAddress(), receiver.getZipCode(), receiver.getName(), payer, totalCost);
+                Shipment shipment = new Shipment(0L, sender, receiver, payer, totalCost);
                 // Save the shipment to the database
                 db.saveShipment(shipment);
             }

@@ -15,10 +15,8 @@ public class ShipmentService {
 
     private static final String GET_SHIPMENT_BY_ID_QUERY = "SELECT * FROM Shipment WHERE shipment_id = ?";
     private static final String GET_PARCELS_IN_SHIPMENT_BY_ID_QUERY = "SELECT * FROM Parcel WHERE shipment_id = ?";
-    private static final String INSERT_SHIPMENT_QUERY = "INSERT INTO Shipment (customer_id, receiving_address, receiving_zip," +
-            " receiver_name, payer_id, delivered) VALUES (?, ?, ?, ?, ?, ?)";
-    private static final String UPDATE_SHIPMENT_QUERY = "UPDATE Shipment SET sender_id = ?, receiving_address = ?," +
-            " receiving_zip = ?, receiver_name = ? payer_id = ? WHERE id = ?";
+    private static final String INSERT_SHIPMENT_QUERY = "INSERT INTO Shipment (sender_id, receiver_id, payer_id, delivered) VALUES (?, ?, ?, ?)";
+    private static final String UPDATE_SHIPMENT_QUERY = "UPDATE Shipment SET sender_id = ?, receiver_id = ?, payer_id = ? WHERE id = ?";
     private static final String DELETE_SHIPMENT_QUERY = "DELETE FROM Shipment WHERE id = ?";
 
     public ShipmentService() {}
@@ -28,12 +26,10 @@ public class ShipmentService {
         stmt.setLong(1, shipmentId);
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
-            Customer sender = customerService.getCustomerById(rs.getInt("customer_id"), conn);
-            String address = rs.getString("receiving_address");
-            String zip = rs.getString("receiving_zip");
-            String name = rs.getString("receiver_name");
-            Customer payer = customerService.getCustomerById(rs.getInt("payer_id"), conn);
-            Shipment shipment = new Shipment(rs.getLong("shipment_id"), sender, address, zip, name,
+            Customer sender = customerService.getCustomerById(rs.getLong("sender_id"), conn);
+            Customer receiver = customerService.getCustomerById(rs.getLong("receiver_id"), conn);
+            Customer payer = customerService.getCustomerById(rs.getLong("payer_id"), conn);
+            Shipment shipment = new Shipment(rs.getLong("shipment_id"), sender, receiver,
                     payer, 0);
             // Retrieve all parcels associated with this shipment
             stmt = conn.prepareStatement(GET_PARCELS_IN_SHIPMENT_BY_ID_QUERY);
@@ -73,7 +69,7 @@ public class ShipmentService {
             // This is an existing shipment, so update it in the database
             stmt = conn.prepareStatement(UPDATE_SHIPMENT_QUERY);
             setShipmentInfo(shipment, stmt);
-            stmt.setLong(7, id);
+            stmt.setLong(4, id);
             stmt.executeUpdate();
             // Update all parcels associated with this shipment
             for (Parcel parcel : parcels) {
@@ -100,10 +96,8 @@ public class ShipmentService {
 
     private void setShipmentInfo(Shipment shipment, PreparedStatement stmt) throws SQLException {
         stmt.setLong(1, shipment.getSender().getId());
-        stmt.setString(2, shipment.getReceiving_address());
-        stmt.setString(3, shipment.getReceiving_zip());
-        stmt.setString(4, shipment.getReceiver_name());
-        stmt.setLong(5, shipment.getPayer().getId());
-        stmt.setBoolean(6, shipment.isDelivered());
+        stmt.setLong(2, shipment.getReceiver().getId());
+        stmt.setLong(3, shipment.getPayer().getId());
+        stmt.setBoolean(4, shipment.isDelivered());
     }
 }

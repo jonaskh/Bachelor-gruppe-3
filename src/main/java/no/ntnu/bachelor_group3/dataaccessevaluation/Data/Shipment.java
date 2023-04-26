@@ -1,49 +1,80 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
-import com.github.javafaker.Faker;
 import jakarta.persistence.*;
 
-import java.util.Locale;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 @Entity
 public class Shipment {
 
-    private static Faker faker = new Faker(new Locale("nb-NO"));
 
+    private static Long counter = 1L;
+
+    @Version
+    private Long shipment_version = null;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long shipment_id;
 
-    @JoinColumn(name = "customer_id")
-    private Long customer_id;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "sender_id")
+    private Customer sender;
 
-    private String receiving_address;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "receiver_id")
+    private Customer receiver;
 
-    private String receiving_zip;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "payer_id")
+    private Customer payer;
 
-    private String receiver_name;
+//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinColumn(name = "start_terminal_id")
+//    private Terminal firstTerminal;
+//
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "end_terminal_id")
+//    private Terminal finalTerminal;
 
     private boolean delivered;
 
-    @JoinColumn(name = "customer_id")
-    private Long payer_id;
 
-    /*
-    @OneToMany
-    @JoinColumn(name = "parcel_id")
-    private Set<Parcel> parcels;
-*/
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,
+            fetch = FetchType.LAZY, mappedBy = "parcel_id")
+    private List<Parcel> parcels = new CopyOnWriteArrayList<>();
 
+    private LocalDateTime timeCreated;
 
+    private LocalDateTime expectedDeliveryDate;
 
 
+
+
+
+    // if customer is both sender and receiver
     public Shipment() {
+        this.shipment_id = counter++;
     }
 
-    public Shipment(Long customer_id) {
+    // if receiver is not an existing customer
+    public Shipment(Customer sender, Customer payer, Customer receiver) {
+        this.shipment_id = counter++;
+        this.timeCreated = LocalDateTime.now();
+        this.expectedDeliveryDate = LocalDateTime.now().plusSeconds(10); //sets expected delivery date 10s from creation
+        this.sender = sender;
+        this.payer = payer;
+        this.receiver = receiver;
+        addParcels();
+    }
+
+    public Shipment(Customer sender, Customer payer, String receiver_address, String receiver_zip, String receiver_name) {
+        this.shipment_id = counter++;
+        this.sender = sender;
+        this.payer = payer;
+        addParcels();
 
     }
 
@@ -51,32 +82,35 @@ public class Shipment {
     //TODO: add total cost => weight * checkpoint cost
 
 
+    //TODO: Set terminals based on zip codes
+
+
+    public Customer getSender() {
+        return sender;
+    }
+
+    public void setSender(Customer sender) {
+        this.sender = sender;
+    }
+
+    public Customer getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(Customer receiver) {
+        this.receiver = receiver;
+    }
+
+    public Customer getPayer() {
+        return payer;
+    }
+
+    public void setPayer(Customer payer) {
+        this.payer = payer;
+    }
+
     public Long getShipment_id() {
         return shipment_id;
-    }
-
-    public String getReceiving_address() {
-        return receiving_address;
-    }
-
-    public void setReceiving_address(String receiving_address) {
-        this.receiving_address = receiving_address;
-    }
-
-    public String getReceiving_zip() {
-        return receiving_zip;
-    }
-
-    public void setReceiving_zip(String receiving_zip) {
-        this.receiving_zip = receiving_zip;
-    }
-
-    public String getReceiver_name() {
-        return receiver_name;
-    }
-
-    public void setReceiver_name(String receiver_name) {
-        this.receiver_name = receiver_name;
     }
 
     public boolean isDelivered() {
@@ -87,47 +121,46 @@ public class Shipment {
         this.delivered = delivered;
     }
 
-    public Long getPayer_id() {
-        return payer_id;
-    }
-
-    public void setPayer_id(Long payer_id) {
-        this.payer_id = payer_id;
-    }
-
-    /*
-    public Set<Parcel> getParcels() {
+    public List<Parcel> getParcels() {
         return parcels;
     }
 
-    public void setParcels(Set<Parcel> parcels) {
+    public void setParcels(ArrayList<Parcel> parcels) {
         this.parcels = parcels;
     }
 
-     */
-
-    public void setShipment_id(Long shipment_id_id) {
-        this.shipment_id = shipment_id;
+    public Long getSenderID() {
+        return this.sender.getCustomerID();
+    }
+    public Long getReceiverID() {
+        return this.receiver.getCustomerID();
+    }
+    public Long getPayerID() {
+        return this.payer.getCustomerID();
     }
 
-    /*
-    public void addparcel(Parcel parcel) {
-        parcels.add(parcel);
-    }
+    public void addParcel(Parcel parcel) {
 
-     */
+        this.parcels.add(parcel);
+    }
 
     public void setDelivered() {
     }
 
-    public void setCustomer_id(Long customer_id) {
+    public void addParcels() {
 
-        this.customer_id = customer_id;
+        Random random = new Random();
+        int bound = random.nextInt(5) + 1; //generate random number of parcels added, always add 1 to avoid zero values
+
+
+        for (int i = 0; i < bound; i++) {
+            double weight = random.nextInt(1000) / 100.0; //returns a double value up to 10kg with 2 decimal places
+            Parcel parcel = new Parcel(this, weight);
+            addParcel(parcel);
+        }
     }
 
 
-
-    /*
     public int getTotalWeight() {
         int total_weight = 0;
         for (Parcel parcel : parcels) {
@@ -136,6 +169,26 @@ public class Shipment {
         return total_weight;
     }
 
-     */
+    //for testing
+    public void printParcels() {
+        if (parcels.isEmpty()) {
+            System.out.println("Could not find any parcels");
+        } else {
+            for (Parcel parcel : parcels) {
+                System.out.println(parcel.toString());
+            }
+        }
+    }
 
+
+    @Override
+    public String toString() {
+        return "Shipment{" +
+                "shipment_id=" + shipment_id +
+                ", sender_id='" + sender + '\'' +
+                ", receiver_zip='" + receiver + '\'' +
+                "nr of parcels: " + parcels.size() +
+                ", expected delivery: " + expectedDeliveryDate +
+                '}';
+    }
 }

@@ -3,38 +3,41 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 import com.github.javafaker.Faker;
 import jakarta.persistence.*;
 
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
-//TODO: Add connection to other tables
 @Entity
 @Table(name = "customer")
 public class Customer {
 
+    private static Long counter = 1L;
+    private static final Faker faker = new Faker(new Locale("nb-NO"));
 
     //private static int counter_id = 1; //unique id, incremented each time a new customer is made.
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long customer_id;
 
     private String address;
     private String name;
     private String zip_code;
 
-    /*
+    @Version
+    private Long customer_version = null;
+
+
     //Set of shipments for each customer
-    @OneToMany
-    @JoinColumn(name = "shipment_id")
-    private Set<Shipment> shipments;
-     */
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "shipment_id")
+    private Map<Long,Shipment> shipments = new ConcurrentHashMap<>();
 
     /**
-     * Cosntructor that user JavcFaker to generate values
+     * Constructor that user JavaFaker to generate values
      */
     public Customer() {
-        Faker faker = new Faker(new Locale("nb-NO"));
 
+        //this.customer_id = counter++;
         this.address = faker.address().streetAddress();
         this.name = faker.name().fullName();
         this.zip_code = faker.address().zipCode(); //TODO: Check for valid codes
@@ -45,6 +48,8 @@ public class Customer {
      * Constructor for manual input of values
      */
     public Customer(String address, String name, String zip_code) {
+
+        //this.customer_id = counter++;
         this.address = address;
         this.name = name;
         this.zip_code = zip_code;
@@ -78,17 +83,15 @@ public class Customer {
         this.address = address;
     }
 
+    public Map<Long,Shipment> getShipments() {
+        return this.shipments;
+    }
+
 
     /**
-     * Create a shipment where receiver and sender is same customer
+     * Add a shipment to the customer
      */
-    public void createShipment() {
-        Shipment newShipment = new Shipment(this.customer_id);
-    }
 
-    public void createShipment(Customer customer) {
-
-    }
 
 
     @Override
@@ -97,9 +100,7 @@ public class Customer {
                 "customer_id=" + customer_id +
                 ", address='" + address + '\'' +
                 ", name='" + name + '\'' +
-                ", zip='" + zip_code + '\'' +
                 '}';
     }
-
 
 }

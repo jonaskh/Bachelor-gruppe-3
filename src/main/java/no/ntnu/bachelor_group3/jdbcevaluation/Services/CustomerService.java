@@ -11,7 +11,7 @@ import java.sql.Statement;
 public class CustomerService {
 
     private static final String GET_CUSTOMER_BY_ID_QUERY = "SELECT * FROM customer WHERE customer_id = ?";
-    private static final String INSERT_CUSTOMER_QUERY = "INSERT INTO customer (name, address, zip_code) VALUES (?, ?, ?)";
+    private static final String INSERT_CUSTOMER_QUERY = "INSERT INTO customer (name, address, zip_code) VALUES (?, ?, ?) RETURNING customer_id";
     private static final String UPDATE_CUSTOMER_QUERY = "UPDATE customer SET name = ?, address = ?, zip_code = ? WHERE customer_id = ?";
     private static final String DELETE_CUSTOMER_QUERY = "DELETE FROM customer WHERE customer_id = ?";
 
@@ -25,9 +25,9 @@ public class CustomerService {
      * @return a customer, or null if it does not exist
      * @throws SQLException
      */
-    public Customer getCustomerById(int customerId, Connection conn) throws SQLException {
+    public Customer getCustomerById(Long customerId, Connection conn) throws SQLException {
         try (PreparedStatement stmt = conn.prepareStatement(GET_CUSTOMER_BY_ID_QUERY)) {
-            stmt.setInt(1, customerId);
+            stmt.setLong(1, customerId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return new Customer(rs.getLong("customer_id"), rs.getString("name"),

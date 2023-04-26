@@ -54,7 +54,7 @@ public class DatabaseManager implements AutoCloseable {
         conn.close();
     }
 
-    public Customer getCustomerById(int customerId) throws SQLException {
+    public Customer getCustomerById(Long customerId) throws SQLException {
         return customerService.getCustomerById(customerId, conn);
     }
 
@@ -127,18 +127,14 @@ public class DatabaseManager implements AutoCloseable {
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT * FROM shipment");
         while (rs.next()) {
-            Customer sender = getCustomerById(rs.getInt("customer_id"));
-            String address = rs.getString("receiving_address");
-            String zip = rs.getString("receiving_zip");
-            String name = rs.getString("receiver_name");
-            Customer payer = getCustomerById(rs.getInt("payer_id"));
+            Customer sender = getCustomerById(rs.getLong("sender_id"));
+            Customer receiver = getCustomerById(rs.getLong("receiver_id"));
+            Customer payer = getCustomerById(rs.getLong("payer_id"));
 
             Shipment shipment = new Shipment(
                     rs.getLong("shipment_id"),
                     sender,
-                    address,
-                    zip,
-                    name,
+                    receiver,
                     payer,
                     0
             );

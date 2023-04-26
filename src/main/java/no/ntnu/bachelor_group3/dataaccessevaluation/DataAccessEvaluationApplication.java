@@ -1,7 +1,10 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation;
 
+import com.opencsv.exceptions.CsvValidationException;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Generators.CustomerGenerator;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.CustomerRepository;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.CustomerService;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;
@@ -14,6 +17,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+
 
 @SpringBootApplication
 public class DataAccessEvaluationApplication {
@@ -21,21 +26,15 @@ public class DataAccessEvaluationApplication {
 	private static final Logger log = LoggerFactory.getLogger(DataAccessEvaluationApplication.class);
 
 
-	public static void main(String[] args) {
 
+	public static void main(String[] args) {
 		SpringApplication.run(DataAccessEvaluationApplication.class, args);
 	}
 
 
 
 
-	public void insertValues(CustomerRepository repo) {
-		ShipmentService shipmentService;
 
-		CustomerService customerService;
-
-		repo.save(new Customer());
-	}
 }
 
 /*	@Bean

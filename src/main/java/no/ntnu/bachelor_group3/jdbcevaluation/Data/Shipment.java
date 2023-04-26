@@ -10,9 +10,7 @@ public class Shipment {
     private Long id;
     private Customer sender;
 
-    private String receiving_address;
-    private String receiving_zip;
-    private String receiver_name;
+    private Customer receiver;
     private Customer payer;
     private double totalCost;
     private List<Parcel> parcels;
@@ -28,13 +26,11 @@ public class Shipment {
     }
 
     // Constructor
-    public Shipment(Long id, Customer sender, String receiving_address, String receiving_zip, String receiver_name,
+    public Shipment(Long id, Customer sender, Customer receiver,
                     Customer payer, double totalCost) {
         this.id = id;
         this.sender = sender;
-        this.receiving_address = receiving_address;
-        this.receiving_zip = receiving_zip;
-        this.receiver_name = receiver_name;
+        this.receiver = receiver;
         this.payer = payer;
         this.totalCost = totalCost;
         this.parcels = new ArrayList<>();
@@ -51,36 +47,20 @@ public class Shipment {
         this.id = id;
     }
 
+    public Customer getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(Customer receiver) {
+        this.receiver = receiver;
+    }
+
     public Customer getSender() {
         return sender;
     }
 
     public void setSender(Customer sender) {
         this.sender = sender;
-    }
-
-    public String getReceiving_address() {
-        return receiving_address;
-    }
-
-    public void setReceiving_address(String receiving_address) {
-        this.receiving_address = receiving_address;
-    }
-
-    public String getReceiving_zip() {
-        return receiving_zip;
-    }
-
-    public void setReceiving_zip(String receiving_zip) {
-        this.receiving_zip = receiving_zip;
-    }
-
-    public String getReceiver_name() {
-        return receiver_name;
-    }
-
-    public void setReceiver_name(String receiver_name) {
-        this.receiver_name = receiver_name;
     }
 
     public Customer getPayer() {
