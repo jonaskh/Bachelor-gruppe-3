@@ -2,9 +2,12 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.JOOQTests;
 
 import JOOQ.repositories.CustomerRepository;
 import JOOQ.repositories.ValidPostalCodesRepository;
+import JOOQ.service.CheckpointService;
 import JOOQ.service.CustomerService;
 import JOOQ.service.ShipmentService;
-import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.Checkpoint;
+import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.enums.CheckpointType;
+import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Checkpoint;
+import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.daos.CheckpointDao;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.daos.CustomerDao;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.daos.ShipmentDao;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Customer;
@@ -20,10 +23,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-
-import static no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.Tables.*;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 public class LifecycleJOOQTest {
     private DSLContext dslContext;
     private CustomerRepository customerRepository;
@@ -45,6 +44,7 @@ public class LifecycleJOOQTest {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime expectedDeliveryDate = LocalDateTime.now().plusDays(7);
         ShipmentService shipmentService = new ShipmentService(new ShipmentDao(dslContext.configuration()));
+        CheckpointService checkpointService = new CheckpointService(new CheckpointDao(dslContext.configuration()));
 
 
 
@@ -78,12 +78,15 @@ public class LifecycleJOOQTest {
         Shipment savedShipment = shipmentService.create(shipment);
 
 
+        Checkpoint checkpoint = new Checkpoint()
+                .setCost(100.0)
+                .setTime(now)
+                .setTerminalId(1);
+        checkpoint.setType((short) 0);
+        Checkpoint savedCheckpoint = checkpointService.create(checkpoint);
+        System.out.println(savedCheckpoint.toString());
 
-        // Define the checkpoint type and sender address
-        Checkpoint.CHECKPOINT_TYPE checkpointType = Checkpoint.CHECKPOINT_TYPE.NEW_CHECKPOINT;
-        String senderAddress = "123 Main St.";
 
-        Checkpoint checkpoint = new Checkpoint(senderAddress, checkpointType);
 
 
     }
