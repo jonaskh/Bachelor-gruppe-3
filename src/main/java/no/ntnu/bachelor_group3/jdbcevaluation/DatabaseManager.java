@@ -5,11 +5,13 @@ import no.ntnu.bachelor_group3.jdbcevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Parcel;
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Terminal;
+import no.ntnu.bachelor_group3.jdbcevaluation.Data.ValidPostalCode;
 import no.ntnu.bachelor_group3.jdbcevaluation.Services.CheckpointService;
 import no.ntnu.bachelor_group3.jdbcevaluation.Services.CustomerService;
 import no.ntnu.bachelor_group3.jdbcevaluation.Services.ParcelService;
 import no.ntnu.bachelor_group3.jdbcevaluation.Services.ShipmentService;
 import no.ntnu.bachelor_group3.jdbcevaluation.Services.TerminalService;
+import no.ntnu.bachelor_group3.jdbcevaluation.Services.ValidPostalCodeService;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ public class DatabaseManager implements AutoCloseable {
     private final ParcelService parcelService;
     private final CheckpointService checkpointService;
     private final TerminalService terminalService;
+    private final ValidPostalCodeService validPostalCodeService;
 
     private Connection conn;
 
@@ -33,6 +36,7 @@ public class DatabaseManager implements AutoCloseable {
         parcelService = new ParcelService();
         checkpointService = new CheckpointService();
         terminalService = new TerminalService();
+        validPostalCodeService = new ValidPostalCodeService();
 
         conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
         conn.setAutoCommit(false); // Start a new transaction
@@ -174,5 +178,9 @@ public class DatabaseManager implements AutoCloseable {
 
     public void saveTerminal(Terminal terminal) throws SQLException {
         terminalService.save(terminal, conn);
+    }
+
+    public void savePostalCode(ValidPostalCode postalCode) throws SQLException {
+        validPostalCodeService.save(postalCode, conn);
     }
 }

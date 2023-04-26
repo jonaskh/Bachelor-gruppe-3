@@ -4,12 +4,17 @@ public class ValidPostalCode {
     private Long id;
 
     private Terminal terminal;
-    private String area;
 
-    public ValidPostalCode(Long id, Terminal terminal, String area) {
+    private String postalCode;
+    private String county;
+    private String municipality;
+
+    public ValidPostalCode(Long id, String postalCode, Terminal terminal, String county, String municipality) {
         this.id = id;
         this.terminal = terminal;
-        this.area = area;
+        this.county = county;
+        this.municipality = municipality;
+        this.postalCode = postalCode;
     }
 
     public Terminal getTerminal() {
@@ -20,12 +25,28 @@ public class ValidPostalCode {
         this.terminal = terminal;
     }
 
-    public String getArea() {
-        return area;
+    public String getPostalCode() {
+        return postalCode;
     }
 
-    public void setArea(String area) {
-        this.area = area;
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public String getMunicipality() {
+        return municipality;
+    }
+
+    public void setMunicipality(String municipality) {
+        this.municipality = municipality;
+    }
+
+    public String getCounty() {
+        return county;
+    }
+
+    public void setCounty(String county) {
+        this.county = county;
     }
 
     public Long getId() {

@@ -13,7 +13,7 @@ public class TerminalDataGenerator {
         try (DatabaseManager db = new DatabaseManager()) {
             db.execute("DELETE FROM terminal");
             Faker faker = new Faker(new Locale("nb-NO"));
-            for (int i = 1; i <= 20; i++) {
+            for (int i = 1; i <= 19; i++) {
                 String location = faker.address().streetAddress();
 
                 Terminal terminal = new Terminal(0L, location);
