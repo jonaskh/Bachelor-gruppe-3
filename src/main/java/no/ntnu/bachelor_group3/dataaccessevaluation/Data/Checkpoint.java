@@ -31,9 +31,11 @@ public class Checkpoint {
     @JoinColumn(name = "terminal_id")
     private Terminal terminal;
 
-    @ManyToOne
-    @JoinColumn(name = "fk_parcel")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "parcel_id")
     private Parcel parcel;
+
+
     private LocalDateTime time;
 
     @Version

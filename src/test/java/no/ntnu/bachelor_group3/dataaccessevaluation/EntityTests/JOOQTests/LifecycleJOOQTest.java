@@ -18,6 +18,7 @@ import org.glassfish.jaxb.core.v2.TODO;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
+import org.jooq.meta.derby.sys.Sys;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -90,6 +91,8 @@ public class LifecycleJOOQTest {
                 .setTimeCreated(now)
                 .setExpectedDeliveryDate(expectedDeliveryDate);
         Shipment savedShipment = shipmentService.create(shipment);
+        System.out.println(savedShipment.toString());
+
 
         Parcel parcel = new Parcel()
                 .setWeight(200.0)
@@ -106,47 +109,51 @@ public class LifecycleJOOQTest {
         Checkpoint checkpoint = new Checkpoint()
                 .setCost(100.0)
                 .setTime(now)
-                .setFkParcel(savedParcel.getParcelId());
+                .setParcelId(savedParcel.getParcelId());
         checkpoint.setType((short) 0);
         Checkpoint savedCheckpoint = checkpointService.create(checkpoint);
-        System.out.println(savedCheckpoint.toString());
+        System.out.println(savedCheckpoint.toString()+"Main Checkpoint");
 
         //Creates a checkpoint with the terminal id connected to the senders zipcode - recieved at first terminal.
         String senderPostalCode = savedSender.getZipCode();
         Optional<TerminalId> senderTerminalId = terminalIdRepository.findByPostalCode(senderPostalCode);
+        System.out.println(senderPostalCode);
+        System.out.println(savedSender.toString());
             Checkpoint checkpoint1 = new Checkpoint()
                     .setCost(100.0)
                     .setTime(now)
                     .setTerminalId(senderTerminalId.get().getTerminalIdTerminalId())
-                    .setFkParcel(savedParcel.getParcelId());
-            checkpoint.setType((short) 1);
+                    .setParcelId(savedParcel.getParcelId());
+            checkpoint1.setType((short) 1);
             Checkpoint savedCheckpoint1 = checkpointService.create(checkpoint1);
-            System.out.println(savedCheckpoint1.toString());
+            System.out.println(savedCheckpoint1.getTerminalId());
+            System.out.println(savedCheckpoint1.toString()+"First Checkpoint");
+
 
         //Creates a checkpoint for when the package is loaded for transport. Does not change terminal id.
         Checkpoint checkpoint2 = new Checkpoint()
                 .setCost(100.0)
                 .setTime(now)
-                .setFkParcel(savedParcel.getParcelId())
+                .setParcelId(savedParcel.getParcelId())
                 .setTerminalId(checkpoint1.getTerminalId());
-        checkpoint.setType((short) 2);
+        checkpoint2.setType((short) 2);
         Checkpoint savedCheckpoint2 = checkpointService.create(checkpoint2);
-        System.out.println(savedCheckpoint.toString());
+        System.out.println(savedCheckpoint2.toString()+"Second Checkpoint");
 
+        //Creates a checkpoint for when the package is received at final terminal. Does change the terminal_id.
         String receiverPostalCode = savedReceiver.getZipCode();
         Optional<TerminalId> receiverTerminalId = terminalIdRepository.findByPostalCode(receiverPostalCode);
         Checkpoint checkpoint3 = new Checkpoint()
                 .setCost(100.0)
                 .setTime(now)
                 .setTerminalId(receiverTerminalId.get().getTerminalIdTerminalId())
-                .setFkParcel(savedParcel.getParcelId());
-        checkpoint.setType((short) 1);
+                .setParcelId(savedParcel.getParcelId());
+        checkpoint3.setType((short) 3);
         Checkpoint savedCheckpoint3 = checkpointService.create(checkpoint3);
-        System.out.println(savedCheckpoint3.toString());
+        System.out.println(savedCheckpoint3.toString()+"Third Checkpoint");
 
-        
 
-        }
+    }
 
 
 

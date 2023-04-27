@@ -79,7 +79,7 @@ public class ShipmentRepository implements JOOQRepository<Shipment>{
 
     public List<Checkpoint> getCheckpointsForShipment(long shipmentId) {
         return dslContext.selectFrom(CHECKPOINT)
-                .where(CHECKPOINT.FK_PARCEL.in(
+                .where(CHECKPOINT.PARCEL_ID.in(
                         dslContext.select(PARCEL.PARCEL_ID)
                                 .from(PARCEL)
                                 .where(PARCEL.SHIPMENT_ID.eq(shipmentId))
