@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Entity
 @Table(name = "customer")
@@ -33,8 +34,8 @@ public class Customer {
     private Terminal nearest_Terminal;
 
     //Set of shipments for each customer
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "shipment_id")
-    private Map<Long,Shipment> shipments = new ConcurrentHashMap<>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "shipment_id")
+    private List<Shipment> shipments = new ArrayList<>();
 
     /**
      * Constructor that user JavaFaker to generate values
@@ -87,7 +88,7 @@ public class Customer {
         this.address = address;
     }
 
-    public Map<Long,Shipment> getShipments() {
+    public List<Shipment> getShipments() {
         return this.shipments;
     }
 

@@ -20,9 +20,11 @@ public interface CheckpointRepository extends CrudRepository<Checkpoint, Long> {
 
     Optional<Checkpoint> findById(Long id);
 
-    @Transactional
     @Override
     <S extends Checkpoint> S save(S entity);
+
+
+    long findAllByLocation(String loc);
 
 
     @Override

@@ -16,6 +16,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -24,9 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Service
 public class CustomerService {
 
-    private static final Faker faker = new Faker(new Locale("nb-NO"));
-
-    private static List<String> customerEval = new CopyOnWriteArrayList<>();
+    private static List<String> customerEval = new ArrayList<>();
 
     @Autowired
     private CustomerRepository customerRepository;
@@ -40,9 +39,6 @@ public class CustomerService {
     public List<String> getCustomerEval() {
         return customerEval;
     }
-
-    @Transactional
-    public List<Customer> listAll() {return(List<Customer>) customerRepository.findAll();}
 
     @jakarta.transaction.Transactional
     public void save(Customer customer) {
@@ -59,12 +55,6 @@ public class CustomerService {
         return customerOptional;
     }
 
-    public void printShipments(Customer customer) {
-        if (findByID(customer.getCustomerID()).isPresent()) {
-            System.out.println(findByID(customer.getCustomerID()).get().getShipments().values());
-        }
-
-    }
 
 
     @jakarta.transaction.Transactional
@@ -98,9 +88,7 @@ public class CustomerService {
         }
     }
 
-    public void createShipment(Shipment shipment,Customer customer) {
-        customer.getShipments().put(shipment.getShipment_id(), shipment);
-    }
+
 
 
     public Terminal findNearestTerminalToCustomer(Customer customer) {

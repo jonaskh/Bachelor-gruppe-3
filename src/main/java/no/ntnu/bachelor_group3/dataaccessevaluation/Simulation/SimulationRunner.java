@@ -1,83 +1,116 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Simulation;
 
+import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Runnables.ShipmentRunnable;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Runnables.AddShipmentsRunnable;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Runnables.ShipmentCallable;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Services.*;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Runnables.UpdateShipmentRunnable;
 import org.apache.commons.lang3.time.StopWatch;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.*;
 
 public class SimulationRunner {
 
+    private ShipmentService shipmentService;
+    private CustomerService customerService;
+    private TerminalService terminalService;
+    private ValidPostalCodeService validPostalCodeService;
+    private ParcelService parcelService;
+    private CheckpointService checkpointService;
 
-    private ExecutorService executor = Executors.newFixedThreadPool(5);
+
+    private ExecutorService executor1 = Executors.newFixedThreadPool(5);
+    private ExecutorService executor2 = Executors.newFixedThreadPool(5);
+    private ScheduledExecutorService executor3 = Executors.newScheduledThreadPool(5);
+
+    private final ArrayBlockingQueue<Shipment> queue = new ArrayBlockingQueue<>(10000);
 
 
-    public SimulationRunner() {
+    public SimulationRunner(ShipmentService shipmentService, CustomerService customerService, TerminalService terminalService, ValidPostalCodeService validPostalCodeService, ParcelService parcelService, CheckpointService checkpointService) {
+        this.shipmentService = shipmentService;
+        this.customerService = customerService;
+        this.terminalService = terminalService;
+        this.validPostalCodeService = validPostalCodeService;
+        this.parcelService = parcelService;
+        this.checkpointService = checkpointService;
     }
 
-    public ExecutorService getExecutor() {
-        return executor;
-    }
+    public void work() {
 
-    public void work(Shipment shipment, ShipmentService shipmentService) {
+        Customer sender = new Customer("Ålesund", "Jonas", "6008");
+        Customer receiver = new Customer("Oslo", "Tarjei", "0021");
 
-        ShipmentRunnable shipmentRunnable = new ShipmentRunnable(shipment, shipmentService);
-        var future = executor.submit(shipmentRunnable);
-    }
+        customerService.save(sender);
+        customerService.save(receiver);
+        for (int i = 0; i < 500; i++) {
+            Shipment shipment = new Shipment(sender, receiver, sender);
+            AddShipmentsRunnable shipmentsRunnable = new AddShipmentsRunnable(shipment, shipmentService);
+            executor1.execute(shipmentsRunnable);
+        }
 
-    public void runSimulation() {
-            StopWatch stopWatch = new StopWatch();
-            stopWatch.start();
-            long lastPrintTime = 0;
-
-            while (stopWatch.getTime() < 65000) {
-                long currentTime = stopWatch.getTime();
-                long timeSinceLastPrint = currentTime - lastPrintTime;
-                if (timeSinceLastPrint >= 7000) {
-                    System.out.println("Sunday");
-                    timeSinceLastPrint = currentTime;
-
-                } else if (timeSinceLastPrint >= 6000) {
-                    System.out.println("Saturday");
-                    timeSinceLastPrint = currentTime;
-
-
-                }
-                else if (timeSinceLastPrint >= 5000) {
-                    System.out.println("Friday");
-                    timeSinceLastPrint = currentTime;
-
-
-                }
-                else if (timeSinceLastPrint >= 4000) {
-                    System.out.println("Thursday");
-                    timeSinceLastPrint = currentTime;
-
-                }
-                else if (timeSinceLastPrint >= 3000) {
-                    System.out.println("Wednesday");
-                    timeSinceLastPrint = currentTime;
-
-
-                }
-                else if (timeSinceLastPrint >= 2000) {
-                    System.out.println("Tuesday");
-                    timeSinceLastPrint = currentTime;
-
-
-                }
-                else if (timeSinceLastPrint >= 1000) {
-                    System.out.println("Monday");
-                    timeSinceLastPrint = currentTime;
-
-
-                }
+            executor1.shutdown();
+            try {
+                executor1.awaitTermination(10, TimeUnit.MINUTES);
+                System.out.println("Done");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                System.out.println("Error in await termination");
             }
 
-            stopWatch.stop();
+        System.out.println(terminalService.returnTerminalFromZip("6300"));
         }
+
+
+
+
+
+
+
+
+
+
+    public void realTimeConverter() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        Calendar calendar = Calendar.getInstance();
+        int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
+        String[] daysOfWeek = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+        long previousElapsedSeconds = -1;
+        while (stopWatch.getTime() < 30000) { // 30 seconds in milliseconds
+
+            long elapsedSeconds = stopWatch.getTime() ;
+            stopWatch.split();
+            if (elapsedSeconds != previousElapsedSeconds) {
+                if (((elapsedSeconds / 1000) != (previousElapsedSeconds / 1000))  && calendar.get(Calendar.DAY_OF_MONTH) != currentDay) {
+                    previousElapsedSeconds = stopWatch.getSplitTime();
+                    currentDay = calendar.get(Calendar.DAY_OF_MONTH);
+                    int dayOfWeek = getDayOfWeek(calendar.getTime());
+                    System.out.println("Today is " + daysOfWeek[dayOfWeek - 1]);
+                } else {
+                    previousElapsedSeconds = elapsedSeconds;
+                }
+            }
+            calendar.setTime(new Date(stopWatch.getSplitTime() * 24 * 60 * 60 * 1000)); // Set the calendar time based on the elapsed time
+            stopWatch.unsplit();
+
+        }
+        stopWatch.stop();
+
+    }
+
+    private static int getDayOfWeek(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(Calendar.DAY_OF_WEEK);
+    }
 }
+
+
+
 
 
 

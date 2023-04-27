@@ -2,8 +2,12 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Entity
 @Table(name = "terminal")
@@ -16,14 +20,10 @@ public class Terminal {
 
     private String address;
 
-    @Version
-    private Long terminal_version = null;
-
-
     //list of shipments for a period of time. Stored in a queue for first in first out.
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "shipment_id")
-    private ConcurrentLinkedQueue<Shipment> shipments_passed;
+    private List<Shipment> shipments_passed = new CopyOnWriteArrayList<>();
 
     public Terminal() {
     }
@@ -49,18 +49,24 @@ public class Terminal {
         this.address = address;
     }
 
-    public Queue<Shipment> getShipments_passed() {
+    public List<Shipment> getShipments_passed() {
         return shipments_passed;
     }
 
-    public boolean addShipment(Shipment shipment) {
+    public long getShipmentNumber() {
+        return shipments_passed.size();
+    }
+
+    public void addShipment(Shipment shipment) {
+        var exists = false;
         for (Shipment ship: shipments_passed) {
-            if (shipment.getShipment_id() == ship.getShipment_id()) {
-                return false;
+            if (Objects.equals(shipment.getShipment_id(), ship.getShipment_id())) {
+                exists = true;
+            }
+            if (!exists) {
+                shipments_passed.add(shipment);
             }
         }
-        shipments_passed.add(shipment);
-        return true;
     }
 
     @Override

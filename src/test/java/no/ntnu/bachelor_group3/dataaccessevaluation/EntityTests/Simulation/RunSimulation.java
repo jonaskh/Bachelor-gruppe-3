@@ -9,11 +9,6 @@ import java.time.temporal.ChronoUnit;
 
 public class RunSimulation {
 
-    @Test
-    public void runSimulation() {
-        SimulationRunner runner = new SimulationRunner();
-        runner.runSimulation();
-    }
 
     @Test
     public void instantFormatTest() {

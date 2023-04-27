@@ -1,6 +1,7 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Services;
 
 import jakarta.transaction.Transactional;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.TerminalRepository;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.ValidPostalCodeRepository;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -24,7 +26,10 @@ public class TerminalService {
     @Autowired
     ValidPostalCodeRepository validPostalCodeRepository;
 
-    private List<String> terminalEvals = new CopyOnWriteArrayList<>();
+    @Autowired
+    CheckpointService checkpointService;
+
+    private List<String> terminalEvals = new ArrayList<>();
 
     public List<String> getTerminalEvals() {
         return terminalEvals;
@@ -50,6 +55,27 @@ public class TerminalService {
         }
     }
 
+    public long getShipmentsinTerminal(int terminal_id) {
+        long count = 0;
+        if (findByID(terminal_id) != null) {
+            Terminal terminal = findByID(terminal_id);
+            count = terminal.getShipmentNumber();
+        } else {
+            System.out.println("not found terminal");
+        }
+        return count;
+    }
+
+    public List<Shipment> getShipmentsInTerminal(Terminal terminal) {
+        return terminal.getShipments_passed();
+
+    }
+
+
+    public long getShipmentsThroughTerminal(Terminal terminal) {
+        return checkpointService.getAllShipmentsThroughTerminal(terminal.getAddress());
+    }
+
     @jakarta.transaction.Transactional
     public long count() {
         var before = Instant.now();
@@ -58,6 +84,8 @@ public class TerminalService {
         terminalEvals.add(duration);
         return count;
     }
+
+    //TODO: Find all checkpoints at terminal from id
 
 
 

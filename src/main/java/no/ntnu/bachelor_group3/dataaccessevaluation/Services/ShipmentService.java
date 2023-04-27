@@ -1,5 +1,6 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Services;
 
+import com.sun.istack.NotNull;
 import jakarta.transaction.Transactional;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.*;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Generators.WriteToEval;
@@ -42,7 +43,9 @@ public class ShipmentService{
 
     private static final WriteToEval writeToEval = new WriteToEval();
 
-    private static List<String> shipmentEvals = new CopyOnWriteArrayList<>();
+    private static List<String> shipmentEvals = new ArrayList<>();
+
+    private static long totalShipments = 0;
 
     public ShipmentService() {
 
@@ -59,7 +62,6 @@ public class ShipmentService{
             }
         }
     }
-
 
     public Shipment findByID(Long id) {
         var before = Instant.now();
@@ -103,78 +105,37 @@ public class ShipmentService{
         parcelService.saveAll(findByID(shipment.getShipment_id()).getParcels());
     }
 
-
-    //for testing
-    public void printShipmentInfo(Shipment shipment) {
-        if (shipmentRepository.findById(shipment.getShipment_id()).isPresent()) {
-            if (customerService.findByID(shipment.getSenderID()).isPresent()) {
-                System.out.println("Shipment "+ shipment.getShipment_id() + " has sender as customer: " + findByID(shipment.getShipment_id()).getSenderID());
-            } else {
-                System.out.println("Shipment " + shipment.getShipment_id() + " has no sender in database");
-            }
-            if (customerService.findByID(shipment.getReceiverID()).isPresent()) {
-                System.out.println("Shipment "+ shipment.getShipment_id() + " has receiver as customer: " + findByID(shipment.getShipment_id()).getReceiverID());
-            } else {
-                System.out.println("Shipment " + shipment.getShipment_id() + " has no receiver in database");
-            }
-
-        }
-    }
-
     /**
      * returns void to use in runnable interface
      * @param shipment
      */
     //TODO: CASCADING SAVE CHILD ENTITIES VS MANUAL
     @Transactional
-    public void cascadingAdd(Shipment shipment){
-        var before = Instant.now();
-        try {
-            shipmentRepository.save(shipment);
-        } catch (HibernateException e) {
-            System.out.println("Shipment with that ID already exists");
-        }
-        var duration = Duration.between(before, Instant.now());
-        shipmentEvals.add(duration.get(ChronoUnit.NANOS) + ", shipment create");
-    }
-
-    /**
-     * returns a string containing the time used by the save method to use in a callable
-     * @param shipment
-     * @return time taken by save method and type of CRUD operation
-     */
-    @Transactional
-    public void cascadingAddCallable(Shipment shipment) {
-        var before = Instant.now();
-        shipmentRepository.save(shipment);
-        var duration = Duration.between(before, Instant.now());
-        shipmentEvals.add(duration.get(ChronoUnit.NANOS) + ", shipment create");
-    }
-
-    /**
-      * Adds a checkpoint to all parcels in the shipment, with a 2s delay to simulate travel time
-     * @param shipment to add checkpoint to
-     */
-    @Transactional
-    public void updateFirstCheckpointOnParcels(Shipment shipment) {
-        Checkpoint checkpoint = new Checkpoint(shipment.getSender().getAddress(), Checkpoint.CheckpointType.Collected);
-        if (!findByID(shipment.getShipment_id()).getParcels().isEmpty()) {
-            for (Parcel parcel : shipment.getParcels()) {
-                parcel.setLastCheckpoint(checkpoint);
-                checkpointService.addCheckpoint(checkpoint);
+    public Shipment cascadingAdd(Shipment shipment) {
+        Shipment ship = null;
+            if (customerService.findByID(shipment.getSenderID()).isEmpty()) {
+                customerService.save(shipment.getSender());
             }
-            System.out.println("Successfully added checkpoint" + checkpointService.findByID(checkpoint.getCheckpoint_id()).getType() + " to all parcels in shipment" + findByID(shipment.getShipment_id()));
-        } else {
-            System.out.println("No parcels in shipment, couldn't update checkpoint");
-        }
+            if (customerService.findByID(shipment.getReceiverID()).isEmpty()) {
+                customerService.save(shipment.getReceiver());
+            }
+            if (customerService.findByID(shipment.getPayerID()).isEmpty()) {
+                customerService.save(shipment.getPayer());
+            }
+            var before = Instant.now();
 
-        try {
-            System.out.println("Shipment is now being transported to next checkpoint...");
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+            try {
+                ship = shipmentRepository.save(shipment);
+
+            } catch (HibernateException e) {
+                System.out.println("Shipment with that ID already exists");
+            }
+            var duration = Duration.between(before, Instant.now());
+            shipmentEvals.add(duration.get(ChronoUnit.NANOS) + ", shipment create");
+
+        return ship;
     }
+
 
     /**
      * Adds a checkpoint to all parcels in the shipment, with a 2s delay to simulate travel time
@@ -182,23 +143,16 @@ public class ShipmentService{
      * @param checkpoint which checkpoint to add
      */
     @Transactional
-    public void updateCheckpointsOnParcels(Shipment shipment, Checkpoint checkpoint) {
-        if (!findByID(shipment.getShipment_id()).getParcels().isEmpty()) {
+    public Shipment updateCheckpointsOnParcels(Shipment shipment, Checkpoint checkpoint) {
             for (Parcel parcel : shipment.getParcels()) {
                 parcel.setLastCheckpoint(checkpoint);
+                var before = Instant.now();
                 checkpointService.addCheckpoint(checkpoint);
+                var duration = Duration.between(before, Instant.now()).toNanos();
+                shipmentEvals.add(duration + " , checkpoint create");
             }
-            System.out.println("Successfully added checkpoint" + checkpointService.findByID(checkpoint.getCheckpoint_id()).getType() + " to all parcels in shipment" + findByID(shipment.getShipment_id()));
-        } else {
-            System.out.println("No parcels in shipment, couldn't update checkpoint");
-        }
-
-        try {
-            System.out.println("Shipment is now being transported to next checkpoint...");
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+            return shipment;
+            //adds the shipment to terminal
     }
 
     @Transactional
@@ -250,5 +204,11 @@ public class ShipmentService{
 
         shipmentEvals.add(result);
         return count;
+    }
+
+    @Transactional
+    public void deleteOneShipment(Long shipmentId) {
+        shipmentRepository.deleteById(shipmentId);
+        totalShipments++;
     }
 }

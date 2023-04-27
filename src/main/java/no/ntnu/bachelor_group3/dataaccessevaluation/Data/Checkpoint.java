@@ -25,6 +25,8 @@ public class Checkpoint {
 
     private CheckpointType type;
 
+    private String location;
+
     private double cost;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -40,6 +42,7 @@ public class Checkpoint {
     }
 
     public Checkpoint(String location, CheckpointType type) {
+        this.location = location;
         this.time = LocalDateTime.now();
         this.checkpoint_id = counter++;
         this.type = type;
@@ -69,6 +72,14 @@ public class Checkpoint {
     public void setType(CheckpointType type) {
         this.type = type;
 
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public CheckpointType getType() {

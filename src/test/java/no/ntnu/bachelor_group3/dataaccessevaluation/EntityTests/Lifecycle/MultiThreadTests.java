@@ -1,18 +1,13 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle;
 
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Parcel;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.TestConfiguration;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Runnables.CustomerRunnable;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Runnables.ShipmentCallable;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.*;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Runnables.ShipmentRunnable;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Simulation.SimulationRunner;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Runnables.UpdateShipmentRunnable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.openjdk.jmh.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
@@ -21,9 +16,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
-
-import static org.springframework.test.util.AssertionErrors.assertEquals;
-import static org.springframework.test.util.AssertionErrors.assertNotEquals;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest(showSql = false)
@@ -45,7 +37,6 @@ public class MultiThreadTests {
     @Autowired
     private CheckpointService checkpointService;
 
-    private SimulationRunner simulationRunner = new SimulationRunner();
 
     @Autowired
     private ParcelService parcelService;
@@ -57,37 +48,26 @@ public class MultiThreadTests {
     private static List<String> evals = new CopyOnWriteArrayList<>();
 
 
-
     @Test
     @DisplayName("Adding multiple shipments and their corresponding entities to database concurrently")
     public void concurrentShipmentRunnableAddTest() {
         validPostalCodeService.ReadCSVFile();
         List<Shipment> shipments = new ArrayList<>();
+        ExecutorService executor = Executors.newFixedThreadPool(10); //optimize number
 
         for (int i = 0; i < 500; i++) {
-            Customer customer = new Customer();
-            Customer customer2 = new Customer();
+            Customer customer = new Customer("ålesund", "jonas", "6008");
+            Customer customer2 = new Customer("oslo", "tarjei", "0021");
 
             Shipment shipment = new Shipment(customer, customer, customer2);
-            shipments.add(shipment);
-        }
-        ExecutorService executor = Executors.newScheduledThreadPool(5); //5 threads
-
-        for (Shipment shipment : shipments) {
-            ShipmentRunnable sr = new ShipmentRunnable(shipment, shipmentService);
+            UpdateShipmentRunnable sr = new UpdateShipmentRunnable(shipment, shipmentService);
             executor.execute(sr);
         }
+
         executor.shutdown(); //shutdown the service, it will not take any more tasks but finish existing ones
 
         try {
             executor.awaitTermination(2, TimeUnit.MINUTES);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-
-        try {
-            Thread.sleep(2000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -106,14 +86,37 @@ public class MultiThreadTests {
         System.out.println("checkpoint count: " + checkpointService.count());
         System.out.println("terminal count: " + terminalService.count());
 
-        System.out.println(shipments.get(0).getShipment_id() + " has " + shipments.get(0).getParcels().size());
         System.out.println(shipmentService.findByID(1L).getParcels().size());
 
 
-
-
         System.out.println("Number of evaluations: " + evals.size());
+    }
 
+
+    @Test
+    public void concurrentAddShipments() {
+        validPostalCodeService.ReadCSVFile();
+        ExecutorService executor = Executors.newFixedThreadPool(5);
+        System.out.println(terminalService.returnTerminalFromZip("6300"));
+
+        for (int i = 0; i < 500; i++) {
+            Customer customer = new Customer("Ålesund", "Jonas", "6008");
+            Customer customer2 = new Customer("Oslo", "Tarjei", "0021");
+
+            Shipment shipment = new Shipment(customer, customer2, customer);
+            UpdateShipmentRunnable sr = new UpdateShipmentRunnable(shipment,shipmentService);
+            executor.execute(sr);
+        }
+        executor.shutdown(); //does not accept new tasks, but will finish existing ones
+        try {
+            executor.awaitTermination(1, TimeUnit.MINUTES); //terminates when all tasks are done, or 1 minute passes, whichever happens first
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        for (int i = 1; i < 20; i++) {
+            System.out.println(terminalService.findByID(i).getShipmentNumber());
+        }
     }
 
     @Test
@@ -133,82 +136,52 @@ public class MultiThreadTests {
 
     }
 
+    private static class ExampleTask implements Runnable {
 
+        private String name;
 
-    @Test
-    public void testCallableShipmentAdd() {
-        Customer customer5 = new Customer();
-        Shipment test = new Shipment(customer5, customer5, customer5);
-        ExecutorService executor = Executors.newFixedThreadPool(5); //5 threads
-
-        for (int i = 0; i < 500; i++) {
-            Customer customer = new Customer();
-            Customer customer2 = new Customer();
-            Shipment shipment = new Shipment(customer, customer, customer2);
-
-            Future<String> future = executor.submit(new ShipmentCallable(shipment, shipmentService));
-            futureList.add(future);
+        public ExampleTask(String name) {
+            this.name = name;
         }
 
+        @Override
+        public void run() {
 
-        executor.shutdown();
-
-        try {
-            executor.awaitTermination(1, TimeUnit.MINUTES);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        List<String> resultList = new ArrayList<>();
-        for (Future<String> future : futureList) {
-            String result = null;
             try {
-                result = future.get();
-            } catch (InterruptedException | ExecutionException e) {
-                throw new RuntimeException(e);
+                catchRun();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            resultList.add(result);
-        }
-        resultList.forEach(System.out::println);
-
-        System.out.println("shipment count: " + shipmentService.count());
-        System.out.println("customer count: " + customerService.count());
-        System.out.println("parcel count: " + parcelService.count());
-        assertEquals("Number of items in future", 500, futureList.size());
-    }
-
-
-    @Test
-    @DisplayName("Assert 500 customers are added to the database concurrently")
-    public void concurrentAddCustomerTest() {
-        ExecutorService executor = Executors.newFixedThreadPool(5);
-        for (int i = 0; i < 500; i++) {
-            Customer customer = new Customer();
-            Future<String> future = executor.submit(new CustomerRunnable(customer, customerService));
-            futureList.add(future);
+            // Do some work after the loop if necessary
         }
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        System.out.println(customerService.count());
-
-        List<String> resultList = new ArrayList<>();
-        for (Future<String> future : futureList) {
-            String result = null;
+        public void catchRun() {
+            System.out.println("Working on thread: " + Thread.currentThread().getId() + "...");
             try {
-                result = future.get();
-            } catch (InterruptedException | ExecutionException e) {
-                throw new RuntimeException(e);
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                System.out.println("F");
+                Thread.currentThread().interrupt();
             }
-            resultList.add(result);
-        }
-        resultList.forEach(System.out::println);
+            System.out.println("Done working on thread: " + Thread.currentThread().getId());
+
         }
     }
 
-    //TODO: Add neggative tests to ensure cannot input duplicate entities
+    @Test
+    public void scheduledExecutorTest() {
+        ScheduledExecutorService service = Executors.newScheduledThreadPool(5);
+        service.scheduleAtFixedRate(new ExampleTask("Task"), 0, 6, TimeUnit.SECONDS);
+        service.scheduleAtFixedRate(new ExampleTask("Task"), 0, 6, TimeUnit.SECONDS);
+        service.scheduleAtFixedRate(new ExampleTask("Task"), 0, 6, TimeUnit.SECONDS);
+        try {
+            service.awaitTermination(1, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+
 
 
 

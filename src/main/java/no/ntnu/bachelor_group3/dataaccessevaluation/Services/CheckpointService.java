@@ -43,6 +43,18 @@ public class CheckpointService {
         System.out.println("Checkpoint has been saved to database");
     }
 
+    /*
+    Called by terminalService to calculate how many shipments have passed through a terminal.
+     */
+    @jakarta.transaction.Transactional
+    public long getAllShipmentsThroughTerminal(String loc) {
+        var before = Instant.now();
+        long count = checkpointRepository.findAllByLocation(loc);
+        var duration = Duration.between(before, Instant.now()).toNanos();
+        checkpointEvals.add(duration + " , terminal find all shipments");
+        return count;
+    }
+
     @jakarta.transaction.Transactional
     public long count() {
         var before = Instant.now();

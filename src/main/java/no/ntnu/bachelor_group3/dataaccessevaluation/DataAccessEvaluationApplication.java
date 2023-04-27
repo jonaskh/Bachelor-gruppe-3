@@ -1,13 +1,7 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation;
 
-import com.opencsv.exceptions.CsvValidationException;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Generators.CustomerGenerator;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.CustomerRepository;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Services.CustomerService;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Services.*;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Simulation.SimulationRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,19 +10,58 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @SpringBootApplication
 public class DataAccessEvaluationApplication {
 
+	@Autowired
+	private ShipmentService shipmentService;
+
+	@Autowired
+	private TerminalService terminalService;
+
+	@Autowired
+	private CustomerService customerService;
+
+	@Autowired
+	private CheckpointService checkpointService;
+
+	@Autowired
+	private ParcelService parcelService;
+
+	@Autowired
+	private ValidPostalCodeService validPostalCodeService;
+
 	private static final Logger log = LoggerFactory.getLogger(DataAccessEvaluationApplication.class);
 
+	private static List<String> evals = new ArrayList<>();
 
 
 	public static void main(String[] args) {
 		SpringApplication.run(DataAccessEvaluationApplication.class, args);
+	}
+
+	@Bean
+	public void runSimulation() {
+		SimulationRunner simulationRunner = new SimulationRunner(shipmentService, customerService, terminalService, validPostalCodeService, parcelService, checkpointService);
+
+		validPostalCodeService.ReadCSVFile();
+		var before = Instant.now();
+		simulationRunner.work();
+		var duration = Duration.between(before, Instant.now()).getSeconds();
+		System.out.println("Duration: " + duration);
+		System.out.println(this.shipmentService.count());
+		System.out.println(this.parcelService.count());
+		System.out.println(this.customerService.count());
+		System.out.println(this.checkpointService.count());
 	}
 
 
@@ -36,6 +69,8 @@ public class DataAccessEvaluationApplication {
 
 
 }
+
+
 
 /*	@Bean
 	public Customer addCustomerToDataBase(CustomerService service) {

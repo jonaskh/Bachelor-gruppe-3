@@ -25,7 +25,7 @@ public class ParcelService {
     @Autowired
     ParcelRepository parcelRepository;
 
-    private static List<String> parcelEval = new CopyOnWriteArrayList<>();
+    private static List<String> parcelEval = new ArrayList<>();
 
     public List<String> getParcelEvals() {
         return parcelEval;
