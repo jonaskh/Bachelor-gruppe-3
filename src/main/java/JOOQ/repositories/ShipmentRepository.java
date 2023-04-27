@@ -3,6 +3,7 @@ package JOOQ.repositories;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.Checkpoint;
+import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Parcel;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Shipment;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.records.ShipmentRecord;
 import org.apache.commons.lang3.ObjectUtils;
@@ -76,18 +77,43 @@ public class ShipmentRepository implements JOOQRepository<Shipment>{
                 .where(SHIPMENT.SHIPMENT_ID.eq(id))
                 .execute() == 1;
     }
-
-    public List<Checkpoint> getCheckpointsForShipment(long shipmentId) {
-        return dslContext.selectFrom(CHECKPOINT)
-                .where(CHECKPOINT.PARCEL_ID.in(
-                        dslContext.select(PARCEL.PARCEL_ID)
-                                .from(PARCEL)
-                                .where(PARCEL.SHIPMENT_ID.eq(shipmentId))
-                ))
-                .fetchInto(Checkpoint.class);
-    }
-
-
+//
+//    public void updateCheckpointsOnParcels(Shipment shipment, Checkpoint checkpoint) {
+//        if (!findById(shipment.getShipmentId()).getParcels().isEmpty()) {
+//            for (Parcel parcel : shipment.getParcels()) {
+//                parcel.setLastCheckpoint(checkpoint);
+//                checkpointService.addCheckpoint(checkpoint);
+//
+//                // Update the parcel's checkpoint in the database using JOOQ
+//                dsl.update(PARCEL)
+//                        .set(PARCEL.CHECKPOINT_ID, checkpoint.getCheckpoint_id())
+//                        .where(PARCEL.PARCEL_ID.eq(parcel.getParcel_id()))
+//                        .execute();
+//            }
+//            System.out.println("Successfully added checkpoint " + checkpointService.findByID(checkpoint.getCheckpoint_id()).getType() + " to all parcels in shipment " + findByID(shipment.getShipment_id()));
+//        } else {
+//            System.out.println("No parcels in shipment, couldn't update checkpoint");
+//        }
+//
+//        try {
+//            System.out.println("Shipment is now being transported to next checkpoint...");
+//            Thread.sleep(100);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+//
+////    public List<Checkpoint> getCheckpointsForShipment(long shipmentId) {
+////        return dslContext.selectFrom(CHECKPOINT)
+////                .where(CHECKPOINT.PARCEL_ID.in(
+////                        dslContext.select(PARCEL.PARCEL_ID)
+////                                .from(PARCEL)
+////                                .where(PARCEL.SHIPMENT_ID.eq(shipmentId))
+////                ))
+////                .fetchInto(Checkpoint.class);
+////    }
+//
+//
 
 
 }

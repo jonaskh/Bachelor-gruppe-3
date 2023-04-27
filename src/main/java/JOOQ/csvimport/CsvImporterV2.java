@@ -155,11 +155,11 @@ public class CsvImporterV2 {
 
         LocalDateTime start = LocalDateTime.now();
 
-        CsvImporterV2 importer = new CsvImporterV2("Postnummerregister.csv",
+        CsvImporterV2 importer = new CsvImporterV2("customers.csv",
                "jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres");
-        importer.importData();
-        importer.insertTerminals();
-        //importer.importCustomers();
+        //importer.importData();
+        //importer.insertTerminals();
+        importer.importCustomers();
 
 
         LocalDateTime after = LocalDateTime.now();

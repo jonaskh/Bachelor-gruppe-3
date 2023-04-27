@@ -31,7 +31,7 @@ public class Checkpoint {
     @JoinColumn(name = "terminal_id")
     private Terminal terminal;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parcel_id")
     private Parcel parcel;
 
