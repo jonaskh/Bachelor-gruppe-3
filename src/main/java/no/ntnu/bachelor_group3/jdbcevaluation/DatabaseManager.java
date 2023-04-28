@@ -98,7 +98,6 @@ public class DatabaseManager implements AutoCloseable {
         checkpoint.setParcel(parcel);
 
         checkpointService.save(checkpoint, conn);
-        parcelService.save(parcel, conn);
     }
 
     public List<Customer> getAllCustomers() throws SQLException {

@@ -45,6 +45,9 @@ public class ShipmentService {
     }
 
     public void save(Shipment shipment, ParcelService parcelService, Connection conn) throws SQLException {
+        long executionTime = 0L;
+        long startTime = System.nanoTime();
+        long endTime;
         PreparedStatement stmt;
         Long id = shipment.getId();
         List<Parcel> parcels = shipment.getParcels();
@@ -54,6 +57,9 @@ public class ShipmentService {
                     Statement.RETURN_GENERATED_KEYS);
             setShipmentInfo(shipment, stmt);
             int rowsInserted = stmt.executeUpdate();
+            endTime = System.nanoTime();
+            executionTime = endTime - startTime;
+            System.out.println(INSERT_SHIPMENT_QUERY + " || Execution time: " + executionTime + " ns");
             if (rowsInserted > 0) {
                 ResultSet rs = stmt.getGeneratedKeys();
                 if (rs.next()) {
@@ -71,6 +77,9 @@ public class ShipmentService {
             setShipmentInfo(shipment, stmt);
             stmt.setLong(4, id);
             stmt.executeUpdate();
+            endTime = System.nanoTime();
+            executionTime = endTime - startTime;
+            System.out.println(UPDATE_SHIPMENT_QUERY + " || Execution time: " + executionTime + " ns");
             // Update all parcels associated with this shipment
             for (Parcel parcel : parcels) {
                 parcelService.save(parcel, conn);

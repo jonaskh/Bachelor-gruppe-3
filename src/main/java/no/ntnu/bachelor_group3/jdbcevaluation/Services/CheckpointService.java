@@ -37,6 +37,9 @@ public class CheckpointService {
     }
 
     public void save(Checkpoint checkpoint, Connection conn) throws SQLException {
+        long startTime = System.nanoTime();
+        long executionTime = 0;
+        long endTime;
         PreparedStatement stmt;
         Long id = checkpoint.getId();
         if (id == 0) {
@@ -49,6 +52,9 @@ public class CheckpointService {
             stmt.setLong(4, checkpoint.getParcel().getId());
             stmt.setLong(5, checkpoint.getTerminal().getId());
             int rowsInserted = stmt.executeUpdate();
+            endTime = System.nanoTime();
+            executionTime = endTime - startTime;
+            System.out.println(INSERT_CHECKPOINT_QUERY + " || Execution time: " + executionTime + " ns");
             if (rowsInserted > 0) {
                 ResultSet rs = stmt.getGeneratedKeys();
                 if (rs.next()) {
@@ -64,6 +70,9 @@ public class CheckpointService {
             stmt.setLong(4, checkpoint.getParcel().getId());
             stmt.setLong(5, checkpoint.getTerminal().getId());
             stmt.executeUpdate();
+            endTime = System.nanoTime();
+            executionTime = endTime - startTime;
+            System.out.println(UPDATE_CHECKPOINT_QUERY + " || Execution time: " + executionTime + " ns");
         }
     }
 

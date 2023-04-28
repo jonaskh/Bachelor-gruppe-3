@@ -21,7 +21,7 @@ public class ValidPostalCode {
     private Long zip_version = null;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "terminal_id")
+    @JoinColumn(name = "terminal_id")
     private Terminal terminal_id;
 
     public ValidPostalCode() {

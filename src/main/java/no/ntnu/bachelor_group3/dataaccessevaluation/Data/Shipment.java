@@ -19,15 +19,15 @@ public class Shipment {
     @Id
     private Long shipment_id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "sender_id")
     private Customer sender;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "receiver_id")
     private Customer receiver;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "payer_id")
     private Customer payer;
 

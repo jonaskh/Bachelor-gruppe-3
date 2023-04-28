@@ -51,8 +51,15 @@ public class ParcelService {
      * @throws SQLException
      */
     public Long save(Parcel parcel, Connection conn) throws SQLException {
+        long startTime = System.nanoTime();
+        long executionTime = 0;
+        long endTime;
         if (parcelExists(parcel.getId(), conn)) {
             update(parcel, conn);
+            endTime = System.nanoTime();
+            executionTime = endTime - startTime;
+            System.out.println(UPDATE_PARCEL_QUERY + " || Execution time: " + executionTime + " ns");
+
         } else {
             return insert(parcel, conn);
         }
@@ -81,8 +88,14 @@ public class ParcelService {
      * @throws SQLException
      */
     private Long insert(Parcel parcel, Connection conn) throws SQLException {
+        long startTime = System.nanoTime();
+        long executionTime = 0;
+        long endTime;
         try (PreparedStatement stmt = createInsertStatement(parcel, conn)) {
             int rowsAffected = stmt.executeUpdate();
+            endTime = System.nanoTime();
+            executionTime = endTime - startTime;
+            System.out.println(INSERT_PARCEL_QUERY + " || Execution time: " + executionTime + " ns");
             if (rowsAffected > 0) {
                 try (ResultSet rs = stmt.getGeneratedKeys()) {
                     if (rs.next()) {

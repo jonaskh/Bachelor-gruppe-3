@@ -29,7 +29,7 @@ public class Customer {
 
 
     //Set of shipments for each customer
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "shipment_id")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "shipment_id")
     private Map<Long,Shipment> shipments = new ConcurrentHashMap<>();
 
     /**
