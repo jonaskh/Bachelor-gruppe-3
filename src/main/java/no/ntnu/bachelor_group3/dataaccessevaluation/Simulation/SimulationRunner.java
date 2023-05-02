@@ -3,14 +3,12 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.Simulation;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Runnables.AddShipmentsRunnable;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Runnables.ShipmentCallable;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Services.*;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Runnables.UpdateShipmentRunnable;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Services.*;
 import org.apache.commons.lang3.time.StopWatch;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.*;
 
 public class SimulationRunner {
@@ -47,30 +45,60 @@ public class SimulationRunner {
         customerService.save(sender);
         customerService.save(receiver);
         for (int i = 0; i < 500; i++) {
-            Shipment shipment = new Shipment(sender, receiver, sender);
+            Shipment shipment = new Shipment(sender, sender, receiver);
             AddShipmentsRunnable shipmentsRunnable = new AddShipmentsRunnable(shipment, shipmentService);
+            try {
+                queue.put(shipment);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             executor1.execute(shipmentsRunnable);
         }
 
-            executor1.shutdown();
-            try {
-                executor1.awaitTermination(10, TimeUnit.MINUTES);
-                System.out.println("Done");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                System.out.println("Error in await termination");
-            }
 
-        System.out.println(terminalService.returnTerminalFromZip("6300"));
+
+        executor1.shutdown();
+
+
+        try {
+            executor1.awaitTermination(2, TimeUnit.MINUTES);
+            System.out.println("Add shipments done");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            System.out.println("Error in await termination");
+        }
+        int i = 0;
+        var size = queue.size();
+        while (i < size) {
+            try {
+                executor2.execute(new UpdateShipmentRunnable(queue.take(), shipmentService, terminalService));
+                i++;
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
 
 
 
+        executor2.shutdown();
 
+        try {
+            executor2.awaitTermination(2, TimeUnit.MINUTES);
+            System.out.println("Update shipments done");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            System.out.println("Error in await termination");
+        }
 
+        System.out.println("queue size: " + queue.size());
+        System.out.println("shipments: " + shipmentService.count());
+        System.out.println("parcels: " + parcelService.count());
+        System.out.println("checkpoints: " + checkpointService.count());
 
+        System.out.println("Number of shipments in terminal 14: " + terminalService.returnTerminalFromZip("6008").getShipmentNumber());
+        System.out.println("Number of shipments in terminal 1: " + terminalService.returnTerminalFromZip("6008").getCheckpoints());
 
-
+    }
 
 
     public void realTimeConverter() {
@@ -82,10 +110,10 @@ public class SimulationRunner {
         long previousElapsedSeconds = -1;
         while (stopWatch.getTime() < 30000) { // 30 seconds in milliseconds
 
-            long elapsedSeconds = stopWatch.getTime() ;
+            long elapsedSeconds = stopWatch.getTime();
             stopWatch.split();
             if (elapsedSeconds != previousElapsedSeconds) {
-                if (((elapsedSeconds / 1000) != (previousElapsedSeconds / 1000))  && calendar.get(Calendar.DAY_OF_MONTH) != currentDay) {
+                if (((elapsedSeconds / 1000) != (previousElapsedSeconds / 1000)) && calendar.get(Calendar.DAY_OF_MONTH) != currentDay) {
                     previousElapsedSeconds = stopWatch.getSplitTime();
                     currentDay = calendar.get(Calendar.DAY_OF_MONTH);
                     int dayOfWeek = getDayOfWeek(calendar.getTime());

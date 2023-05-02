@@ -28,11 +28,6 @@ public class Customer {
     private Long customer_version = null;
 
 
-
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "terminal_id")
-    private Terminal nearest_Terminal;
-
     //Set of shipments for each customer
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "shipment_id")
     private List<Shipment> shipments = new ArrayList<>();

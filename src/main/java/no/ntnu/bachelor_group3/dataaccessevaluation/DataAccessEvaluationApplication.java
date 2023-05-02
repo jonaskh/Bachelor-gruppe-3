@@ -57,11 +57,8 @@ public class DataAccessEvaluationApplication {
 		var before = Instant.now();
 		simulationRunner.work();
 		var duration = Duration.between(before, Instant.now()).getSeconds();
-		System.out.println("Duration: " + duration);
-		System.out.println(this.shipmentService.count());
-		System.out.println(this.parcelService.count());
-		System.out.println(this.customerService.count());
-		System.out.println(this.checkpointService.count());
+		System.out.println("Duration: " + duration + " seconds");
+
 	}
 
 

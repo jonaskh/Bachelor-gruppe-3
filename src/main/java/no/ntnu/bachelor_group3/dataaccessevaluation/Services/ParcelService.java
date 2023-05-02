@@ -81,6 +81,7 @@ public class ParcelService {
         return count;
     }
 
+    @Transactional
     public Optional<Parcel> findByID(Long id) {
         return parcelRepository.findById(id);
     }

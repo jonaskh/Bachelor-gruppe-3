@@ -1,11 +1,9 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -15,15 +13,21 @@ public class Terminal {
 
     private static Integer counter = 1;
 
+
     @Id
     private Integer terminal_id;
 
     private String address;
 
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "checkpoint_terminals")
+    private List<Checkpoint> checkpoints = new ArrayList<>();
+
+
     //list of shipments for a period of time. Stored in a queue for first in first out.
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "shipment_id")
-    private List<Shipment> shipments_passed = new CopyOnWriteArrayList<>();
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "shipment_id_terminal_id")
+    private List<Shipment> shipments_passed = new ArrayList<>();
 
     public Terminal() {
     }
@@ -31,6 +35,10 @@ public class Terminal {
     public Terminal(String address) {
         this.terminal_id = counter++;
         this.address = address;
+    }
+
+    public List<Checkpoint> getCheckpoints() {
+        return checkpoints;
     }
 
     public Integer getTerminal_id() {
@@ -58,16 +66,29 @@ public class Terminal {
     }
 
     public void addShipment(Shipment shipment) {
-        var exists = false;
-        for (Shipment ship: shipments_passed) {
-            if (Objects.equals(shipment.getShipment_id(), ship.getShipment_id())) {
-                exists = true;
+        boolean exists = false;
+        if (!shipments_passed.isEmpty()) {
+            for (Iterator<Shipment> iterator = shipments_passed.iterator(); iterator.hasNext();) {
+                Shipment ship = iterator.next();
+                if (ship == shipment) {
+                    exists = true;
+                }
+                if (!exists) {
+                    shipments_passed.add(shipment);
+                    System.out.println("Added shipment to terminal");
+                } else {
+                    System.out.println("Shipment already exists");
+                }
             }
-            if (!exists) {
-                shipments_passed.add(shipment);
-            }
+        } else {
+            shipments_passed.add(shipment);
         }
     }
+
+    public void addCheckpoint(Checkpoint cp) {
+        checkpoints.add(cp);
+    }
+
 
     @Override
     public String toString() {

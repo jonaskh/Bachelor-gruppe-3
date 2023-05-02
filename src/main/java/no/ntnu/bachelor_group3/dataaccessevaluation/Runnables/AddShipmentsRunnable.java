@@ -3,6 +3,7 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.Runnables;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;
 import org.hibernate.HibernateException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 
 public class AddShipmentsRunnable implements Runnable {
@@ -19,7 +20,7 @@ public class AddShipmentsRunnable implements Runnable {
     public void run() {
         try {
             catchRun();
-        } catch (HibernateException e) {
+        } catch (Exception e) {
             System.out.println("Integrity constraint");
 
         }

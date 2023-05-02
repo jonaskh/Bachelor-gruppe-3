@@ -21,6 +21,8 @@ public class Checkpoint {
     @Id
     private Long checkpoint_id;
 
+
+
     public enum CheckpointType{Collected, ReceivedFirstTerminal,LoadedOnCar,ReceivedFinalTerminal,UnderDelivery,Delivered}
 
     private CheckpointType type;
@@ -29,8 +31,7 @@ public class Checkpoint {
 
     private double cost;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "terminal_id")
+    @ManyToOne(fetch = FetchType.EAGER)
     private Terminal terminal;
 
     private LocalDateTime time;
@@ -72,6 +73,10 @@ public class Checkpoint {
     public void setType(CheckpointType type) {
         this.type = type;
 
+    }
+
+    public Terminal getTerminal() {
+        return this.terminal;
     }
 
     public String getLocation() {

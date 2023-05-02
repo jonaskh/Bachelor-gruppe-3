@@ -1,12 +1,13 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Services;
 
+import jakarta.transaction.Transactional;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Checkpoint;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.CheckpointRepository;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.TerminalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -38,9 +39,9 @@ public class CheckpointService {
     public void addCheckpoint(Checkpoint checkpoint) {
         var before = Instant.now();
         checkpointRepository.save(checkpoint);
+
         var duration = Duration.between(before, Instant.now()).getNano() + " , checkpoint create";
         checkpointEvals.add(duration);
-        System.out.println("Checkpoint has been saved to database");
     }
 
     /*

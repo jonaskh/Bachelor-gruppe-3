@@ -1,10 +1,12 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Services;
 
 import jakarta.transaction.Transactional;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Checkpoint;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.TerminalRepository;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.ValidPostalCodeRepository;
+import org.hibernate.annotations.Check;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,6 +57,16 @@ public class TerminalService {
         }
     }
 
+    @Transactional
+    public void addShipment(Shipment shipment, Terminal terminal) {
+        findByID(terminal.getTerminal_id()).addShipment(shipment);
+    }
+
+    @Transactional
+    public void addCheckpoint(Checkpoint checkpoint, Terminal terminal) {
+        findByID(terminal.getTerminal_id()).addCheckpoint(checkpoint);
+    }
+
     public long getShipmentsinTerminal(int terminal_id) {
         long count = 0;
         if (findByID(terminal_id) != null) {
@@ -66,15 +78,7 @@ public class TerminalService {
         return count;
     }
 
-    public List<Shipment> getShipmentsInTerminal(Terminal terminal) {
-        return terminal.getShipments_passed();
 
-    }
-
-
-    public long getShipmentsThroughTerminal(Terminal terminal) {
-        return checkpointService.getAllShipmentsThroughTerminal(terminal.getAddress());
-    }
 
     @jakarta.transaction.Transactional
     public long count() {
@@ -88,6 +92,11 @@ public class TerminalService {
     //TODO: Find all checkpoints at terminal from id
 
 
+
+    @Transactional
+    public long shipmentsInTerminal(Terminal terminal) {
+        return terminal.getShipmentNumber();
+    }
 
     @Transactional
     public Terminal returnTerminalFromZip(String zip) {

@@ -21,7 +21,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 
 @Service
-public class ShipmentService{
+public class ShipmentService {
 
     @Autowired
     private ShipmentRepository shipmentRepository;
@@ -56,17 +56,18 @@ public class ShipmentService{
     }
 
     public void printParcelsFromDB(Shipment shipment) {
-        if (findByID(shipment.getShipment_id())!= null) {
+        if (findByID(shipment.getShipment_id()) != null) {
             for (Parcel parcel : findByID(shipment.getShipment_id()).getParcels()) {
                 System.out.println(parcel.getParcel_id());
             }
         }
     }
 
+    @Transactional
     public Shipment findByID(Long id) {
         var before = Instant.now();
         Optional<Shipment> shipment = shipmentRepository.findById(id);
-        var duration = Duration.between(before,Instant.now()).toNanos();
+        var duration = Duration.between(before, Instant.now()).toNanos();
         shipmentEvals.add(duration + ", shipment find");
         return shipment.orElse(null);
     }
@@ -107,31 +108,34 @@ public class ShipmentService{
 
     /**
      * returns void to use in runnable interface
+     *
      * @param shipment
      */
     //TODO: CASCADING SAVE CHILD ENTITIES VS MANUAL
     @Transactional
     public Shipment cascadingAdd(Shipment shipment) {
         Shipment ship = null;
-            if (customerService.findByID(shipment.getSenderID()).isEmpty()) {
-                customerService.save(shipment.getSender());
-            }
-            if (customerService.findByID(shipment.getReceiverID()).isEmpty()) {
-                customerService.save(shipment.getReceiver());
-            }
-            if (customerService.findByID(shipment.getPayerID()).isEmpty()) {
-                customerService.save(shipment.getPayer());
-            }
-            var before = Instant.now();
+        if (customerService.findByID(shipment.getSenderID()).isEmpty()) {
+            customerService.save(shipment.getSender());
+        }
+        if (customerService.findByID(shipment.getReceiverID()).isEmpty()) {
+            customerService.save(shipment.getReceiver());
+        }
+        if (customerService.findByID(shipment.getPayerID()).isEmpty()) {
+            customerService.save(shipment.getPayer());
+        }
+        var before = Instant.now();
+        setFirstTerminalToShipment(shipment);
+        setEndTerminalToShipment(shipment);
 
-            try {
-                ship = shipmentRepository.save(shipment);
+        try {
+            ship = shipmentRepository.save(shipment);
 
-            } catch (HibernateException e) {
-                System.out.println("Shipment with that ID already exists");
-            }
-            var duration = Duration.between(before, Instant.now());
-            shipmentEvals.add(duration.get(ChronoUnit.NANOS) + ", shipment create");
+        } catch (HibernateException e) {
+            System.out.println("Shipment with that ID already exists");
+        }
+        var duration = Duration.between(before, Instant.now());
+        shipmentEvals.add(duration.get(ChronoUnit.NANOS) + ", shipment create");
 
         return ship;
     }
@@ -139,20 +143,98 @@ public class ShipmentService{
 
     /**
      * Adds a checkpoint to all parcels in the shipment, with a 2s delay to simulate travel time
-     * @param shipment to add checkpoint to
+     *
+     * @param shipment   to add checkpoint to
      * @param checkpoint which checkpoint to add
      */
     @Transactional
-    public Shipment updateCheckpointsOnParcels(Shipment shipment, Checkpoint checkpoint) {
-            for (Parcel parcel : shipment.getParcels()) {
-                parcel.setLastCheckpoint(checkpoint);
-                var before = Instant.now();
-                checkpointService.addCheckpoint(checkpoint);
-                var duration = Duration.between(before, Instant.now()).toNanos();
-                shipmentEvals.add(duration + " , checkpoint create");
-            }
-            return shipment;
-            //adds the shipment to terminal
+    public void updateCheckpointsOnParcels(Shipment shipment, Checkpoint checkpoint) {
+        for (Parcel parcel : shipment.getParcels()) {
+            parcel.setLastCheckpoint(checkpoint);
+            var before = Instant.now();
+            checkpointService.addCheckpoint(checkpoint);
+            var duration = Duration.between(before, Instant.now()).toNanos();
+            shipmentEvals.add(duration + " , checkpoint create");
+        }
+
+        //adds the shipment to terminal if checkpoint is at a terminal and has not already passed it.
+        if (checkpoint.getTerminal() != null) {
+            terminalService.addShipment(shipment, checkpoint.getTerminal());
+            terminalService.addCheckpoint(checkpoint, checkpoint.getTerminal());
+        }
+        //adds the shipment to terminal
+    }
+
+    @Transactional
+    public void updateFirstCheckpointsOnParcels(Shipment shipment) {
+        Checkpoint checkpoint = new Checkpoint(shipment.getSender().getAddress(), Checkpoint.CheckpointType.Collected);
+        for (Parcel parcel : shipment.getParcels()) {
+            parcel.setLastCheckpoint(checkpoint);
+            var before = Instant.now();
+            checkpointService.addCheckpoint(checkpoint);
+            var duration = Duration.between(before, Instant.now()).toNanos();
+            shipmentEvals.add(duration + " , checkpoint create");
+        }
+        //adds the shipment to terminal
+    }
+
+
+    @Transactional
+    public void updateSecondCheckpointsOnParcels(Shipment shipment) {
+        Checkpoint checkpoint = new Checkpoint(shipment.getFirstTerminal(), Checkpoint.CheckpointType.ReceivedFirstTerminal);
+        for (Parcel parcel : shipment.getParcels()) {
+            parcel.setLastCheckpoint(checkpoint);
+            var before = Instant.now();
+            checkpointService.addCheckpoint(checkpoint);
+            var duration = Duration.between(before, Instant.now()).toNanos();
+            shipmentEvals.add(duration + " , checkpoint create");
+        }
+        //adds the shipment to terminal
+    }
+
+    @Transactional
+    public Shipment updateThirdCheckpointsOnParcels(Shipment shipment) {
+        Checkpoint checkpoint = new Checkpoint(shipment.getFirstTerminal(), Checkpoint.CheckpointType.LoadedOnCar);
+
+        for (Parcel parcel : shipment.getParcels()) {
+            parcel.setLastCheckpoint(checkpoint);
+            var before = Instant.now();
+            checkpointService.addCheckpoint(checkpoint);
+            var duration = Duration.between(before, Instant.now()).toNanos();
+            shipmentEvals.add(duration + " , checkpoint create");
+        }
+        return shipment;
+        //adds the shipment to terminal
+    }
+
+    @Transactional
+    public Shipment updateFourthCheckpointsOnParcels(Shipment shipment) {
+        Checkpoint checkpoint = new Checkpoint(shipment.getFinalTerminal(), Checkpoint.CheckpointType.ReceivedFinalTerminal);
+
+        for (Parcel parcel : shipment.getParcels()) {
+            parcel.setLastCheckpoint(checkpoint);
+            var before = Instant.now();
+            checkpointService.addCheckpoint(checkpoint);
+            var duration = Duration.between(before, Instant.now()).toNanos();
+            shipmentEvals.add(duration + " , checkpoint create");
+        }
+        return shipment;
+        //adds the shipment to terminal
+    }
+
+    @Transactional
+    public Shipment updateSixthCheckpointsOnParcels(Shipment shipment) {
+        Checkpoint checkpoint = new Checkpoint(shipment.getReceiver().getAddress(), Checkpoint.CheckpointType.UnderDelivery);
+
+        for (Parcel parcel : shipment.getParcels()) {
+            parcel.setLastCheckpoint(checkpoint);
+            var before = Instant.now();
+            checkpointService.addCheckpoint(checkpoint);
+            var duration = Duration.between(before, Instant.now()).toNanos();
+            shipmentEvals.add(duration + " , checkpoint create");
+        }
+        return shipment;
+        //adds the shipment to terminal
     }
 
     @Transactional
@@ -186,14 +268,15 @@ public class ShipmentService{
 
     //returns the terminal connected to zip code of the shipments sender
 
-    public Terminal findFirstTerminalToShipment(Shipment shipment) {
-        return terminalService.returnTerminalFromZip(customerService.findByID(shipmentRepository.findById(shipment.getShipment_id()).get().getSenderID()).get().getZip_code());
+    @Transactional
+    public void setFirstTerminalToShipment(Shipment shipment) {
+        shipment.setFirstTerminal(terminalService.returnTerminalFromZip(shipment.getSender().getZip_code()));
     }
 
+    @Transactional
     //returns the terminal connected to zip code of the shipments receiver
-    public Terminal  findFinalTerminalToShipment(Shipment shipment) {
-
-        return terminalService.returnTerminalFromZip(customerService.findByID(shipmentRepository.findById(shipment.getShipment_id()).get().getReceiverID()).get().getZip_code());
+    public void setEndTerminalToShipment(Shipment shipment) {
+        shipment.setFinalTerminal(terminalService.returnTerminalFromZip(shipment.getReceiver().getZip_code()));
     }
 
     public long count() {

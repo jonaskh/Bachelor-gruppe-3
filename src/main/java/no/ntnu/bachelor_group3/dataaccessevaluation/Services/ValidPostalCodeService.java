@@ -72,7 +72,7 @@ public class ValidPostalCodeService {
      * @return hashmap with keys as zip codes and values as ValidPostalCodes objects with zip, municipality and terminal id.
      */
     @Transactional
-    public HashMap<String, ValidPostalCode> ReadCSVFile() {
+    public void ReadCSVFile() {
         String csvFile = "Postnummerregister.csv";
         createTerminals();
         String line = "";
@@ -95,7 +95,6 @@ public class ValidPostalCodeService {
         long timeTaken = ChronoUnit.MILLIS.between(start,after);
         validPostalCodeRepository.saveAll(postalcodes.values());
         System.out.println("Time taken in READCSV method:  " + timeTaken + " milliseconds");
-        return postalcodes;
     }
 
 }

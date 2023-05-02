@@ -60,7 +60,7 @@ public class MultiThreadTests {
             Customer customer2 = new Customer("oslo", "tarjei", "0021");
 
             Shipment shipment = new Shipment(customer, customer, customer2);
-            UpdateShipmentRunnable sr = new UpdateShipmentRunnable(shipment, shipmentService);
+            UpdateShipmentRunnable sr = new UpdateShipmentRunnable(shipment, shipmentService, terminalService);
             executor.execute(sr);
         }
 
@@ -104,7 +104,7 @@ public class MultiThreadTests {
             Customer customer2 = new Customer("Oslo", "Tarjei", "0021");
 
             Shipment shipment = new Shipment(customer, customer2, customer);
-            UpdateShipmentRunnable sr = new UpdateShipmentRunnable(shipment,shipmentService);
+            UpdateShipmentRunnable sr = new UpdateShipmentRunnable(shipment,shipmentService, terminalService);
             executor.execute(sr);
         }
         executor.shutdown(); //does not accept new tasks, but will finish existing ones
