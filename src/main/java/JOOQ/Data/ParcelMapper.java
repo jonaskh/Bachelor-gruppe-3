@@ -1,23 +1,23 @@
 package JOOQ.Data;
 
-import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Parcel;
 
 
 public class ParcelMapper {
-    public static JOOQ.Data.Parcel map(JOOQ.Data.Parcel parcel) {
-        return new JOOQ.Data.Parcel()
-                .setParcelId(parcel.getParcelId())
-                .setShipmentId(parcel.getShipmentId())
-                .setWeight(parcel.getWeight())
-                .setWeightClass(parcel.getWeightClass());
-
+    public static JOOQ.Data.Parcel map(no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Parcel jooqParcel) {
+        JOOQ.Data.Parcel parcel = new JOOQ.Data.Parcel();
+        parcel.setParcelId(jooqParcel.getParcelId());
+        parcel.setShipmentId(jooqParcel.getShipmentId());
+        parcel.setWeight(jooqParcel.getWeight());
+        parcel.setWeightClass(jooqParcel.getWeightClass());
+        return parcel;
     }
 
-    public static no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Parcel mapToJooqParcel(Parcel parcel) {
-        return new no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Parcel()
-                .setParcelId(parcel.getParcelId())
-                .setWeight(parcel.getWeight())
-                .setShipmentId(parcel.getShipmentId())
-                .setWeightClass(parcel.getWeightClass());
+    public static no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Parcel mapToJooqParcel(JOOQ.Data.Parcel customParcel) {
+        no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Parcel jooqParcel = new no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Parcel();
+        jooqParcel.setParcelId(customParcel.getParcelId());
+        jooqParcel.setShipmentId(customParcel.getShipmentId());
+        jooqParcel.setWeight(customParcel.getWeight());
+        jooqParcel.setWeightClass(customParcel.getWeightClass());
+        return jooqParcel;
     }
 }

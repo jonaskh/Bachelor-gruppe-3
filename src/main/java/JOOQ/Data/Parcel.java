@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Parcel extends no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Parcel {
+public class Parcel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -15,7 +15,7 @@ public class Parcel extends no.ntnu.bachelor_group3.dataaccessevaluation.jooq.mo
     private Double weight;
     private Integer weightClass;
     private Long shipmentId;
-    private List<String> checkpoints;
+    private List<Checkpoint> checkpoints;
 
     public Parcel() {}
 
@@ -46,14 +46,14 @@ public class Parcel extends no.ntnu.bachelor_group3.dataaccessevaluation.jooq.mo
     /**
      * Getter for the list of checkpoints.
      */
-    public List<String> getCheckpoints() {
+    public List<Checkpoint> getCheckpoints() {
         return checkpoints;
     }
 
     /**
      * Setter for the list of checkpoints.
      */
-    public void setCheckpoints(List<String> checkpoints) {
+    public void setCheckpoints(List<Checkpoint> checkpoints) {
         this.checkpoints = checkpoints;
     }
 
@@ -61,13 +61,13 @@ public class Parcel extends no.ntnu.bachelor_group3.dataaccessevaluation.jooq.mo
      * Add a checkpoint to the list.
      */
     public void addCheckpoint(Checkpoint checkpoint) {
-        checkpoints.add(String.valueOf(checkpoint));
+        checkpoints.add(checkpoint);
     }
 
     /**
      * Get the current checkpoint assigned to the parcel.
      */
-    public String getCurrentCheckpoint() {
+    public Checkpoint getCurrentCheckpoint() {
         if (checkpoints.isEmpty()) {
             return null;
         }
@@ -77,7 +77,7 @@ public class Parcel extends no.ntnu.bachelor_group3.dataaccessevaluation.jooq.mo
     /**
      * Get all the checkpoints assigned to the parcel.
      */
-    public List<String> getAllCheckpoints() {
+    public List<Checkpoint> getAllCheckpoints() {
         return new ArrayList<>(checkpoints);
     }
 

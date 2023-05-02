@@ -1,5 +1,6 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.JOOQTests;
 
+import JOOQ.Data.ParcelMapper;
 import JOOQ.repositories.CustomerRepository;
 import JOOQ.repositories.ShipmentRepository;
 import JOOQ.repositories.TerminalIdRepository;
@@ -16,6 +17,7 @@ import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.*;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
+import org.jooq.meta.derby.sys.Sys;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +25,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,6 +36,8 @@ public class LifecycleJOOQTest {
     private DSLContext dslContext;
     private CustomerRepository customerRepository;
     private ValidPostalCodesRepository validPostalCodesRepository;
+    private List<Checkpoint> checkpoints;
+
 
     @BeforeEach
     void setUp() throws SQLException {
@@ -53,15 +59,8 @@ public class LifecycleJOOQTest {
         ParcelService parcelService = new ParcelService(new ParcelDao(dslContext.configuration()));
         TerminalIdRepository terminalIdRepository = new TerminalIdRepository(dslContext);
         ShipmentRepository shipmentRepository = new ShipmentRepository(dslContext);
-        ParcelDao parcelDao = new ParcelDao();
-
-
-
-
-
-
-        //TerminalId terminalId = dslContext.selectFrom(TERMINAL_ID).where(TERMINAL_ID.POSTAL_CODE.eq(postalCode)).fetchOneInto(TerminalId.class);
-        //assertNotNull(terminalId);
+        ParcelDao parcelDao = new ParcelDao(dslContext.configuration());
+        this.checkpoints = new ArrayList<>();
 
         //Create two customers, sender and receiver
         Customer sender = new Customer()
@@ -98,17 +97,7 @@ public class LifecycleJOOQTest {
         assertNotNull(savedParcel.getParcelId());
         System.out.println(savedParcel.toString());
 
-        JOOQ.Data.Parcel customParcel = new JOOQ.Data.Parcel();
-
-
-
-
-
-
-
-
-
-        //TODO: Må finne en måte å gjøre slik at vi kan sette TerminalType til den String versjonen av Enumet slik at vi får mer kontroll.
+        JOOQ.Data.Parcel customParcel = ParcelMapper.map(savedParcel);
 
         //Creates a basic checkpoint with terminal for when it is collected, maybe a customers address is needed in this table aswell?
         Checkpoint checkpoint = new Checkpoint()
@@ -118,6 +107,8 @@ public class LifecycleJOOQTest {
         checkpoint.setType((short) 0);
         Checkpoint savedCheckpoint = checkpointService.create(checkpoint);
         System.out.println(savedCheckpoint.toString()+"Main Checkpoint");
+        checkpoints.add(checkpoint);
+
 
         //Creates a checkpoint with the terminal id connected to the senders zipcode - recieved at first terminal.
         String senderPostalCode = savedSender.getZipCode();
@@ -131,8 +122,7 @@ public class LifecycleJOOQTest {
                     .setParcelId(savedParcel.getParcelId());
             checkpoint1.setType((short) 1);
             Checkpoint savedCheckpoint1 = checkpointService.create(checkpoint1);
-            System.out.println(savedCheckpoint1.getTerminalId());
-            System.out.println(savedCheckpoint1.toString()+"First Checkpoint");
+        checkpoints.add(checkpoint1);
 
 
         //Creates a checkpoint for when the package is loaded for transport. Does not change terminal id.
@@ -143,7 +133,8 @@ public class LifecycleJOOQTest {
                 .setTerminalId(checkpoint1.getTerminalId());
         checkpoint2.setType((short) 2);
         Checkpoint savedCheckpoint2 = checkpointService.create(checkpoint2);
-        System.out.println(savedCheckpoint2.toString()+"Second Checkpoint");
+        checkpoints.add(checkpoint2);
+
 
         //Creates a checkpoint for when the package is received at final terminal. Does change the terminal_id.
         String receiverPostalCode = savedReceiver.getZipCode();
@@ -155,15 +146,32 @@ public class LifecycleJOOQTest {
                 .setParcelId(savedParcel.getParcelId());
         checkpoint3.setType((short) 3);
         Checkpoint savedCheckpoint3 = checkpointService.create(checkpoint3);
-        System.out.println(savedCheckpoint3.toString()+"Third Checkpoint");
+        checkpoints.add(checkpoint3);
 
 
 
-        customParcel.addCheckpoint(savedCheckpoint1);
-        parcelDao.update(customParcel);
 
-        JOOQ.Data.Parcel updatedParcel = (JOOQ.Data.Parcel) parcelDao.fetchOneByParcelId(1L);
-        assertEquals("Checkpoint A", updatedParcel.getCheckpoints().get(0));
+        customParcel.setCheckpoints(checkpoints);
+        customParcel.getAllCheckpoints();
+        customParcel.getCurrentCheckpoint();
+        System.out.println(customParcel.getAllCheckpoints());
+        System.out.println(customParcel.getCurrentCheckpoint());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
