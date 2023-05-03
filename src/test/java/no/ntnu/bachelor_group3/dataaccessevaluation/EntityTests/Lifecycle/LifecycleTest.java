@@ -86,6 +86,8 @@ public class LifecycleTest {
         System.out.println("shipments passed: " + terminalService.returnTerminalFromZip("0021").getShipmentNumber());
         System.out.println("shipments passed: " + terminalService.returnTerminalFromZip("2618").getShipmentNumber());
 
+        System.out.println("Location: " + shipmentService.getLocation(shipment));
+        System.out.println(sender.getShipments());
 
     }
 }

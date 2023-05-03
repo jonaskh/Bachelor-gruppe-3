@@ -16,6 +16,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -127,6 +128,7 @@ public class ShipmentService {
         var before = Instant.now();
         setFirstTerminalToShipment(shipment);
         setEndTerminalToShipment(shipment);
+        customerService.addShipment(shipment, shipment.getSender());
 
         try {
             ship = shipmentRepository.save(shipment);
@@ -159,10 +161,16 @@ public class ShipmentService {
 
         //adds the shipment to terminal if checkpoint is at a terminal and has not already passed it.
         if (checkpoint.getTerminal() != null) {
-//            terminalService.addShipment(shipment, checkpoint.getTerminal());
+            terminalService.addShipment(shipment, checkpoint.getTerminal());
+
             terminalService.addCheckpoint(checkpoint, checkpoint.getTerminal());
         }
-        //adds the shipment to terminal
+    }
+
+    //returns the last checkpoint for the shipment, used by customer to track location in Runnable
+    public Checkpoint getLocation(Shipment shipment) {
+        return findByID(shipment.getShipment_id()).getParcels().get(0).getLastCheckpoint();
+
     }
 
     @Transactional

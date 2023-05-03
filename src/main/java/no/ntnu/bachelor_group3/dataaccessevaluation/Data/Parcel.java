@@ -28,7 +28,7 @@ public class Parcel {
     private Long parcel_version = null;
 
     //price is evaluated with weight times a constant
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "checkpoint_id")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "checkpoint_id")
     private List<Checkpoint> checkpoints = new ArrayList<>();
 
 

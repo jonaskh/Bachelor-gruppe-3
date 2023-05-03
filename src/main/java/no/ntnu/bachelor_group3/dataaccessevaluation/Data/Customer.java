@@ -29,7 +29,7 @@ public class Customer {
 
 
     //Set of shipments for each customer
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "shipment_id")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "shipment_id")
     private List<Shipment> shipments = new ArrayList<>();
 
     /**
@@ -87,6 +87,9 @@ public class Customer {
         return this.shipments;
     }
 
+    public void addShipment(Shipment shipment) {
+        shipments.add(shipment);
+    }
 
     /**
      * Add a shipment to the customer

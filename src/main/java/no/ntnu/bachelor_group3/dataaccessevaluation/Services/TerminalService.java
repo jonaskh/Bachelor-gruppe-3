@@ -63,7 +63,7 @@ public class TerminalService {
 
     @Transactional
     public void addShipment(Shipment shipment, Terminal terminal) {
-        findByID(terminal.getTerminal_id()).addShipment(shipment);
+        terminal.addShipment(shipment);
     }
 
     @Transactional
@@ -71,6 +71,10 @@ public class TerminalService {
         findByID(terminal.getTerminal_id()).addCheckpoint(checkpoint);
     }
 
+
+//    public void findUniqueShipments(Terminal terminal) {
+//        terminalRepository.findDistinctByshipment_id(1L);
+//    }
     public long getShipmentsinTerminal(int terminal_id) {
         long count = 0;
         if (findByID(terminal_id) != null) {

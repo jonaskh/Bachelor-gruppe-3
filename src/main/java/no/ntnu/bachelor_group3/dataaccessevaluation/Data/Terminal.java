@@ -19,6 +19,7 @@ public class Terminal {
 
     private String address;
 
+    //contains all checkpoints that are registered in a terminal
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "checkpoint_id_terminal")
     private List<Checkpoint> checkpoints = new ArrayList<>();
@@ -65,24 +66,31 @@ public class Terminal {
         return shipments_passed.size();
     }
 
-    public void addShipment(Shipment shipment) {
-        boolean exists = false;
-        if (!shipments_passed.isEmpty()) {
-            for (Shipment ship : shipments_passed) {
-                if (ship == shipment) {
-                    exists = true;
-                }
-                if (!exists) {
-                    shipments_passed.add(shipment);
-                    System.out.println("Added shipment to terminal");
-                } else {
-                    System.out.println("Shipment already exists");
-                }
-            }
-        } else {
-            shipments_passed.add(shipment);
-        }
+    public long getCheckpointNumber() {
+        return checkpoints.size();
     }
+
+    public void addShipment(Shipment shipment) {
+        shipments_passed.add(shipment);
+    }
+//    public void addShipment(Shipment shipment) {
+//        boolean exists = false;
+//        if (!shipments_passed.isEmpty()) {
+//            for (Shipment ship : shipments_passed) {
+//                if (ship == shipment) {
+//                    exists = true;
+//                }
+//                if (!exists) {
+//                    shipments_passed.add(shipment);
+//                    System.out.println("Added shipment to terminal");
+//                } else {
+//                    System.out.println("Shipment already exists");
+//                }
+//            }
+//        } else {
+//            shipments_passed.add(shipment);
+//        }
+//    }
 
     public void addCheckpoint(Checkpoint cp) {
         checkpoints.add(cp);

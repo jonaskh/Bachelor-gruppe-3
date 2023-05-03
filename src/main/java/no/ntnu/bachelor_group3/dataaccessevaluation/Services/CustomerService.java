@@ -55,6 +55,11 @@ public class CustomerService {
         return customerOptional;
     }
 
+    @jakarta.transaction.Transactional
+    public void addShipment(Shipment shipment, Customer customer) {
+        customer.addShipment(shipment);
+    }
+
 
 
     @jakarta.transaction.Transactional
@@ -73,6 +78,10 @@ public class CustomerService {
 
         return customer.orElse(null);
     }
+
+//    public String findShipmentLocation(Shipment shipment, Customer customer) {
+//
+//    }
 
     @jakarta.transaction.Transactional
     //saves a customer to the customerepo, and thus the database

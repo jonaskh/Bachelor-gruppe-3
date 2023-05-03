@@ -3,6 +3,7 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.TestConfiguration;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Runnables.AddShipmentsRunnable;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.*;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Runnables.UpdateShipmentRunnable;
 import org.junit.jupiter.api.DisplayName;
@@ -95,28 +96,36 @@ public class MultiThreadTests {
 
     @Test
     public void concurrentAddShipments() {
+        validPostalCodeService.createTerminals();
+
         validPostalCodeService.ReadCSVFile();
         ExecutorService executor = Executors.newFixedThreadPool(5);
-        System.out.println(terminalService.returnTerminalFromZip("6300"));
+
+//
+//        customerService.save(customer);
+//        customerService.save(customer2);
 
         for (int i = 0; i < 500; i++) {
+
             Customer customer = new Customer("Ålesund", "Jonas", "6008");
             Customer customer2 = new Customer("Oslo", "Tarjei", "0021");
 
-            Shipment shipment = new Shipment(customer, customer2, customer);
-            UpdateShipmentRunnable sr = new UpdateShipmentRunnable(shipment,shipmentService, terminalService);
-            executor.execute(sr);
+
+            executor.execute(new AddShipmentsRunnable(new Shipment(customer, customer2, customer),shipmentService));
         }
+
+
         executor.shutdown(); //does not accept new tasks, but will finish existing ones
+
         try {
             executor.awaitTermination(1, TimeUnit.MINUTES); //terminates when all tasks are done, or 1 minute passes, whichever happens first
+//            System.out.println(customerService.findByID(2L).get().getShipments());
+
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
 
-        for (int i = 1; i < 20; i++) {
-            System.out.println(terminalService.findByID(i).getShipmentNumber());
-        }
+
     }
 
     @Test

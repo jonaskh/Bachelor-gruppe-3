@@ -92,13 +92,19 @@ public class SimulationRunner {
             System.out.println("Error in await termination");
         }
 
+        System.out.println("Shipment location: " + shipmentService.getLocation(shipmentService.findByID(1L)));
+
+        System.out.println("shipments: " + sender.getShipments().size());
+
+
         System.out.println("queue size: " + queue.size());
         System.out.println("shipments: " + shipmentService.count());
         System.out.println("parcels: " + parcelService.count());
         System.out.println("checkpoints: " + checkpointService.count());
 
         System.out.println("Number of shipments in terminal 14: " + terminalService.returnTerminalFromZip("6008").getShipmentNumber());
-        System.out.println("Number of shipments in terminal 1: " + terminalService.returnTerminalFromZip("6008").getCheckpoints());
+        System.out.println("Number of checkpoints in terminal 14: " + terminalService.returnTerminalFromZip("0021").getCheckpointNumber());
+
 
     }
 
