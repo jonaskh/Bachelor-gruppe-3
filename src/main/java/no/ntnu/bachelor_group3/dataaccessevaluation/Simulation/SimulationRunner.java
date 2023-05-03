@@ -44,6 +44,8 @@ public class SimulationRunner {
 
         customerService.save(sender);
         customerService.save(receiver);
+
+        System.out.println("Starting simulation...");
         for (int i = 0; i < 500; i++) {
             Shipment shipment = new Shipment(sender, sender, receiver);
             AddShipmentsRunnable shipmentsRunnable = new AddShipmentsRunnable(shipment, shipmentService);

@@ -37,10 +37,15 @@ public class TerminalService {
         return terminalEvals;
     }
 
-    @Transactional
     //finds a terminal in database based on id, return null if no matching id
     public Terminal findByID(Integer id) {
         return terminalRepository.findById(id).orElse(null);
+    }
+
+    public void findUniqueShipmentsThroughTerminal(Terminal terminal) {
+        for (Checkpoint cp :findByID(terminal.getTerminal_id()).getCheckpoints()) {
+
+        }
     }
 
     //checks if terminal with this id exist already, if not add it to database
@@ -52,7 +57,6 @@ public class TerminalService {
             return false;
         } else {
             terminalRepository.save(terminal);
-            System.out.println("Terminal has been added to database");
             return true;
         }
     }

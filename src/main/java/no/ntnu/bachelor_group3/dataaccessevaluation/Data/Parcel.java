@@ -29,7 +29,7 @@ public class Parcel {
 
     //price is evaluated with weight times a constant
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "checkpoint_id")
-    private List<Checkpoint> checkpoints = new CopyOnWriteArrayList<>();
+    private List<Checkpoint> checkpoints = new ArrayList<>();
 
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

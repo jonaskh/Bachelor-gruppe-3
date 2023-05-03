@@ -159,7 +159,7 @@ public class ShipmentService {
 
         //adds the shipment to terminal if checkpoint is at a terminal and has not already passed it.
         if (checkpoint.getTerminal() != null) {
-            terminalService.addShipment(shipment, checkpoint.getTerminal());
+//            terminalService.addShipment(shipment, checkpoint.getTerminal());
             terminalService.addCheckpoint(checkpoint, checkpoint.getTerminal());
         }
         //adds the shipment to terminal

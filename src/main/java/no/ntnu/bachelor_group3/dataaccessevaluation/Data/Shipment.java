@@ -31,12 +31,12 @@ public class Shipment {
     @JoinColumn(name = "payer_id")
     private Customer payer;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinTable(name = "start_terminal_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "start_terminal_id")
     private Terminal firstTerminal;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinTable(name = "end_terminal_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "end_terminal_id")
     private Terminal finalTerminal;
 
     private boolean delivered;

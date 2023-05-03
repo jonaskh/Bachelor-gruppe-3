@@ -94,7 +94,6 @@ public class ValidPostalCodeService {
         LocalDateTime after = LocalDateTime.now();
         long timeTaken = ChronoUnit.MILLIS.between(start,after);
         validPostalCodeRepository.saveAll(postalcodes.values());
-        System.out.println("Time taken in READCSV method:  " + timeTaken + " milliseconds");
     }
 
 }

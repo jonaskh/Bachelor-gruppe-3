@@ -39,7 +39,6 @@ public class CheckpointService {
     public void addCheckpoint(Checkpoint checkpoint) {
         var before = Instant.now();
         checkpointRepository.save(checkpoint);
-
         var duration = Duration.between(before, Instant.now()).getNano() + " , checkpoint create";
         checkpointEvals.add(duration);
     }

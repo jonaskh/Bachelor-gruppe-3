@@ -20,13 +20,13 @@ public class Terminal {
     private String address;
 
     @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "checkpoint_terminals")
+    @JoinColumn(name = "checkpoint_id_terminal")
     private List<Checkpoint> checkpoints = new ArrayList<>();
 
 
     //list of shipments for a period of time. Stored in a queue for first in first out.
     @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "shipment_id_terminal_id")
+    @JoinColumn(name = "shipments_terminal")
     private List<Shipment> shipments_passed = new ArrayList<>();
 
     public Terminal() {
@@ -68,8 +68,7 @@ public class Terminal {
     public void addShipment(Shipment shipment) {
         boolean exists = false;
         if (!shipments_passed.isEmpty()) {
-            for (Iterator<Shipment> iterator = shipments_passed.iterator(); iterator.hasNext();) {
-                Shipment ship = iterator.next();
+            for (Shipment ship : shipments_passed) {
                 if (ship == shipment) {
                     exists = true;
                 }
@@ -88,6 +87,8 @@ public class Terminal {
     public void addCheckpoint(Checkpoint cp) {
         checkpoints.add(cp);
     }
+
+
 
 
     @Override
