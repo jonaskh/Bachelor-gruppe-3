@@ -20,7 +20,7 @@ public class ValidPostalCode {
     @Version
     private Long zip_version = null;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinTable(name = "terminal_id")
     private Terminal terminal_id;
 

@@ -22,12 +22,16 @@ public class Parcel {
 
     private double weight;
 
+    private int weight_class;
+
     @Version
-    private Long parcel_version = null;
+    @Column(name = "optlock", columnDefinition = "integer DEFAULT 0", nullable = false)
+    private long version = 0L;
 
     //price is evaluated with weight times a constant
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "checkpoint_id")
-    private List<Checkpoint> checkpoints = new CopyOnWriteArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "checkpoint_parcels")
+    private List<Checkpoint> checkpoints = new ArrayList<>();
 
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -43,6 +47,7 @@ public class Parcel {
         this.shipment = shipment;
         this.parcel_id = counter++;
         this.weight = weight;
+        setWeightClass();
     }
 
     public double getWeight() {
@@ -57,6 +62,10 @@ public class Parcel {
 
     //assigns a weight class depending on weight. Used at checkpoints to estimate cost.
 
+    public List<Checkpoint> getCheckpoints() {
+        return checkpoints;
+    }
+
 
     //TODO: for each loop to generate cost through each checkpoint
 
@@ -68,7 +77,25 @@ public class Parcel {
         return cost;
     }
 
-    @Transactional
+    //TODO: check performance
+    public void setWeightClass() {
+        if (this.weight < 1) {
+            this.weight_class = 1;
+        }
+        if (1 < this.weight && this.weight < 5) {
+            this.weight_class = 2;
+        }
+        if (5 < this.weight && this.weight < 10) {
+            this.weight_class = 3;
+        }
+        if (10 < this.weight && this.weight < 20) {
+            this.weight_class = 4;
+        }
+        if (this.weight > 20) {
+            this.weight_class = 5;
+        }
+    }
+
     public void setLastCheckpoint(Checkpoint checkpoint) {
         checkpoints.remove(checkpoint);
         checkpoints.add(checkpoint);

@@ -21,25 +21,30 @@ public class Checkpoint {
     @Id
     private Long checkpoint_id;
 
+
+
     public enum CheckpointType{Collected, ReceivedFirstTerminal,LoadedOnCar,ReceivedFinalTerminal,UnderDelivery,Delivered}
 
     private CheckpointType type;
 
+    private String location;
+
     private double cost;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "terminal_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Terminal terminal;
 
     private LocalDateTime time;
 
     @Version
-    private Long cp_version = null;
+    @Column(name = "optlock", columnDefinition = "integer DEFAULT 0", nullable = false)
+    private long version = 0L;
 
     public Checkpoint() {
     }
 
     public Checkpoint(String location, CheckpointType type) {
+        this.location = location;
         this.time = LocalDateTime.now();
         this.checkpoint_id = counter++;
         this.type = type;
@@ -69,6 +74,18 @@ public class Checkpoint {
     public void setType(CheckpointType type) {
         this.type = type;
 
+    }
+
+    public Terminal getTerminal() {
+        return this.terminal;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public CheckpointType getType() {

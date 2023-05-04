@@ -1,20 +1,23 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Runnables;
 
+import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Checkpoint;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;
 
 import java.util.concurrent.Callable;
 
-public class ShipmentCallable implements Callable<String> {
+public class ShipmentCallable implements Callable<Shipment> {
 
     private Shipment shipment;
 
     private ShipmentService shipmentService;
+    private Checkpoint checkpoint;
 
     public ShipmentCallable(Shipment shipment, ShipmentService shipmentService) {
 
         this.shipment = shipment;
         this.shipmentService = shipmentService;
+        this.checkpoint = checkpoint;
     }
 
     public Shipment getShipment() {
@@ -34,10 +37,10 @@ public class ShipmentCallable implements Callable<String> {
     }
 
     @Override
-    public String call() throws Exception {
-        String result = "";
+    public Shipment call() throws Exception {
+        Shipment result = null;
         try {
-        //    result = catchRun();
+            result = catchRun();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -48,8 +51,8 @@ public class ShipmentCallable implements Callable<String> {
      * Simulates the lifecycle of a shipment, where it simulates traveling through different checkpoints
      * to the final terminal. The time is relative to real time.
      */
-//    public String catchRun() {
-//
-//        return shipmentService.cascadingAddCallable(shipment);
-//    }
+    public Shipment catchRun() {
+
+        return shipmentService.cascadingAdd(shipment);
+    }
 }

@@ -14,37 +14,41 @@ public class Shipment {
     private static Long counter = 1L;
 
     @Version
-    private Long shipment_version = null;
+    @Column(name = "optlock", columnDefinition = "integer DEFAULT 0", nullable = false)
+    private long version = 0L;
 
     @Id
     private Long shipment_id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id")
     private Customer sender;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id")
     private Customer receiver;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payer_id")
     private Customer payer;
 
-//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinColumn(name = "start_terminal_id")
-//    private Terminal firstTerminal;
-//
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "end_terminal_id")
-//    private Terminal finalTerminal;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "start_terminal_id")
+    private Terminal firstTerminal;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "end_terminal_id")
+    private Terminal finalTerminal;
+
+
+
+
+    @OneToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER)
+    @JoinTable(name = "parcel_shipments")
+    private List<Parcel> parcels = new ArrayList<>();
 
     private boolean delivered;
-
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,
-            fetch = FetchType.LAZY, mappedBy = "parcel_id")
-    private List<Parcel> parcels = new CopyOnWriteArrayList<>();
 
     private LocalDateTime timeCreated;
 
@@ -84,6 +88,22 @@ public class Shipment {
 
     //TODO: Set terminals based on zip codes
 
+
+    public Terminal getFirstTerminal() {
+        return firstTerminal;
+    }
+
+    public void setFirstTerminal(Terminal firstTerminal) {
+        this.firstTerminal = firstTerminal;
+    }
+
+    public Terminal getFinalTerminal() {
+        return finalTerminal;
+    }
+
+    public void setFinalTerminal(Terminal finalTerminal) {
+        this.finalTerminal = finalTerminal;
+    }
 
     public Customer getSender() {
         return sender;
@@ -153,7 +173,7 @@ public class Shipment {
         int bound = random.nextInt(5) + 1; //generate random number of parcels added, always add 1 to avoid zero values
 
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             double weight = random.nextInt(1000) / 100.0; //returns a double value up to 10kg with 2 decimal places
             Parcel parcel = new Parcel(this, weight);
             addParcel(parcel);
@@ -185,9 +205,6 @@ public class Shipment {
     public String toString() {
         return "Shipment{" +
                 "shipment_id=" + shipment_id +
-                ", sender_id='" + sender + '\'' +
-                ", receiver_zip='" + receiver + '\'' +
-                "nr of parcels: " + parcels.size() +
                 ", expected delivery: " + expectedDeliveryDate +
                 '}';
     }
