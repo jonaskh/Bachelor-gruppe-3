@@ -85,9 +85,14 @@ public class LifecycleTest {
         System.out.println("shipments passed: " + terminalService.returnTerminalFromZip("6300").getShipmentNumber());
         System.out.println("shipments passed: " + terminalService.returnTerminalFromZip("0021").getShipmentNumber());
         System.out.println("shipments passed: " + terminalService.returnTerminalFromZip("2618").getShipmentNumber());
+        System.out.println("checkpoints in parcel: " + shipmentService.findByID(1L).getParcels().get(0).getCheckpoints().size());
+        System.out.println("checkpoints in parcel: " + shipment.getParcels().get(0).getCheckpoints().size());
 
-        System.out.println("Location: " + shipmentService.getLocation(shipment));
-        System.out.println(sender.getShipments());
+
+
+        //System.out.println("Location: " + shipmentService.getLocation(shipment));
+
+        System.out.println(shipmentService.findByID(1L).getParcels().get(0).getCheckpoints());
 
     }
 }

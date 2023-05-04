@@ -37,7 +37,7 @@ public class SimulationRunner {
         this.checkpointService = checkpointService;
     }
 
-    public void work() {
+    public void simulate() {
 
         Customer sender = new Customer("Ålesund", "Jonas", "6008");
         Customer receiver = new Customer("Oslo", "Tarjei", "0021");
@@ -57,11 +57,7 @@ public class SimulationRunner {
             executor1.execute(shipmentsRunnable);
         }
 
-
-
         executor1.shutdown();
-
-
         try {
             executor1.awaitTermination(2, TimeUnit.MINUTES);
             System.out.println("Add shipments done");
@@ -79,9 +75,6 @@ public class SimulationRunner {
                 throw new RuntimeException(e);
             }
         }
-
-
-
         executor2.shutdown();
 
         try {
@@ -92,9 +85,9 @@ public class SimulationRunner {
             System.out.println("Error in await termination");
         }
 
-        System.out.println("Shipment location: " + shipmentService.getLocation(shipmentService.findByID(1L)));
 
         System.out.println("shipments: " + sender.getShipments().size());
+
 
 
         System.out.println("queue size: " + queue.size());
@@ -104,8 +97,6 @@ public class SimulationRunner {
 
         System.out.println("Number of shipments in terminal 14: " + terminalService.returnTerminalFromZip("6008").getShipmentNumber());
         System.out.println("Number of checkpoints in terminal 14: " + terminalService.returnTerminalFromZip("0021").getCheckpointNumber());
-
-
     }
 
 

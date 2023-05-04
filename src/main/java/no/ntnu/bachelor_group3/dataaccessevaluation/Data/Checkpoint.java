@@ -37,7 +37,8 @@ public class Checkpoint {
     private LocalDateTime time;
 
     @Version
-    private Long cp_version = null;
+    @Column(name = "optlock", columnDefinition = "integer DEFAULT 0", nullable = false)
+    private long version = 0L;
 
     public Checkpoint() {
     }

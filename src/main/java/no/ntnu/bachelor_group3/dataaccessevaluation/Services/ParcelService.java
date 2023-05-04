@@ -43,10 +43,15 @@ public class ParcelService {
         return parcelRepository.count();
     }
 
+
     //Updates the current checkpoint and adds it to total checkpoint list.
-    public Checkpoint addCheckpointToParcel(Checkpoint checkpoint, Parcel parcel) {
-        parcel.setLastCheckpoint(checkpoint);
-        return parcel.getLastCheckpoint();
+    @Transactional
+    public void addCheckpointToParcel(Checkpoint checkpoint, Parcel parcel) {
+        if (findByID(parcel.getParcel_id()).isPresent()) {
+            Parcel parc = findByID(parcel.getParcel_id()).get();
+            parc.setLastCheckpoint(checkpoint);
+        }
+
     }
 
     @Transactional

@@ -8,11 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -55,7 +51,7 @@ public class DataAccessEvaluationApplication {
 
 		validPostalCodeService.ReadCSVFile();
 		var before = Instant.now();
-		simulationRunner.work();
+		simulationRunner.simulate();
 		var duration = Duration.between(before, Instant.now()).getSeconds();
 		System.out.println("Duration: " + duration + " seconds");
 

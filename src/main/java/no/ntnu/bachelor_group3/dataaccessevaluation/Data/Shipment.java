@@ -14,7 +14,8 @@ public class Shipment {
     private static Long counter = 1L;
 
     @Version
-    private Long shipment_version = null;
+    @Column(name = "optlock", columnDefinition = "integer DEFAULT 0", nullable = false)
+    private long version = 0L;
 
     @Id
     private Long shipment_id;
@@ -39,12 +40,15 @@ public class Shipment {
     @JoinColumn(name = "end_terminal_id")
     private Terminal finalTerminal;
 
-    private boolean delivered;
+
 
 
     @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER, mappedBy = "parcel_id")
+            fetch = FetchType.EAGER)
+    @JoinTable(name = "parcel_shipments")
     private List<Parcel> parcels = new ArrayList<>();
+
+    private boolean delivered;
 
     private LocalDateTime timeCreated;
 
