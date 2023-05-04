@@ -5,7 +5,6 @@ import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Checkpoint;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Parcel;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.ParcelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -14,7 +13,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 public class ParcelService {
@@ -25,7 +23,7 @@ public class ParcelService {
     @Autowired
     ParcelRepository parcelRepository;
 
-    private static List<String> parcelEval = new CopyOnWriteArrayList<>();
+    private static List<String> parcelEval = new ArrayList<>();
 
     public List<String> getParcelEvals() {
         return parcelEval;
@@ -43,12 +41,21 @@ public class ParcelService {
         return parcelRepository.count();
     }
 
+
     //Updates the current checkpoint and adds it to total checkpoint list.
 
+    @Transactional
+    public void addCheckpointToParcel(Checkpoint checkpoint, Parcel parcel) {
+        if (findByID(parcel.getParcel_Id()).isPresent()) {
+            Parcel parc = findByID(parcel.getParcel_Id()).get();
+            parc.setLastCheckpoint(checkpoint);
+        }
+
+    }
 
     @Transactional
     public void save(Parcel parcel) {
-        if (parcelRepository.findById(parcel.getId()).isEmpty()) {
+        if (parcelRepository.findById(parcel.getParcel_Id()).isEmpty()) {
             var before = Instant.now();
             parcelRepository.save(parcel);
             var duration = Duration.between(before, Instant.now()).toMillis();
@@ -78,6 +85,7 @@ public class ParcelService {
         return count;
     }
 
+    @Transactional
     public Optional<Parcel> findByID(Long id) {
         return parcelRepository.findById(id);
     }

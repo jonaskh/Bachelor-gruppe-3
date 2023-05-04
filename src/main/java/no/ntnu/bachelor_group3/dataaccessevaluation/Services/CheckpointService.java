@@ -1,12 +1,13 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Services;
 
+import jakarta.transaction.Transactional;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Checkpoint;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.CheckpointRepository;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.TerminalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -40,7 +41,18 @@ public class CheckpointService {
         checkpointRepository.save(checkpoint);
         var duration = Duration.between(before, Instant.now()).getNano() + " , checkpoint create";
         checkpointEvals.add(duration);
-        System.out.println("Checkpoint has been saved to database");
+    }
+
+    /*
+    Called by terminalService to calculate how many shipments have passed through a terminal.
+     */
+    @jakarta.transaction.Transactional
+    public long getAllShipmentsThroughTerminal(String loc) {
+        var before = Instant.now();
+        long count = checkpointRepository.findAllByLocation(loc);
+        var duration = Duration.between(before, Instant.now()).toNanos();
+        checkpointEvals.add(duration + " , terminal find all shipments");
+        return count;
     }
 
     @jakarta.transaction.Transactional

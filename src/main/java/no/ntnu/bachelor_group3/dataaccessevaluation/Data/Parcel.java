@@ -1,14 +1,9 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
-import org.hibernate.annotations.Check;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 
 @Entity
@@ -22,17 +17,16 @@ public class Parcel {
 
     private double weight;
 
-    private int weightClass;
-
+    private int weight_class;
 
     @Version
-    private Long version = null;
+    @Column(name = "optlock", columnDefinition = "integer DEFAULT 0", nullable = false)
+    private long version = 0L;
 
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "parcel_id")
+    //price is evaluated with weight times a constant
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "checkpoint_parcels")
     private List<Checkpoint> checkpoints = new ArrayList<>();
-
 
 
 
@@ -44,6 +38,7 @@ public class Parcel {
     public Parcel(Shipment shipment, double weight) {
         this.parcel_id = counter++;
         this.weight = weight;
+        setWeightClass();
     }
 
     public double getWeight() {
@@ -55,14 +50,14 @@ public class Parcel {
     }
 
     public int getWeightClass() {
-        return weightClass;
+        return weight_class;
     }
 
     public void setWeightClass(int weightClass) {
-        this.weightClass = weightClass;
+        this.weight_class = weightClass;
     }
 
-    public Long getId() {
+    public Long getParcel_Id() {
         return this.parcel_id;
     }
 
@@ -74,25 +69,6 @@ public class Parcel {
         return checkpoints;
     }
 
-    public void setCheckpoints(List<Checkpoint> checkpoints) {
-        this.checkpoints = checkpoints;
-    }
-
-
-
-
-    //assigns a weight class depending on weight. Used at checkpoints to estimate cost.
-    public void assignWeightClass() {
-        if (weight < 1) {
-            weightClass = 1;
-        } else if (weight < 5) {
-            weightClass = 2;
-        } else if (weight < 10) {
-            weightClass = 3;
-        } else {
-            weightClass = 4;
-        }
-    }
 
     //TODO: for each loop to generate cost through each checkpoint
     public double generateCostForEachParcelBasedOnCheckpoints() {
@@ -103,7 +79,25 @@ public class Parcel {
         return cost;
     }
 
-    @Transactional
+    //TODO: check performance
+    public void setWeightClass() {
+        if (this.weight < 1) {
+            this.weight_class = 1;
+        }
+        if (1 < this.weight && this.weight < 5) {
+            this.weight_class = 2;
+        }
+        if (5 < this.weight && this.weight < 10) {
+            this.weight_class = 3;
+        }
+        if (10 < this.weight && this.weight < 20) {
+            this.weight_class = 4;
+        }
+        if (this.weight > 20) {
+            this.weight_class = 5;
+        }
+    }
+
     public void setLastCheckpoint(Checkpoint checkpoint) {
         checkpoints.remove(checkpoint);
         checkpoints.add(checkpoint);

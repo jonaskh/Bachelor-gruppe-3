@@ -1,14 +1,18 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Services;
 
 import jakarta.transaction.Transactional;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Checkpoint;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.TerminalRepository;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.ValidPostalCodeRepository;
+import org.hibernate.annotations.Check;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -24,16 +28,24 @@ public class TerminalService {
     @Autowired
     ValidPostalCodeRepository validPostalCodeRepository;
 
-    private List<String> terminalEvals = new CopyOnWriteArrayList<>();
+    @Autowired
+    CheckpointService checkpointService;
+
+    private List<String> terminalEvals = new ArrayList<>();
 
     public List<String> getTerminalEvals() {
         return terminalEvals;
     }
 
-    @Transactional
     //finds a terminal in database based on id, return null if no matching id
     public Terminal findByID(Integer id) {
         return terminalRepository.findById(id).orElse(null);
+    }
+
+    public void findUniqueShipmentsThroughTerminal(Terminal terminal) {
+        for (Checkpoint cp :findByID(terminal.getTerminal_id()).getCheckpoints()) {
+
+        }
     }
 
     //checks if terminal with this id exist already, if not add it to database
@@ -45,10 +57,36 @@ public class TerminalService {
             return false;
         } else {
             terminalRepository.save(terminal);
-            System.out.println("Terminal has been added to database");
             return true;
         }
     }
+
+    @Transactional
+    public void addShipment(Shipment shipment, Terminal terminal) {
+        terminal.addShipment(shipment);
+    }
+
+    @Transactional
+    public void addCheckpoint(Checkpoint checkpoint, Terminal terminal) {
+        findByID(terminal.getTerminal_id()).addCheckpoint(checkpoint);
+    }
+
+
+//    public void findUniqueShipments(Terminal terminal) {
+//        terminalRepository.findDistinctByshipment_id(1L);
+//    }
+    public long getShipmentsinTerminal(int terminal_id) {
+        long count = 0;
+        if (findByID(terminal_id) != null) {
+            Terminal terminal = findByID(terminal_id);
+            count = terminal.getShipmentNumber();
+        } else {
+            System.out.println("not found terminal");
+        }
+        return count;
+    }
+
+
 
     @jakarta.transaction.Transactional
     public long count() {
@@ -59,7 +97,14 @@ public class TerminalService {
         return count;
     }
 
+    //TODO: Find all checkpoints at terminal from id
 
+
+
+    @Transactional
+    public long shipmentsInTerminal(Terminal terminal) {
+        return terminal.getShipmentNumber();
+    }
 
     @Transactional
     public Terminal returnTerminalFromZip(String zip) {
