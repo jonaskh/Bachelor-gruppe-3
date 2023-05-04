@@ -22,21 +22,18 @@ public class Parcel {
 
     private double weight;
 
-    private int weight_class;
+    private int weightClass;
 
 
     @Version
-    private Long parcel_version = null;
+    private Long version = null;
 
-    //price is evaluated with weight times a constant
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "checkpoint_id")
-    private List<Checkpoint> checkpoints = new CopyOnWriteArrayList<>();
+    @JoinTable(name = "parcel_id")
+    private List<Checkpoint> checkpoints = new ArrayList<>();
 
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "shipment_id")
-    private Shipment shipment;
 
 
 
@@ -45,27 +42,59 @@ public class Parcel {
     }
 
     public Parcel(Shipment shipment, double weight) {
-        this.shipment = shipment;
         this.parcel_id = counter++;
         this.weight = weight;
-
     }
 
     public double getWeight() {
         return weight;
     }
 
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
 
+    public int getWeightClass() {
+        return weightClass;
+    }
 
-    public Long getParcel_id() {
+    public void setWeightClass(int weightClass) {
+        this.weightClass = weightClass;
+    }
+
+    public Long getId() {
         return this.parcel_id;
     }
 
-    //assigns a weight class depending on weight. Used at checkpoints to estimate cost.
+    public Long getVersion() {
+        return version;
+    }
 
+    public List<Checkpoint> getCheckpoints() {
+        return checkpoints;
+    }
+
+    public void setCheckpoints(List<Checkpoint> checkpoints) {
+        this.checkpoints = checkpoints;
+    }
+
+
+
+
+    //assigns a weight class depending on weight. Used at checkpoints to estimate cost.
+    public void assignWeightClass() {
+        if (weight < 1) {
+            weightClass = 1;
+        } else if (weight < 5) {
+            weightClass = 2;
+        } else if (weight < 10) {
+            weightClass = 3;
+        } else {
+            weightClass = 4;
+        }
+    }
 
     //TODO: for each loop to generate cost through each checkpoint
-
     public double generateCostForEachParcelBasedOnCheckpoints() {
         double cost = 0;
         for (Checkpoint checkpoint : checkpoints) {
@@ -80,7 +109,6 @@ public class Parcel {
         checkpoints.add(checkpoint);
     }
 
-
     public Checkpoint getLastCheckpoint() {
         if (!checkpoints.isEmpty()) {
             return checkpoints.get(checkpoints.size() - 1);
@@ -89,7 +117,9 @@ public class Parcel {
         }
     }
 
-    @Override
+
+
+        @Override
     public String toString() {
         return "Parcel{" +
                 "parcel_id=" + parcel_id +

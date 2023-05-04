@@ -55,7 +55,7 @@ public class ShipmentService{
     public void printParcelsFromDB(Shipment shipment) {
         if (findByID(shipment.getShipment_id())!= null) {
             for (Parcel parcel : findByID(shipment.getShipment_id()).getParcels()) {
-                System.out.println(parcel.getParcel_id());
+                System.out.println(parcel.getId());
             }
         }
     }
@@ -160,7 +160,6 @@ public class ShipmentService{
         Checkpoint checkpoint = new Checkpoint(shipment.getSender().getAddress(), Checkpoint.CheckpointType.Collected);
         if (!findByID(shipment.getShipment_id()).getParcels().isEmpty()) {
             for (Parcel parcel : shipment.getParcels()) {
-                parcel.setLastCheckpoint(checkpoint);
                 checkpointService.addCheckpoint(checkpoint);
             }
             System.out.println("Successfully added checkpoint" + checkpointService.findByID(checkpoint.getCheckpoint_id()).getType() + " to all parcels in shipment" + findByID(shipment.getShipment_id()));
@@ -185,7 +184,6 @@ public class ShipmentService{
     public void updateCheckpointsOnParcels(Shipment shipment, Checkpoint checkpoint) {
         if (!findByID(shipment.getShipment_id()).getParcels().isEmpty()) {
             for (Parcel parcel : shipment.getParcels()) {
-                parcel.setLastCheckpoint(checkpoint);
                 checkpointService.addCheckpoint(checkpoint);
             }
             System.out.println("Successfully added checkpoint" + checkpointService.findByID(checkpoint.getCheckpoint_id()).getType() + " to all parcels in shipment" + findByID(shipment.getShipment_id()));

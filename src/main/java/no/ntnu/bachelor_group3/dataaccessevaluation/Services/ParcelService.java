@@ -44,14 +44,11 @@ public class ParcelService {
     }
 
     //Updates the current checkpoint and adds it to total checkpoint list.
-    public Checkpoint addCheckpointToParcel(Checkpoint checkpoint, Parcel parcel) {
-        parcel.setLastCheckpoint(checkpoint);
-        return parcel.getLastCheckpoint();
-    }
+
 
     @Transactional
     public void save(Parcel parcel) {
-        if (parcelRepository.findById(parcel.getParcel_id()).isEmpty()) {
+        if (parcelRepository.findById(parcel.getId()).isEmpty()) {
             var before = Instant.now();
             parcelRepository.save(parcel);
             var duration = Duration.between(before, Instant.now()).toMillis();
