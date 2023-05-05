@@ -112,7 +112,7 @@ public class ShipmentService {
             System.out.println("Shipment with that ID already exists");
         }
         var duration = Duration.between(before, Instant.now());
-        shipmentEvals.add(duration.get(ChronoUnit.NANOS) + ", shipment create");
+        shipmentEvals.add(duration.get(ChronoUnit.NANOS) + ", shipment," + shipment.getShipment_id() + ", create");
 
         return ship;
     }
@@ -131,7 +131,7 @@ public class ShipmentService {
             var before = Instant.now();
             checkpointService.addCheckpoint(checkpoint);
             var duration = Duration.between(before, Instant.now()).toNanos();
-            shipmentEvals.add(duration + " , checkpoint create");
+            shipmentEvals.add(duration + " , checkpoint, create");
         }
 
         //adds the shipment to terminal if checkpoint is at a terminal and has not already passed it.
