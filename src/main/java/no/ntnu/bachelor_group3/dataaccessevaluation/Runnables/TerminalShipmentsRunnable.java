@@ -1,20 +1,22 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Runnables;
 
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.CustomerService;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Services.TerminalService;
 
-public class FindShipmentRunnable implements Runnable {
+public class TerminalShipmentsRunnable implements Runnable {
 
     private ShipmentService shipmentService;
-    private CustomerService customerService;
-    private Shipment shipment;
+    private TerminalService terminalService;
+    private Terminal terminal;
 
 
-    public FindShipmentRunnable(ShipmentService shipmentService, CustomerService customerService, Shipment shipment) {
+    public TerminalShipmentsRunnable(ShipmentService shipmentService, TerminalService terminalService, Terminal terminal) {
         this.shipmentService = shipmentService;
-        this.customerService = customerService;
-        this.shipment = shipment;
+        this.terminalService = terminalService;
+        this.terminal = terminal;
     }
 
     @Override
@@ -27,6 +29,6 @@ public class FindShipmentRunnable implements Runnable {
     }
 
     private void catchRun() {
-        System.out.println("count: " + shipmentService.count());
+        System.out.println(terminalService.returnTerminalFromZip("6300"));
     }
 }

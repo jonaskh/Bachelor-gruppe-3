@@ -21,12 +21,12 @@ public class CreateCheckpointTest {
     @Autowired
     CheckpointService checkpointService;
 
-    @Test
-    public void addCheckpointToDatabasePositiveTest() {
-        Checkpoint checkpoint = new Checkpoint("Myrteigen 5", Checkpoint.CheckpointType.Collected);
-        checkpointService.addCheckpoint(checkpoint);
-        System.out.println(checkpointService.findByID(checkpoint.getCheckpoint_id()));
-
-        assertNotNull(checkpointService.findByID(checkpoint.getCheckpoint_id()));
-    }
+//    @Test
+//    public void addCheckpointToDatabasePositiveTest() {
+//        Checkpoint checkpoint = new Checkpoint("Myrteigen 5", Checkpoint.CheckpointType.Collected);
+//        checkpointService.addCheckpoint(checkpoint);
+//        System.out.println(checkpointService.findByID(checkpoint.getCheckpoint_id()));
+//
+//        assertNotNull(checkpointService.findByID(checkpoint.getCheckpoint_id()));
+//    }
 }

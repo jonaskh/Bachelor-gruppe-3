@@ -45,34 +45,16 @@ public class DataAccessEvaluationApplication {
 		SpringApplication.run(DataAccessEvaluationApplication.class, args);
 	}
 
-	@Bean
-	public void runSimulation() {
-		SimulationRunner simulationRunner = new SimulationRunner(shipmentService, customerService, terminalService, validPostalCodeService, parcelService, checkpointService);
-
-		validPostalCodeService.ReadCSVFile();
-		var before = Instant.now();
-		simulationRunner.simulate();
-		var duration = Duration.between(before, Instant.now()).getSeconds();
-		System.out.println("Duration: " + duration + " seconds");
-
-	}
-
-
-
-
+//	@Bean
+//	public void runSimulation() {
+//		SimulationRunner simulationRunner = new SimulationRunner(shipmentService, customerService, terminalService, validPostalCodeService, parcelService, checkpointService);
+//
+//		validPostalCodeService.ReadCSVFile();
+//		var before = Instant.now();
+//		simulationRunner.simulate();
+//		var duration = Duration.between(before, Instant.now()).getSeconds();
+//		System.out.println("Duration: " + duration + " seconds");
+//
+//	}
 
 }
-
-
-
-/*	@Bean
-	public Customer addCustomerToDataBase(CustomerService service) {
-		Customer customer = new Customer("sdasd","asdas","1999");
-
-		service.add(customer);
-		service.findByID(customer.getCustomerID());
-
-		System.out.println(service.findByID(customer.getCustomerID()).toString());
-
-		return service.findByID(customer.getCustomerID());
-	}*/

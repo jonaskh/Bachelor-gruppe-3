@@ -20,7 +20,7 @@ public class Shipment {
     @Id
     private Long shipment_id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "sender_id")
     private Customer sender;
 

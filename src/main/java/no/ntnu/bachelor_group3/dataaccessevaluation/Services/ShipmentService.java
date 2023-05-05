@@ -1,6 +1,5 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Services;
 
-import com.sun.istack.NotNull;
 import jakarta.transaction.Transactional;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.*;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Generators.WriteToEval;
@@ -16,9 +15,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 
 @Service
@@ -88,8 +85,8 @@ public class ShipmentService {
      */
     //TODO: CASCADING SAVE CHILD ENTITIES VS MANUAL
     @Transactional
-    public Shipment cascadingAdd(Shipment shipment) {
-        Shipment ship = null;
+    public void cascadingAdd(Shipment shipment) {
+
         if (customerService.findByID(shipment.getSenderID()).isEmpty()) {
             customerService.save(shipment.getSender());
         }
@@ -101,20 +98,18 @@ public class ShipmentService {
         }
         setFirstTerminalToShipment(shipment);
         setEndTerminalToShipment(shipment);
-        customerService.addShipment(shipment, shipment.getSender());
+
+        shipment.getSender().addShipment(shipment);
 
         var before = Instant.now(); //evaluates the time taken by repository method.
         try {
-
-            ship = shipmentRepository.save(shipment);
+            shipmentRepository.save(shipment);
 
         } catch (HibernateException e) {
             System.out.println("Shipment with that ID already exists");
         }
         var duration = Duration.between(before, Instant.now());
         shipmentEvals.add(duration.get(ChronoUnit.NANOS) + ", shipment create");
-
-        return ship;
     }
 
 
@@ -126,8 +121,8 @@ public class ShipmentService {
     @Transactional
     public void updateCheckpointsOnParcels(Shipment shipment, Checkpoint checkpoint) {
         for (Parcel parcel : shipment.getParcels()) {
-            parcel.setLastCheckpoint(checkpoint);
-            //parcelService.addCheckpointToParcel(checkpoint,parcel);
+            parcel.addCheckpoint(checkpoint);
+//            parcelService.addCheckpointToParcel(checkpoint, parcel);
             var before = Instant.now();
             checkpointService.addCheckpoint(checkpoint);
             var duration = Duration.between(before, Instant.now()).toNanos();
@@ -137,7 +132,6 @@ public class ShipmentService {
         //adds the shipment to terminal if checkpoint is at a terminal and has not already passed it.
         if (checkpoint.getTerminal() != null) {
             terminalService.addShipment(shipment, checkpoint.getTerminal());
-
             terminalService.addCheckpoint(checkpoint, checkpoint.getTerminal());
         }
     }

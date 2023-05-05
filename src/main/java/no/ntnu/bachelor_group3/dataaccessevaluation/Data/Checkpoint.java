@@ -23,16 +23,16 @@ public class Checkpoint {
 
 
 
-    public enum CheckpointType{Collected, ReceivedFirstTerminal,LoadedOnCar,ReceivedFinalTerminal,UnderDelivery,Delivered}
 
-    private CheckpointType type;
 
-    private String location;
-
-    private double cost;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "checkpoint")
     private Terminal terminal;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "parcel_id")
+    private Parcel parcel;
 
     private LocalDateTime time;
 
@@ -40,6 +40,13 @@ public class Checkpoint {
     @Column(name = "optlock", columnDefinition = "integer DEFAULT 0", nullable = false)
     private long version = 0L;
 
+    public enum CheckpointType{Collected, ReceivedFirstTerminal,LoadedOnCar,ReceivedFinalTerminal,UnderDelivery,Delivered}
+
+    private CheckpointType type;
+
+    private String location;
+
+    private double cost;
     public Checkpoint() {
     }
 
@@ -69,6 +76,9 @@ public class Checkpoint {
             case UnderDelivery -> this.cost = 1.8;
             case Delivered -> this.cost = 2;
         }
+    }
+    public void setParcel(Parcel parcel) {
+        this.parcel = parcel;
     }
 
     public void setType(CheckpointType type) {

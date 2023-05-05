@@ -111,7 +111,7 @@ public class MultiThreadTests {
             Customer customer2 = new Customer("Oslo", "Tarjei", "0021");
 
 
-            executor.execute(new AddShipmentsRunnable(new Shipment(customer, customer2, customer),shipmentService));
+            executor.execute(new AddShipmentsRunnable(new Shipment(customer, customer2, customer),shipmentService,customerService));
         }
 
 

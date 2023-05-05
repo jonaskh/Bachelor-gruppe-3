@@ -31,26 +31,6 @@ public class LifecycleTest {
     @Autowired
     private ValidPostalCodeService validPostalCodeService;
 
-    @Autowired
-    private CheckpointService checkpointService;
-
-    @Autowired
-    private ParcelService parcelService;
-
-
-    public void createTerminals(){
-
-        String[] terminalAddresses = {"OSLO", "AKERSHUS", "ØSTFOLD", "HEDMARK", "OPPLAND", "BUSKERUD", "VESTFOLD", "TELEMARK",
-                "ROGALAND", "VEST-AGDER", "AUST-AGDER", "HORDALAND", "SOGN OG FJORDANE", "MØRE OG ROMSDAL", "SØR-TRØNDELAG", "NORD-TRØNDELAG",
-                "NORDLAND", "TROMS", "FINNMARK"};
-
-
-        for (int i=0; i<=17; i++) {
-            Terminal terminal = new Terminal(terminalAddresses[i]);
-            validPostalCodeService.getTerminalService().addTerminal(terminal);
-        }
-    }
-
     @Test
     @DisplayName("Checks the full lifecycle of one shipment to ensure it works as expected")
     public void OneShipmentFullLifecycleTest() {
@@ -62,17 +42,17 @@ public class LifecycleTest {
         Customer receiver = new Customer("NTNU", "Stian", "0021");
         Shipment shipment = new Shipment(sender, sender, receiver);
 
-//        customerService.add(sender);
-//        customerService.add(receiver);
+        customerService.add(sender);
+        customerService.add(receiver);
         shipmentService.cascadingAdd(shipment);
 
         Checkpoint checkpoint = new Checkpoint(sender.getAddress(), Checkpoint.CheckpointType.Collected);
-        Checkpoint checkpoint1 = new Checkpoint(terminalService.returnTerminalFromZip(sender.getZip_code()), Checkpoint.CheckpointType.ReceivedFirstTerminal);
-        Checkpoint checkpoint2 = new Checkpoint(terminalService.returnTerminalFromZip(sender.getZip_code()), Checkpoint.CheckpointType.LoadedOnCar);
-        Checkpoint checkpoint3 = new Checkpoint(terminalService.returnTerminalFromZip(receiver.getZip_code()), Checkpoint.CheckpointType.ReceivedFinalTerminal);
+        Checkpoint checkpoint1 = new Checkpoint(shipment.getFirstTerminal(), Checkpoint.CheckpointType.ReceivedFirstTerminal);
+        Checkpoint checkpoint2 = new Checkpoint(shipment.getFirstTerminal(), Checkpoint.CheckpointType.LoadedOnCar);
+        Checkpoint checkpoint3 = new Checkpoint(shipment.getFinalTerminal(), Checkpoint.CheckpointType.ReceivedFinalTerminal);
         Checkpoint checkpoint4 = new Checkpoint(receiver.getAddress(), Checkpoint.CheckpointType.UnderDelivery);
 
-        shipmentService.updateCheckpointsOnParcels(shipment, checkpoint);
+        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), checkpoint);
 
         shipmentService.updateCheckpointsOnParcels(shipment, checkpoint1);
 
@@ -82,17 +62,17 @@ public class LifecycleTest {
         shipmentService.updateCheckpointsOnParcels(shipment, checkpoint3);
 
 
-        System.out.println("shipments passed: " + terminalService.returnTerminalFromZip("6300").getShipmentNumber());
-        System.out.println("shipments passed: " + terminalService.returnTerminalFromZip("0021").getShipmentNumber());
-        System.out.println("shipments passed: " + terminalService.returnTerminalFromZip("2618").getShipmentNumber());
-        System.out.println("checkpoints in parcel: " + shipmentService.findByID(1L).getParcels().get(0).getCheckpoints().size());
-        System.out.println("checkpoints in parcel: " + shipment.getParcels().get(0).getCheckpoints().size());
+//        System.out.println("shipments passed: " + terminalService.returnTerminalFromZip("6300").getShipmentNumber());
+//        System.out.println("shipments passed: " + terminalService.returnTerminalFromZip("0021").getShipmentNumber());
+//        System.out.println("shipments passed: " + terminalService.returnTerminalFromZip("2618").getShipmentNumber());
+        System.out.println("checkpoints in parcel: " + shipment.getParcels().get(0).getCheckpoints());
 
 
 
         //System.out.println("Location: " + shipmentService.getLocation(shipment));
 
         System.out.println(shipmentService.findByID(1L).getParcels().get(0).getCheckpoints());
+        System.out.println("shipments in customer: " + customerService.findByID(sender.getCustomerID()).get().getShipments());
 
     }
 }

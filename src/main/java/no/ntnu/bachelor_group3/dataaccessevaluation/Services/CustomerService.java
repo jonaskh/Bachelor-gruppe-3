@@ -1,6 +1,7 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Services;
 
 import com.github.javafaker.Faker;
+import jakarta.transaction.Transactional;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
@@ -8,10 +9,10 @@ import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.CustomerReposit
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import javax.management.InstanceNotFoundException;
-import javax.transaction.Transactional;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -55,14 +56,14 @@ public class CustomerService {
         return customerOptional;
     }
 
-    @jakarta.transaction.Transactional
+    @Transactional
     public void addShipment(Shipment shipment, Customer customer) {
-        customer.addShipment(shipment);
+        findByID(customer.getCustomerID()).get().addShipment(shipment);
     }
 
 
 
-    @jakarta.transaction.Transactional
+    @Transactional
     public long count() {
         var before = Instant.now();
         var count = customerRepository.count();
@@ -72,7 +73,7 @@ public class CustomerService {
         return count;
     }
 
-    @jakarta.transaction.Transactional
+    @Transactional
     public Customer findByName(String name) {
         Optional<Customer> customer = customerRepository.findCustomerByName(name);
 
@@ -83,7 +84,7 @@ public class CustomerService {
 //
 //    }
 
-    @jakarta.transaction.Transactional
+    @Transactional
     //saves a customer to the customerepo, and thus the database
     public void add(Customer customer) {
 

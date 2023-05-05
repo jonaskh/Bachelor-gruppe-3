@@ -1,14 +1,9 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
-import org.hibernate.annotations.Check;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 
 @Entity
@@ -96,15 +91,14 @@ public class Parcel {
         }
     }
 
-    public void setLastCheckpoint(Checkpoint checkpoint) {
-        checkpoints.remove(checkpoint);
-        checkpoints.add(checkpoint);
+    public void addCheckpoint(Checkpoint checkpoint) {
+        this.checkpoints.add(checkpoint);
     }
 
 
     public Checkpoint getLastCheckpoint() {
         if (!checkpoints.isEmpty()) {
-            return checkpoints.get(checkpoints.size() - 1);
+            return checkpoints.get(0);
         } else {
             return null;
         }
@@ -115,7 +109,7 @@ public class Parcel {
         return "Parcel{" +
                 "parcel_id=" + parcel_id +
                 ", weight=" + weight +
-                ", lastCheckpoint=" + getLastCheckpoint() +
+                ", lastCheckpoint=" + checkpoints +
                 '}';
     }
 }

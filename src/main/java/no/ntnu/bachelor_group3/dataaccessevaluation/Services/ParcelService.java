@@ -5,7 +5,6 @@ import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Checkpoint;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Parcel;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.ParcelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -14,7 +13,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 public class ParcelService {
@@ -49,9 +47,9 @@ public class ParcelService {
     public void addCheckpointToParcel(Checkpoint checkpoint, Parcel parcel) {
         if (findByID(parcel.getParcel_id()).isPresent()) {
             Parcel parc = findByID(parcel.getParcel_id()).get();
-            parc.setLastCheckpoint(checkpoint);
+            parc.addCheckpoint(checkpoint);
+            checkpoint.setParcel(parcel);
         }
-
     }
 
     @Transactional

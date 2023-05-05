@@ -25,13 +25,12 @@ public class Customer {
     private String zip_code;
 
     @Version
-    @Column(name = "optlock", columnDefinition = "integer DEFAULT 0", nullable = false)
-    private long version = 0L;
+    private Long version = null;
 
 
     //Set of shipments for each customer
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "customer_shipments")
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinColumn(name = "customer_shipments")
     private List<Shipment> shipments = new ArrayList<>();
 
     /**
