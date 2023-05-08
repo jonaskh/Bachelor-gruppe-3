@@ -1,127 +1,127 @@
-package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
-
-import jakarta.persistence.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
-
-@Entity
-@Table(name = "parcel")
-public class Parcel {
-
-    private static Long counter = 1L;
-
-    @Id
-    private Long parcel_id;
-
-    private double weight;
-
-    private int weight_class;
-
-    @Version
-    @Column(name = "optlock", columnDefinition = "integer DEFAULT 0", nullable = false)
-    private long version = 0L;
-
-    //price is evaluated with weight times a constant
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "checkpoint_parcels")
-    private List<Checkpoint> checkpoints = new ArrayList<>();
-
-
-
-
-    public Parcel() {
-        this.parcel_id = counter++;
-    }
-
-    public Parcel(Shipment shipment, double weight) {
-        this.parcel_id = counter++;
-        this.weight = weight;
-        setWeightClass();
-    }
-
-    public double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(double weight) {
-        this.weight = weight;
-    }
-
-    public int getWeightClass() {
-        return weight_class;
-    }
-
-    public void setWeightClass(int weightClass) {
-        this.weight_class = weightClass;
-    }
-
-    public Long getParcel_Id() {
-        return this.parcel_id;
-    }
-
-    public Long getVersion() {
-        return version;
-    }
-
-    public List<Checkpoint> getCheckpoints() {
-        return checkpoints;
-    }
-
-
-    //TODO: for each loop to generate cost through each checkpoint
-    public double generateCostForEachParcelBasedOnCheckpoints() {
-        double cost = 0;
-        for (Checkpoint checkpoint : checkpoints) {
-            cost += checkpoint.getCost() * this.weight;
-        }
-        return cost;
-    }
-
-    //TODO: check performance
-    public void setWeightClass() {
-        if (this.weight < 1) {
-            this.weight_class = 1;
-        }
-        if (1 < this.weight && this.weight < 5) {
-            this.weight_class = 2;
-        }
-        if (5 < this.weight && this.weight < 10) {
-            this.weight_class = 3;
-        }
-        if (10 < this.weight && this.weight < 20) {
-            this.weight_class = 4;
-        }
-        if (this.weight > 20) {
-            this.weight_class = 5;
-        }
-    }
-
-    public void setLastCheckpoint(Checkpoint checkpoint) {
-        checkpoints.remove(checkpoint);
-        checkpoints.add(checkpoint);
-    }
-
-    public Checkpoint getLastCheckpoint() {
-        if (!checkpoints.isEmpty()) {
-            return checkpoints.get(checkpoints.size() - 1);
-        } else {
-            return null;
-        }
-    }
-
-
-
-        @Override
-    public String toString() {
-        return "Parcel{" +
-                "parcel_id=" + parcel_id +
-                ", weight=" + weight +
-                ", lastCheckpoint=" + getLastCheckpoint() +
-                '}';
-    }
-}
-
-
-
+//package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
+//
+//import jakarta.persistence.*;
+//
+//import java.util.ArrayList;
+//import java.util.List;
+//
+//
+//@Entity
+//@Table(name = "parcel")
+//public class Parcel {
+//
+//    private static Long counter = 1L;
+//
+//    @Id
+//    private Long parcel_id;
+//
+//    private double weight;
+//
+//    private int weight_class;
+//
+//    @Version
+//    @Column(name = "optlock", columnDefinition = "integer DEFAULT 0", nullable = false)
+//    private long version = 0L;
+//
+//    //price is evaluated with weight times a constant
+//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @JoinTable(name = "checkpoint_parcels")
+//    private List<Checkpoint> checkpoints = new ArrayList<>();
+//
+//
+//
+//
+//    public Parcel() {
+//        this.parcel_id = counter++;
+//    }
+//
+//    public Parcel(Shipment shipment, double weight) {
+//        this.parcel_id = counter++;
+//        this.weight = weight;
+//        setWeightClass();
+//    }
+//
+//    public double getWeight() {
+//        return weight;
+//    }
+//
+//    public void setWeight(double weight) {
+//        this.weight = weight;
+//    }
+//
+//    public int getWeightClass() {
+//        return weight_class;
+//    }
+//
+//    public void setWeightClass(int weightClass) {
+//        this.weight_class = weightClass;
+//    }
+//
+//    public Long getParcel_Id() {
+//        return this.parcel_id;
+//    }
+//
+//    public Long getVersion() {
+//        return version;
+//    }
+//
+//    public List<Checkpoint> getCheckpoints() {
+//        return checkpoints;
+//    }
+//
+//
+//    //TODO: for each loop to generate cost through each checkpoint
+//    public double generateCostForEachParcelBasedOnCheckpoints() {
+//        double cost = 0;
+//        for (Checkpoint checkpoint : checkpoints) {
+//            cost += checkpoint.getCost() * this.weight;
+//        }
+//        return cost;
+//    }
+//
+//    //TODO: check performance
+//    public void setWeightClass() {
+//        if (this.weight < 1) {
+//            this.weight_class = 1;
+//        }
+//        if (1 < this.weight && this.weight < 5) {
+//            this.weight_class = 2;
+//        }
+//        if (5 < this.weight && this.weight < 10) {
+//            this.weight_class = 3;
+//        }
+//        if (10 < this.weight && this.weight < 20) {
+//            this.weight_class = 4;
+//        }
+//        if (this.weight > 20) {
+//            this.weight_class = 5;
+//        }
+//    }
+//
+//    public void setLastCheckpoint(Checkpoint checkpoint) {
+//        checkpoints.remove(checkpoint);
+//        checkpoints.add(checkpoint);
+//    }
+//
+//    public Checkpoint getLastCheckpoint() {
+//        if (!checkpoints.isEmpty()) {
+//            return checkpoints.get(checkpoints.size() - 1);
+//        } else {
+//            return null;
+//        }
+//    }
+//
+//
+//
+//        @Override
+//    public String toString() {
+//        return "Parcel{" +
+//                "parcel_id=" + parcel_id +
+//                ", weight=" + weight +
+//                ", lastCheckpoint=" + getLastCheckpoint() +
+//                '}';
+//    }
+//}
+//
+//
+//

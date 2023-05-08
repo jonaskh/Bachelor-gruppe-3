@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -44,16 +45,16 @@ public class ShipmentSim {
     LocalDateTime expectedDeliveryDate = now.plusDays(7);
 
     ShipmentService shipmentService = new ShipmentService(new ShipmentDao(dslContext.configuration()));
-    List<Long> timeTakenList = new ArrayList<>(); // Cre
+    List<Long> timeTakenList = new CopyOnWriteArrayList<>(); // Use a thread-safe List implementation
+// Cre
 
     public ShipmentSim() throws SQLException {
     }
 
-    public void simulate (){
-
+    public void simulate() {
         Map<String, Integer> terminalIdsByPostalCode = terminalIdRepository.getAllTerminalIdsByPostalCode();
 
-        //Create two customers, sender and receiver
+        // Create two customers, sender and receiver
         Customer sender = new Customer()
                 .setCustomerId(customerRepository.getNextCustomerId())
                 .setAddress("Engveien 23")
@@ -68,13 +69,14 @@ public class ShipmentSim {
                 .setZipCode(postalCode2);
         Customer savedReceiver = customerService.create(receiver);
 
-        ExecutorService executor = Executors.newFixedThreadPool(5);
-        for (int i = 0; i < 320; i++) {
+        ExecutorService executor = Executors.newFixedThreadPool(10);
+        int shipmentCount = 500; // Define the number of shipments to create
+        for (int i = 0; i < shipmentCount; i++) {
             executor.submit(new ShipmentRunnable(savedSender, savedReceiver, terminalIdsByPostalCode));
         }
         executor.shutdown();
         try {
-            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -98,7 +100,11 @@ public class ShipmentSim {
         }
         System.out.println("Shipment that took the most time amount of time to create: " + highestTimeTaken + " ns");
         System.out.println("Shipment that took the least amount of time to create: " + lowestTimeTaken + " ns");
+
+        // Print the number of shipments created
+        System.out.println("Number of shipments created: " + shipmentCount);
     }
+
 
     class ShipmentRunnable implements Runnable {
         private final Map<String, Integer> terminalIdsByPostalCode;

@@ -1,6 +1,6 @@
 package JOOQ.service;
-import JOOQ.repositories.ShipmentRepository;
 
+import JOOQ.repositories.ShipmentRepository;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.daos.ShipmentDao;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.daos.TerminalDao;
 
@@ -15,30 +15,34 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicLong;
 
-import static no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.Tables.PARCEL;
 import static no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.Shipment.SHIPMENT;
 
 @RequiredArgsConstructor
 @Transactional
 @Service(value = "ShipmentServiceDAO")
-public class ShipmentService{
+public class ShipmentService {
 
     private final ShipmentDao shipmentDao;
+    private final AtomicLong nextId = new AtomicLong(0L);
 
     private ShipmentRepository shipmentRepository;
 
     public Shipment create(Shipment shipment) {
-        Long nextId = shipmentDao.configuration().dsl().select(DSL.max(SHIPMENT.SHIPMENT_ID)).from(SHIPMENT).fetchOneInto(Long.class);
-        if (nextId == null) {
-            nextId = 1L;
-        } else {
-            nextId++;
-        }
-        shipment.setShipmentId(nextId);
+        Long newId = getNextShipmentId();
+        shipment.setShipmentId(newId);
         shipmentDao.insert(shipment);
         return shipment;
     }
+
+    private Long getNextShipmentId() {
+        return shipmentDao.configuration().dsl()
+                .fetchOne("SELECT nextval('nextShipmentId')::bigint")
+                .into(Long.class);
+    }
+
+
 
     public Shipment update(Shipment shipment) {
         shipmentDao.update(shipment);
@@ -49,10 +53,9 @@ public class ShipmentService{
         return shipmentDao.findAll();
     }
 
-
     public Shipment getOne(long id) {
         Shipment shipment = shipmentDao.findById(id);
-        if(shipment == null){
+        if (shipment == null) {
             throw new NoSuchElementException(MessageFormat.format("Shipment id {0} not found", String.valueOf(id)));
         }
         return shipment;
@@ -61,10 +64,4 @@ public class ShipmentService{
     public void deleteById(long id) {
         shipmentDao.deleteById(id);
     }
-
-
-
 }
-
-
-

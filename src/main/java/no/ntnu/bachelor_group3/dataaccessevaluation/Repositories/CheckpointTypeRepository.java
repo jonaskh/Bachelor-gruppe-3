@@ -1,4 +1,4 @@
-package no.ntnu.bachelor_group3.dataaccessevaluation.Repositories;
-
-public class CheckpointTypeRepository {
-}
+//package no.ntnu.bachelor_group3.dataaccessevaluation.Repositories;
+//
+//public class CheckpointTypeRepository {
+//}
