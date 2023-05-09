@@ -73,6 +73,9 @@ public class SimulationRunner {
         for (int j = 0; j < 10; j++) {
             findShipmentsInTerminalService.scheduleAtFixedRate(new TerminalShipmentsRunnable(shipmentService, terminalService, terminalService.returnTerminalFromZip("6300")), 500, 10000, TimeUnit.MILLISECONDS);
         }
+
+
+        //TODO: queue.take,
         int i = 0;
         var size = queue.size();
         while (i < size) {
@@ -85,6 +88,11 @@ public class SimulationRunner {
         }
 
 
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
 
         try {
@@ -113,7 +121,7 @@ public class SimulationRunner {
         System.out.println("shipments in customer local: " + sender.getShipments().size());
         System.out.println("shipments in customer local: " + customerService.findByID(sender.getCustomerID()).get().getShipments().size());
 
-        System.out.println(shipmentService.findByID(1L).getParcels());
+        System.out.println("CHECKPOINTS: " + shipmentService.findByID(1L).getParcels().get(0).getCheckpoints());
         System.out.println("cp in parcel: " + shipmentService.findByID(1L).getParcels().size());
 
 

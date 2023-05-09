@@ -45,7 +45,7 @@ public class Shipment {
 
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.EAGER)
-    @JoinTable(name = "parcel_shipments")
+    @JoinColumn(name = "parcel_shipments")
     private List<Parcel> parcels = new ArrayList<>();
 
     private boolean delivered;

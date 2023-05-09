@@ -2,6 +2,7 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.Services;
 
 import jakarta.transaction.Transactional;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Checkpoint;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Parcel;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.CheckpointRepository;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.TerminalRepository;
@@ -39,7 +40,6 @@ public class CheckpointService {
 //        return checkpointRepository.countCheckpointByparcel_parcel_id(parcelid);
 //    }
 
-    @Transactional
     public void addCheckpoint(Checkpoint checkpoint) {
         var before = Instant.now();
         checkpointRepository.save(checkpoint);
@@ -66,5 +66,9 @@ public class CheckpointService {
         var duration = Duration.between(before, Instant.now()).toNanos() + " , checkpoint read all";
         checkpointEvals.add(duration);
         return count;
+    }
+
+    public void addParcel(Parcel parcel, Checkpoint checkpoint) {
+        checkpoint.setParcel(parcel);
     }
 }

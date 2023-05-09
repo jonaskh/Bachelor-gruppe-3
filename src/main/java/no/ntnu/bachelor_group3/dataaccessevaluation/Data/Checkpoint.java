@@ -6,7 +6,9 @@ import org.hibernate.annotations.Check;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @Entity
@@ -21,24 +23,22 @@ public class Checkpoint {
     @Id
     private Long checkpoint_id;
 
-
-
-
-
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "checkpoint")
+    @JoinColumn(name = "terminal_id")
     private Terminal terminal;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "parcel_id")
-    private Parcel parcel;
+    @ManyToMany(mappedBy = "checkpoints", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Parcel> parcels = new ArrayList<>();
 
     private LocalDateTime time;
 
     @Version
     @Column(name = "optlock", columnDefinition = "integer DEFAULT 0", nullable = false)
     private long version = 0L;
+
+    public void setParcel(Parcel parcel) {
+        parcels.add(parcel);
+    }
 
     public enum CheckpointType{Collected, ReceivedFirstTerminal,LoadedOnCar,ReceivedFinalTerminal,UnderDelivery,Delivered}
 
@@ -77,9 +77,9 @@ public class Checkpoint {
             case Delivered -> this.cost = 2;
         }
     }
-    public void setParcel(Parcel parcel) {
-        this.parcel = parcel;
-    }
+//    public void setParcel(Parcel parcel) {
+//        this.parcel = parcel;
+//    }
 
     public void setType(CheckpointType type) {
         this.type = type;
@@ -120,8 +120,8 @@ public class Checkpoint {
                 "checkpoint_id=" + checkpoint_id +
                 ", type=" + type +
                 ", cost=" + cost +
-                ", terminal=" + terminal +
-                ", time=" + time +
+//                ", terminal=" + terminal +
+//                ", time=" + time +
                 '}';
     }
 }

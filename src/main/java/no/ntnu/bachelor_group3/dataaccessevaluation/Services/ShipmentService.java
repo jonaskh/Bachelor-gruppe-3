@@ -121,7 +121,7 @@ public class ShipmentService {
     @Transactional
     public void updateCheckpointsOnParcels(Shipment shipment, Checkpoint checkpoint) {
         for (Parcel parcel : shipment.getParcels()) {
-            parcel.addCheckpoint(checkpoint);
+            parcelService.addCheckpointToParcel(checkpoint, parcel);
 //            parcelService.addCheckpointToParcel(checkpoint, parcel);
             var before = Instant.now();
             checkpointService.addCheckpoint(checkpoint);

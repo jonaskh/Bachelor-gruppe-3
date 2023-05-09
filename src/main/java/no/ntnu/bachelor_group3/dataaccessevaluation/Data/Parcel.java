@@ -24,14 +24,17 @@ public class Parcel {
     private long version = 0L;
 
     //price is evaluated with weight times a constant
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "checkpoint_parcels")
+    @ManyToMany(cascade =  CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "cp_parcels",
+            joinColumns = { @JoinColumn(name = "parcel_id") },
+            inverseJoinColumns = { @JoinColumn(name = "checkpoint_id") })
     private List<Checkpoint> checkpoints = new ArrayList<>();
 
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "shipment_id")
-    private Shipment shipment;
+//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinColumn(name = "shipment_id")
+//    private Shipment shipment;
 
 
     public Parcel() {
@@ -39,7 +42,7 @@ public class Parcel {
     }
 
     public Parcel(Shipment shipment, double weight) {
-        this.shipment = shipment;
+//        this.shipment = shipment;
         this.parcel_id = counter++;
         this.weight = weight;
         setWeightClass();
@@ -109,7 +112,7 @@ public class Parcel {
         return "Parcel{" +
                 "parcel_id=" + parcel_id +
                 ", weight=" + weight +
-                ", lastCheckpoint=" + checkpoints +
+                ", checkpoints=" + getLastCheckpoint() +
                 '}';
     }
 }

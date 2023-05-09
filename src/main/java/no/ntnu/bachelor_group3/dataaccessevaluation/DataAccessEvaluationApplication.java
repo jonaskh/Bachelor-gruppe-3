@@ -45,16 +45,16 @@ public class DataAccessEvaluationApplication {
 		SpringApplication.run(DataAccessEvaluationApplication.class, args);
 	}
 
-//	@Bean
-//	public void runSimulation() {
-//		SimulationRunner simulationRunner = new SimulationRunner(shipmentService, customerService, terminalService, validPostalCodeService, parcelService, checkpointService);
-//
-//		validPostalCodeService.ReadCSVFile();
-//		var before = Instant.now();
-//		simulationRunner.simulate();
-//		var duration = Duration.between(before, Instant.now()).getSeconds();
-//		System.out.println("Duration: " + duration + " seconds");
-//
-//	}
+	@Bean
+	public void runSimulation() {
+		SimulationRunner simulationRunner = new SimulationRunner(shipmentService, customerService, terminalService, validPostalCodeService, parcelService, checkpointService);
+
+		validPostalCodeService.ReadCSVFile();
+		var before = Instant.now();
+		simulationRunner.simulate();
+		var duration = Duration.between(before, Instant.now()).getSeconds();
+		System.out.println("Duration: " + duration + " seconds");
+
+	}
 
 }
