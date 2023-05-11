@@ -49,9 +49,6 @@ public class Shipment {
 
     private boolean delivered;
 
-    private LocalDateTime timeCreated;
-
-    private LocalDateTime expectedDeliveryDate;
 
     // if customer is both sender and receiver
     public Shipment() {
@@ -61,8 +58,6 @@ public class Shipment {
     // if receiver is not an existing customer
     public Shipment(Customer sender, Customer payer, Customer receiver) {
         this.shipment_id = counter++;
-        this.timeCreated = LocalDateTime.now();
-        this.expectedDeliveryDate = LocalDateTime.now().plusSeconds(10); //sets expected delivery date 10s from creation
         this.sender = sender;
         this.payer = payer;
         this.receiver = receiver;
@@ -204,7 +199,6 @@ public class Shipment {
     public String toString() {
         return "Shipment{" +
                 "shipment_id=" + shipment_id +
-                ", expected delivery: " + expectedDeliveryDate +
                 '}';
     }
 }

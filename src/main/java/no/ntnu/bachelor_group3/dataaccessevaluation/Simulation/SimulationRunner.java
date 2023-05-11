@@ -56,7 +56,7 @@ public class SimulationRunner {
 
         for (int i = 0; i < 500; i++) {
             Shipment shipment = new Shipment(sender, sender, receiver);
-            AddShipmentsRunnable shipmentsRunnable = new AddShipmentsRunnable(shipment, shipmentService, customerService);
+            Add shipmentsRunnable = new AddShipmentsRunnable(shipment, shipmentService, customerService);
             try {
                 queue.put(shipment);
             } catch (InterruptedException e) {
