@@ -90,14 +90,6 @@ public class SimulationRunner {
             }
         }
 
-
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-
         try {
             //stops the executors from accepting new tasks
             updateShipmentsService.shutdown();
@@ -122,12 +114,11 @@ public class SimulationRunner {
             System.out.println("Error in await termination");
         }
 
-        //evals.addAll(shipmentService.getShipmentEvals());
-        //evals.addAll(parcelService.getParcelEvals());
+        evals.addAll(shipmentService.getShipmentEvals());
+        evals.addAll(parcelService.getParcelEvals());
         evals.addAll(customerService.getCustomerEval());
-        //evals.addAll(checkpointService.getCheckpointEvals());
+        evals.addAll(checkpointService.getCheckpointEvals());
 
-        evals.forEach(System.out::println);
 
         System.out.println("shipments in customer local: " + sender.getShipments().size());
         System.out.println("shipments in customer local: " + customerService.findByID(sender.getCustomerID()).get().getShipments().size());
@@ -135,8 +126,6 @@ public class SimulationRunner {
         System.out.println("CHECKPOINTS: " + shipmentService.findByID(1L).getParcels().get(0).getCheckpoints());
         System.out.println("cp in parcel: " + shipmentService.findByID(1L).getParcels().size());
 
-
-//        System.out.println("TEST: " + checkpointService.countCPInParcel(1L));
 
         System.out.println("queue size: " + queue.size());
         System.out.println("shipments: " + shipmentService.count());
