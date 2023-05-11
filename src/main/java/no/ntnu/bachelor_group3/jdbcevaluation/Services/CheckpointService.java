@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CheckpointService {
 
@@ -17,6 +19,8 @@ public class CheckpointService {
     private static final String INSERT_CHECKPOINT_QUERY = "INSERT INTO checkpoint (cost, location, time, parcel_id, terminal_id, type) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String UPDATE_CHECKPOINT_QUERY = "UPDATE checkpoint SET cost = ?, location = ?, time = ?, parcel_id = ?, terminal_id = ?, type = ? WHERE checkpoint_id = ?";
     private static final String DELETE_CHECKPOINT_QUERY = "DELETE FROM checkpoint WHERE checkpoint_id = ?";
+
+    private List<long> executionTimeList;
 
     public CheckpointService() {}
 
@@ -56,7 +60,8 @@ public class CheckpointService {
             int rowsInserted = stmt.executeUpdate();
             endTime = System.nanoTime();
             executionTime = endTime - startTime;
-            System.out.println(INSERT_CHECKPOINT_QUERY + " || Execution time: " + executionTime + " ns");
+            executionTimeList.add(executionTime);
+            //System.out.println(INSERT_CHECKPOINT_QUERY + " || Execution time: " + executionTime + " ns");
             if (rowsInserted > 0) {
                 ResultSet rs = stmt.getGeneratedKeys();
                 if (rs.next()) {
@@ -88,5 +93,9 @@ public class CheckpointService {
             stmt.executeUpdate();
             id = 0L;
         }
+    }
+
+    public List<long> getExecutionTimeList() {
+        return executionTimeList;
     }
 }

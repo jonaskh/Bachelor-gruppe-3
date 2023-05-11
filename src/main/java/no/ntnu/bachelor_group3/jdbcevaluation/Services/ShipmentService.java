@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ShipmentService {
@@ -20,7 +21,11 @@ public class ShipmentService {
     private static final String UPDATE_SHIPMENT_QUERY = "UPDATE Shipment SET sender_id = ?, receiver_id = ?, payer_id = ?, delivered = ?, start_terminal_id = ?, end_terminal_id WHERE id = ?";
     private static final String DELETE_SHIPMENT_QUERY = "DELETE FROM Shipment WHERE id = ?";
 
-    public ShipmentService() {}
+    private List<long> executionTimeList;
+
+    public ShipmentService() {
+        executionTimeList = new ArrayList();
+    }
 
     public Shipment getShipmentById(Long shipmentId, CustomerService customerService, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(GET_SHIPMENT_BY_ID_QUERY);
@@ -62,7 +67,8 @@ public class ShipmentService {
             int rowsInserted = stmt.executeUpdate();
             endTime = System.nanoTime();
             executionTime = endTime - startTime;
-            System.out.println(INSERT_SHIPMENT_QUERY + " || Execution time: " + executionTime + " ns");
+            executionTimeList.add(executionTime);
+            //System.out.println(INSERT_SHIPMENT_QUERY + " || Execution time: " + executionTime + " ns");
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()) {
                 id = rs.getLong(8);
@@ -167,5 +173,9 @@ public class ShipmentService {
         String receiverZipCode = shipment.getReceiver().getZipCode();
         Terminal terminal = terminalService.getTerminalByZip(receiverZipCode, conn);
         shipment.setEndTerminal(terminal);
+    }
+
+    public List<long> getExecutionTimeList() {
+        return executionTimeList;
     }
 }

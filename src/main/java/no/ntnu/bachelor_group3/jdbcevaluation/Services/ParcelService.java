@@ -95,7 +95,7 @@ public class ParcelService {
             int rowsAffected = stmt.executeUpdate();
             endTime = System.nanoTime();
             executionTime = endTime - startTime;
-            System.out.println(INSERT_PARCEL_QUERY + " || Execution time: " + executionTime + " ns");
+            //System.out.println(INSERT_PARCEL_QUERY + " || Execution time: " + executionTime + " ns");
             if (rowsAffected > 0) {
                 try (ResultSet rs = stmt.getGeneratedKeys()) {
                     if (rs.next()) {
