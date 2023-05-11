@@ -20,9 +20,11 @@ public class CheckpointService {
     private static final String UPDATE_CHECKPOINT_QUERY = "UPDATE checkpoint SET cost = ?, location = ?, time = ?, parcel_id = ?, terminal_id = ?, type = ? WHERE checkpoint_id = ?";
     private static final String DELETE_CHECKPOINT_QUERY = "DELETE FROM checkpoint WHERE checkpoint_id = ?";
 
-    private List<long> executionTimeList;
+    private List<Long> executionTimeList;
 
-    public CheckpointService() {}
+    public CheckpointService() {
+        executionTimeList = new ArrayList<>();
+    }
 
     public Checkpoint getCheckpointById(int checkpointId, ParcelService parcelService, ShipmentService shipmentService,
                                         CustomerService customerService, TerminalService terminalService, Connection conn) throws SQLException {
@@ -95,7 +97,7 @@ public class CheckpointService {
         }
     }
 
-    public List<long> getExecutionTimeList() {
+    public List<Long> getExecutionTimeList() {
         return executionTimeList;
     }
 }

@@ -21,10 +21,10 @@ public class ShipmentService {
     private static final String UPDATE_SHIPMENT_QUERY = "UPDATE Shipment SET sender_id = ?, receiver_id = ?, payer_id = ?, delivered = ?, start_terminal_id = ?, end_terminal_id WHERE id = ?";
     private static final String DELETE_SHIPMENT_QUERY = "DELETE FROM Shipment WHERE id = ?";
 
-    private List<long> executionTimeList;
+    private List<Long> executionTimeList;
 
     public ShipmentService() {
-        executionTimeList = new ArrayList();
+        executionTimeList = new ArrayList<>();
     }
 
     public Shipment getShipmentById(Long shipmentId, CustomerService customerService, Connection conn) throws SQLException {
@@ -175,7 +175,7 @@ public class ShipmentService {
         shipment.setEndTerminal(terminal);
     }
 
-    public List<long> getExecutionTimeList() {
+    public List<Long> getExecutionTimeList() {
         return executionTimeList;
     }
 }

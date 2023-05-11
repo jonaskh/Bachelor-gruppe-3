@@ -26,11 +26,11 @@ public class SimulationRunner {
     private final ArrayBlockingQueue<Shipment> queue = new ArrayBlockingQueue<>(10000);
 
 
-    public SimulationRunner() {
+    public SimulationRunner(DatabaseManager db) {
+        this.db = db;
     }
 
-    public void simulate() {
-        try (DatabaseManager db = new DatabaseManager()) {
+    public void simulate() throws SQLException {
             Customer sender = new Customer(0l, "Ålesund", "Jonas", "6008");
             Customer receiver = new Customer(0l, "Oslo", "Tarjei", "0021");
             db.saveCustomer(sender);
@@ -94,9 +94,6 @@ public class SimulationRunner {
             //System.out.println("Number of shipments in terminal 14: " + terminalService.returnTerminalFromZip("6008").getShipmentNumber());
             //System.out.println("Number of checkpoints in terminal 14: " + terminalService.returnTerminalFromZip("0021").getCheckpointNumber());
 
-        } catch (Exception e) {
-
-        }
 
         }
 
