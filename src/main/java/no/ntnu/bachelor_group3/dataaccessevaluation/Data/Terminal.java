@@ -20,14 +20,17 @@ public class Terminal {
     private String address;
 
     //contains all checkpoints that are registered in a terminal
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "checkpoint_id_terminal")
     private List<Checkpoint> checkpoints = new ArrayList<>();
 
 
     //list of shipments for a period of time. Stored in a queue for first in first out.
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "shipments_terminal")
+    @ManyToMany(cascade =  CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "shipment_terminals",
+            joinColumns = { @JoinColumn(name = "terminal_id") },
+            inverseJoinColumns = { @JoinColumn(name = "shipment_id") })
     private List<Shipment> shipments_passed = new ArrayList<>();
 
     public Terminal() {

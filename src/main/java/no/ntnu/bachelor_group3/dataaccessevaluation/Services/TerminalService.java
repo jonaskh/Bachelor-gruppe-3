@@ -68,13 +68,11 @@ public class TerminalService {
 
     @Transactional
     public void addCheckpoint(Checkpoint checkpoint, Terminal terminal) {
-        findByID(terminal.getTerminal_id()).addCheckpoint(checkpoint);
+        checkpoint.getTerminal().addCheckpoint(checkpoint);
     }
 
 
-//    public void findUniqueShipments(Terminal terminal) {
-//        terminalRepository.findDistinctByshipment_id(1L);
-//    }
+
     public long getShipmentsinTerminal(int terminal_id) {
         long count = 0;
         if (findByID(terminal_id) != null) {

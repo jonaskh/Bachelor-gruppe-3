@@ -10,7 +10,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Entity
 public class Shipment {
 
-
     private static Long counter = 1L;
 
     @Version
@@ -32,16 +31,16 @@ public class Shipment {
     @JoinColumn(name = "payer_id")
     private Customer payer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "start_terminal_id")
     private Terminal firstTerminal;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "end_terminal_id")
     private Terminal finalTerminal;
 
-
-
+    @ManyToMany(mappedBy = "shipments_passed", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Terminal> terminals = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.EAGER)
@@ -53,10 +52,6 @@ public class Shipment {
     private LocalDateTime timeCreated;
 
     private LocalDateTime expectedDeliveryDate;
-
-
-
-
 
     // if customer is both sender and receiver
     public Shipment() {
@@ -88,6 +83,10 @@ public class Shipment {
 
     //TODO: Set terminals based on zip codes
 
+
+    public void addTerminal(Terminal terminal) {
+        terminals.add(terminal);
+    }
 
     public Terminal getFirstTerminal() {
         return firstTerminal;

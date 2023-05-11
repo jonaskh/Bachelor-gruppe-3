@@ -54,7 +54,6 @@ public class DataAccessEvaluationApplication {
 		simulationRunner.simulate();
 		var duration = Duration.between(before, Instant.now()).getSeconds();
 		System.out.println("Duration: " + duration + " seconds");
-
 	}
 
 }

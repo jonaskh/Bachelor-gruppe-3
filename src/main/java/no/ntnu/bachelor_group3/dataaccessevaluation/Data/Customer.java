@@ -29,7 +29,8 @@ public class Customer {
 
 
     //Set of shipments for each customer
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_shipments")
     private List<Shipment> shipments = new ArrayList<>();
 
@@ -49,7 +50,6 @@ public class Customer {
      * Constructor for manual input of values
      */
     public Customer(String address, String name, String zip_code) {
-
         this.customer_id = counter++;
         this.address = address;
         this.name = name;
@@ -91,11 +91,6 @@ public class Customer {
     public void addShipment(Shipment shipment) {
         shipments.add(shipment);
     }
-
-    /**
-     * Add a shipment to the customer
-     */
-
 
 
     @Override

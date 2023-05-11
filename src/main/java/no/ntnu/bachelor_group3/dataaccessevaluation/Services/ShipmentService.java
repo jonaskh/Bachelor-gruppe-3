@@ -131,9 +131,16 @@ public class ShipmentService {
 
         //adds the shipment to terminal if checkpoint is at a terminal and has not already passed it.
         if (checkpoint.getTerminal() != null) {
-            terminalService.addShipment(shipment, checkpoint.getTerminal());
+//            terminalService.addShipment(shipment, checkpoint.getTerminal());
             terminalService.addCheckpoint(checkpoint, checkpoint.getTerminal());
+            terminalService.addShipment(shipment, checkpoint.getTerminal());
+            addTerminal(checkpoint.getTerminal(), shipment);
         }
+    }
+
+    public void addTerminal(Terminal terminal, Shipment shipment) {
+        shipment.addTerminal(terminal);
+        terminalService.addShipment(shipment, terminal);
     }
 
     //returns the last checkpoint for the shipment, used by customer to track location in Runnable

@@ -52,7 +52,7 @@ public class LifecycleTest {
         Checkpoint checkpoint3 = new Checkpoint(shipment.getFinalTerminal(), Checkpoint.CheckpointType.ReceivedFinalTerminal);
         Checkpoint checkpoint4 = new Checkpoint(receiver.getAddress(), Checkpoint.CheckpointType.UnderDelivery);
 
-        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), checkpoint);
+        shipmentService.updateCheckpointsOnParcels(shipment, checkpoint);
 
         shipmentService.updateCheckpointsOnParcels(shipment, checkpoint1);
 
@@ -62,9 +62,9 @@ public class LifecycleTest {
         shipmentService.updateCheckpointsOnParcels(shipment, checkpoint3);
 
 
-//        System.out.println("shipments passed: " + terminalService.returnTerminalFromZip("6300").getShipmentNumber());
-//        System.out.println("shipments passed: " + terminalService.returnTerminalFromZip("0021").getShipmentNumber());
-//        System.out.println("shipments passed: " + terminalService.returnTerminalFromZip("2618").getShipmentNumber());
+        System.out.println("shipments passed: " + terminalService.returnTerminalFromZip("6300").getShipmentNumber());
+        System.out.println("shipments passed: " + terminalService.returnTerminalFromZip("0021").getShipmentNumber());
+        System.out.println("shipments passed: " + terminalService.returnTerminalFromZip("2618").getShipmentNumber());
         System.out.println("checkpoints in parcel: " + shipment.getParcels().get(0).getCheckpoints());
 
 

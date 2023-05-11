@@ -106,12 +106,14 @@ public class SimulationRunner {
 
             //stops the thread pools if no more tasks, an exception occurs or timeout.
             updateShipmentsService.awaitTermination(2, TimeUnit.MINUTES);
+            System.out.println("Update shipments done");
+
             findShipmentInCustomerService.awaitTermination(2, TimeUnit.MINUTES);
             findShipmentsInTerminalService.awaitTermination(2, TimeUnit.MINUTES);
             executor1.awaitTermination(2, TimeUnit.MINUTES);
+            System.out.println("Adding done");
 
 
-            System.out.println("Update shipments done");
         } catch (InterruptedException e) {
             e.printStackTrace();
             System.out.println("Error in await termination");

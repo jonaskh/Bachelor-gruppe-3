@@ -101,7 +101,7 @@ public class Parcel {
 
     public Checkpoint getLastCheckpoint() {
         if (!checkpoints.isEmpty()) {
-            return checkpoints.get(0);
+            return checkpoints.get(checkpoints.size() - 1);
         } else {
             return null;
         }
