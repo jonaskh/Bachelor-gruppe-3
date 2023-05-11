@@ -19,11 +19,11 @@
 	</properties>
 	<dependencies>
 
-		<!-- Driver to connect to the PostgresQL Datasource -->
+		<!-- https://mvnrepository.com/artifact/com.ibm.informix/informix-jdbc-complete -->
 		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>42.5.1</version>
+			<groupId>com.ibm.informix</groupId>
+			<artifactId>informix-jdbc-complete</artifactId>
+			<version>4.50.4.1</version>
 		</dependency>
 
 		<dependency>
