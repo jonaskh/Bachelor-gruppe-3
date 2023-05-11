@@ -21,11 +21,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Service
 public class ShipmentService {
 
+
+
+
     @Autowired
     private ShipmentRepository shipmentRepository;
 
     @Autowired
     private ParcelService parcelService;
+
 
     @Autowired
     private CheckpointService checkpointService;
@@ -98,7 +102,7 @@ public class ShipmentService {
             var duration = Duration.between(before, Instant.now());
 
             shipmentEvals.add(duration.get(ChronoUnit.NANOS) + ", shipment," + shipment.getShipment_id() + ", create");
-        } catch (HibernateException e) {
+        } catch (Exception e) {
             System.out.println("Shipment with that ID already exists");
         }
     }

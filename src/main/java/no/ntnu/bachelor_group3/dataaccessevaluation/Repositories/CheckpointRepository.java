@@ -15,7 +15,6 @@ import java.util.Optional;
 public interface CheckpointRepository extends CrudRepository<Checkpoint, Long> {
 
 
-//    long countCheckpointByparcel_id(Long id);
 
     @Query(value = "select count(checkpoint) where parcel_id = ?", nativeQuery = true)
     long checkpointsInParcel();

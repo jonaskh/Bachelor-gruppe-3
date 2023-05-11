@@ -48,12 +48,6 @@
 		</dependency>
 
 
-		<dependency>
-			<groupId>org.hibernate.orm</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>6.2.0.CR2</version>
-		</dependency>
-
 		<!-- Class with methods to create fake data used for addresses, names and zip codes -->
 		<dependency>
 			<groupId>com.github.javafaker</groupId>

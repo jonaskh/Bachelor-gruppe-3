@@ -4,9 +4,11 @@ import jakarta.transaction.Transactional;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+@Repository
 public interface ShipmentRepository extends CrudRepository<Shipment, Long> {
 
     @Override
