@@ -15,7 +15,7 @@ public class SetCheckpointOnParcel {
             Parcel parcel = db.getParcelById(1L);
             Terminal terminal = db.getTerminalById(1);
 
-            Checkpoint checkpoint = new Checkpoint(0L, 10, "Bøgata 6008", new Date(), parcel, terminal);
+            Checkpoint checkpoint = new Checkpoint(0L, 10, "Bøgata 6008", parcel, terminal, Checkpoint.CheckpointType.Collected);
 
             db.setCheckpointOnParcel(parcel, checkpoint);
             db.commit();

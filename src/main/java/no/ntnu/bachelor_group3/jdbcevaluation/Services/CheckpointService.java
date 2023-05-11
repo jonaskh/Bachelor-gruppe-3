@@ -14,8 +14,8 @@ import java.sql.Timestamp;
 public class CheckpointService {
 
     private static final String GET_CHECKPOINT_BY_ID_QUERY = "SELECT * FROM checkpoint WHERE checkpoint_id = ?";
-    private static final String INSERT_CHECKPOINT_QUERY = "INSERT INTO checkpoint (cost, location, time, fk_parcel, terminal_id) VALUES (?, ?, ?, ?, ?)";
-    private static final String UPDATE_CHECKPOINT_QUERY = "UPDATE checkpoint SET cost = ?, location = ?, time = ?, fk_parcel = ?, terminal_id = ? WHERE checkpoint_id = ?";
+    private static final String INSERT_CHECKPOINT_QUERY = "INSERT INTO checkpoint (cost, location, time, parcel_id, terminal_id, type) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String UPDATE_CHECKPOINT_QUERY = "UPDATE checkpoint SET cost = ?, location = ?, time = ?, parcel_id = ?, terminal_id = ?, type = ? WHERE checkpoint_id = ?";
     private static final String DELETE_CHECKPOINT_QUERY = "DELETE FROM checkpoint WHERE checkpoint_id = ?";
 
     public CheckpointService() {}
@@ -25,23 +25,24 @@ public class CheckpointService {
         PreparedStatement stmt = conn.prepareStatement(GET_CHECKPOINT_BY_ID_QUERY);
         stmt.setInt(1, checkpointId);
         ResultSet rs = stmt.executeQuery();
-        Parcel parcel = parcelService.getParcelById(rs.getLong("fk_parcel"),
+        Checkpoint.CheckpointType type = Checkpoint.CheckpointType.valueOf(rs.getString("type"));
+        Parcel parcel = parcelService.getParcelById(rs.getLong("parcel_id"),
                 customerService, shipmentService, conn);
         Terminal terminal = terminalService.getTerminalById(rs.getInt("terminal_id"), conn);
         if (rs.next()) {
             Checkpoint checkpoint = new Checkpoint(rs.getLong("checkpoint_id"), rs.getDouble("cost"),
-                    rs.getString("location"), rs.getTimestamp("time"), parcel, terminal);
+                    rs.getString("location"), parcel, terminal, type);
             return checkpoint;
         }
         return null;
     }
 
-    public void save(Checkpoint checkpoint, Connection conn) throws SQLException {
+    public Long save(Checkpoint checkpoint, Connection conn) throws SQLException {
         long startTime = System.nanoTime();
         long executionTime = 0;
         long endTime;
         PreparedStatement stmt;
-        Long id = checkpoint.getId();
+        Long id = 0L;
         if (id == 0) {
             // This is a new checkpoint, so insert it into the database
             stmt = conn.prepareStatement(INSERT_CHECKPOINT_QUERY,
@@ -51,6 +52,7 @@ public class CheckpointService {
             stmt.setTimestamp(3, new Timestamp(checkpoint.getTime().getTime()));
             stmt.setLong(4, checkpoint.getParcel().getId());
             stmt.setLong(5, checkpoint.getTerminal().getId());
+            stmt.setInt(6, checkpoint.getType().ordinal());
             int rowsInserted = stmt.executeUpdate();
             endTime = System.nanoTime();
             executionTime = endTime - startTime;
@@ -58,7 +60,7 @@ public class CheckpointService {
             if (rowsInserted > 0) {
                 ResultSet rs = stmt.getGeneratedKeys();
                 if (rs.next()) {
-                    id = rs.getLong(1);
+                    id = rs.getLong(4);
                 }
             }
         } else {
@@ -69,11 +71,13 @@ public class CheckpointService {
             stmt.setTimestamp(3, new Timestamp(checkpoint.getTime().getTime()));
             stmt.setLong(4, checkpoint.getParcel().getId());
             stmt.setLong(5, checkpoint.getTerminal().getId());
+            stmt.setInt(6, checkpoint.getType().ordinal());
             stmt.executeUpdate();
             endTime = System.nanoTime();
             executionTime = endTime - startTime;
             System.out.println(UPDATE_CHECKPOINT_QUERY + " || Execution time: " + executionTime + " ns");
         }
+        return id;
     }
 
     public void delete(Checkpoint checkpoint, Connection conn) throws SQLException {

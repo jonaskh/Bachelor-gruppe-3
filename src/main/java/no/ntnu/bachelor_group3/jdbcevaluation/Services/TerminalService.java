@@ -24,6 +24,30 @@ public class TerminalService {
         return null;
     }
 
+    public Terminal getTerminalByZip(String zipCode, Connection conn) {
+        Terminal terminal = null;
+        String query = "SELECT t.terminal_id, t.address " +
+                "FROM terminal t " +
+                "JOIN valid_postal_codes pc ON t.terminal_id = pc.terminal_id " +
+                "WHERE pc.postal_code = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, zipCode);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Long id = rs.getLong("terminal_id");
+                String address = rs.getString("address");
+                terminal = new Terminal(id, address);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error while fetching terminal by zip code: " + e.getMessage());
+        }
+
+        return terminal;
+    }
+
     public void save(Terminal terminal, Connection conn) throws SQLException {
         PreparedStatement stmt;
         Long id = terminal.getId();

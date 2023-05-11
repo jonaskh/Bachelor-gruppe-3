@@ -51,7 +51,13 @@ public class Shipment {
     private LocalDateTime expectedDeliveryDate;
 
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "start_terminal_id")
+    private Terminal firstTerminal;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "end_terminal_id")
+    private Terminal finalTerminal;
 
 
     // if customer is both sender and receiver

@@ -3,6 +3,7 @@ package no.ntnu.bachelor_group3.jdbcevaluation.Services;
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Parcel;
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Shipment;
+import no.ntnu.bachelor_group3.jdbcevaluation.Data.Terminal;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,8 +16,8 @@ public class ShipmentService {
 
     private static final String GET_SHIPMENT_BY_ID_QUERY = "SELECT * FROM Shipment WHERE shipment_id = ?";
     private static final String GET_PARCELS_IN_SHIPMENT_BY_ID_QUERY = "SELECT * FROM Parcel WHERE shipment_id = ?";
-    private static final String INSERT_SHIPMENT_QUERY = "INSERT INTO Shipment (sender_id, receiver_id, payer_id, delivered) VALUES (?, ?, ?, ?)";
-    private static final String UPDATE_SHIPMENT_QUERY = "UPDATE Shipment SET sender_id = ?, receiver_id = ?, payer_id = ? WHERE id = ?";
+    private static final String INSERT_SHIPMENT_QUERY = "INSERT INTO Shipment (sender_id, receiver_id, payer_id, delivered, start_terminal_id, end_terminal_id) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String UPDATE_SHIPMENT_QUERY = "UPDATE Shipment SET sender_id = ?, receiver_id = ?, payer_id = ?, delivered = ?, start_terminal_id = ?, end_terminal_id WHERE id = ?";
     private static final String DELETE_SHIPMENT_QUERY = "DELETE FROM Shipment WHERE id = ?";
 
     public ShipmentService() {}
@@ -44,7 +45,9 @@ public class ShipmentService {
         return null;
     }
 
-    public void save(Shipment shipment, ParcelService parcelService, Connection conn) throws SQLException {
+    public Long save(Shipment shipment, ParcelService parcelService, TerminalService terminalService, Connection conn) throws SQLException {
+        setFirstTerminal(shipment, terminalService, conn);
+        setLastTerminal(shipment, terminalService, conn);
         long executionTime = 0L;
         long startTime = System.nanoTime();
         long endTime;
@@ -60,16 +63,60 @@ public class ShipmentService {
             endTime = System.nanoTime();
             executionTime = endTime - startTime;
             System.out.println(INSERT_SHIPMENT_QUERY + " || Execution time: " + executionTime + " ns");
-            if (rowsInserted > 0) {
-                ResultSet rs = stmt.getGeneratedKeys();
-                if (rs.next()) {
-                    id = rs.getLong(4);
-                }
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                id = rs.getLong(8);
+            } else {
+                throw new SQLException("Failed to insert shipment, no generated keys returned.");
             }
-            // Save all parcels associated with this shipment
-            for (Parcel parcel : parcels) {
-                parcel.setShipment(shipment);
-                parcelService.save(parcel, conn);
+
+        } else {
+            // This is an existing shipment, so update it in the database
+            stmt = conn.prepareStatement(UPDATE_SHIPMENT_QUERY);
+            setShipmentInfo(shipment, stmt);
+            stmt.setLong(4, id);
+            stmt.executeUpdate();
+            endTime = System.nanoTime();
+            executionTime = endTime - startTime;
+            System.out.println(UPDATE_SHIPMENT_QUERY + " || Execution time: " + executionTime + " ns");
+            // Update all parcels associated with this shipment
+        }
+        return id;
+    }
+
+    public Long save(Shipment shipment, Parcel parcel, ParcelService parcelService, TerminalService terminalService, Connection conn) throws SQLException {
+        setFirstTerminal(shipment, terminalService, conn);
+        setLastTerminal(shipment, terminalService, conn);
+        long executionTime = 0L;
+        long startTime = System.nanoTime();
+        long endTime;
+        PreparedStatement stmt;
+        Long id = shipment.getId();
+        List<Parcel> parcels = shipment.getParcels();
+        if (id == 0) {
+            // This is a new shipment, so insert it into the database
+            stmt = conn.prepareStatement(INSERT_SHIPMENT_QUERY,
+                    Statement.RETURN_GENERATED_KEYS);
+            setShipmentInfo(shipment, stmt);
+            int rowsInserted = stmt.executeUpdate();
+            endTime = System.nanoTime();
+            executionTime = endTime - startTime;
+            System.out.println(INSERT_SHIPMENT_QUERY + " || Execution time: " + executionTime + " ns");
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                id = rs.getLong(8);
+            } else {
+                throw new SQLException("Failed to insert shipment, no generated keys returned.");
+            }
+
+            // Insert the parcel with the shipment foreign key
+            String parcelQuery = "INSERT INTO parcel (shipment_id, weight, weight_class) VALUES (?, ?, ?)";
+            try (PreparedStatement parcelStatement = conn.prepareStatement(parcelQuery)) {
+                parcelStatement.setLong(1, id);
+                parcelStatement.setDouble(2, parcel.getWeight());
+                parcelStatement.setInt(3, parcel.getWeight_class());
+
+                parcelStatement.executeUpdate();
             }
         } else {
             // This is an existing shipment, so update it in the database
@@ -81,10 +128,8 @@ public class ShipmentService {
             executionTime = endTime - startTime;
             System.out.println(UPDATE_SHIPMENT_QUERY + " || Execution time: " + executionTime + " ns");
             // Update all parcels associated with this shipment
-            for (Parcel parcel : parcels) {
-                parcelService.save(parcel, conn);
-            }
         }
+        return id;
     }
 
     public void delete(Shipment shipment, ParcelService parcelService, Connection conn) throws SQLException {
@@ -108,5 +153,19 @@ public class ShipmentService {
         stmt.setLong(2, shipment.getReceiver().getId());
         stmt.setLong(3, shipment.getPayer().getId());
         stmt.setBoolean(4, shipment.isDelivered());
+        stmt.setLong(5, shipment.getStartTerminal().getId());
+        stmt.setLong(6, shipment.getEndTerminal().getId());
+    }
+
+    public void setFirstTerminal(Shipment shipment, TerminalService terminalService, Connection conn) {
+        String senderZipCode = shipment.getSender().getZipCode();
+        Terminal terminal = terminalService.getTerminalByZip(senderZipCode, conn);
+        shipment.setStartTerminal(terminal);
+    }
+
+    public void setLastTerminal(Shipment shipment, TerminalService terminalService, Connection conn) {
+        String receiverZipCode = shipment.getReceiver().getZipCode();
+        Terminal terminal = terminalService.getTerminalByZip(receiverZipCode, conn);
+        shipment.setEndTerminal(terminal);
     }
 }

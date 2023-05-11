@@ -1,5 +1,7 @@
 package no.ntnu.bachelor_group3.jdbcevaluation.Data;
 
+import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Checkpoint {
@@ -9,14 +11,52 @@ public class Checkpoint {
     private Date time;
     private Parcel parcel;
     private Terminal terminal;
+    private CheckpointType type;
 
-    public Checkpoint(Long id, double cost, String location, Date time, Parcel parcel, Terminal terminal) {
+    public enum CheckpointType{Collected, ReceivedFirstTerminal,LoadedOnCar,ReceivedFinalTerminal,UnderDelivery,Delivered}
+
+    public CheckpointType getType() {
+        return type;
+    }
+
+    public void setType(CheckpointType type) {
+        this.type = type;
+    }
+
+    public Checkpoint(Long id, double cost, String location, Parcel parcel, Terminal terminal, CheckpointType checkpointType) {
         this.id = id;
         this.cost = cost;
         this.location = location;
-        this.time = time;
+        this.time = new Date();
         this.parcel = parcel;
         this.terminal = terminal;
+        this.type = checkpointType;
+    }
+
+    public Checkpoint(String location, CheckpointType type) {
+        this.location = location;
+        this.time = new Date();
+        this.type = type;
+        switch (type) {
+            case Collected -> this.cost = 1;
+            case ReceivedFinalTerminal, ReceivedFirstTerminal -> this.cost = 1.25;
+            case LoadedOnCar -> this.cost = 1.5;
+            case UnderDelivery -> this.cost = 1.8;
+            case Delivered -> this.cost = 2;
+        }
+    }
+
+    public Checkpoint(Terminal terminal, CheckpointType type) {
+        this.time = new Date();
+        this.type = type;
+        this.terminal = terminal;
+        switch (type) {
+            case Collected -> this.cost = 1;
+            case ReceivedFinalTerminal, ReceivedFirstTerminal -> this.cost = 1.25;
+            case LoadedOnCar -> this.cost = 1.5;
+            case UnderDelivery -> this.cost = 1.8;
+            case Delivered -> this.cost = 2;
+        }
     }
 
     public Long getId() {

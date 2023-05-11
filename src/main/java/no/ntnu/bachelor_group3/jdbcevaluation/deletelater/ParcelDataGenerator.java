@@ -1,3 +1,4 @@
+/*
 package no.ntnu.bachelor_group3.jdbcevaluation.deletelater;
 
 import com.github.javafaker.Faker;
@@ -48,3 +49,5 @@ public class ParcelDataGenerator {
         }
     }
 }
+
+ */

@@ -1,3 +1,4 @@
+/*
 package no.ntnu.bachelor_group3.jdbcevaluation;
 
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Checkpoint;
@@ -7,6 +8,7 @@ import no.ntnu.bachelor_group3.jdbcevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Terminal;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,13 +21,14 @@ public class SimulationController {
 
     }
 
-    private void setCheckpointOnParcelsInShipment(Long shipmentId, int terminalId, String location, double cost) {
+
+    private void setCheckpointOnParcelsInShipment(Long shipmentId, int terminalZip, String location, double cost) {
         try (DatabaseManager db = new DatabaseManager()) {
             Shipment shipment = db.getShipmentById(shipmentId);
             List<Parcel> parcels = db.getParcelsForShipment(shipment);
-            Terminal terminal = db.getTerminalById(terminalId);
+            Terminal terminal = db.getTerminalById(terminalZip);
             for (Parcel parcel: parcels) {
-                Checkpoint checkpoint = new Checkpoint(0L, cost, location, new Date(), parcel, terminal);
+                Checkpoint checkpoint = new Checkpoint(0L, cost, location, parcel, terminal, );
 
                 db.setCheckpointOnParcel(parcel, checkpoint);
                 db.commit();
@@ -53,10 +56,17 @@ public class SimulationController {
     private List<Parcel> createParcels(int amount) {
         List<Parcel> parcels = new ArrayList<>();
         Random random = new Random();
-        for(int i = 0; i < amount; i++) {
-            double weight = random.nextDouble(0, 50);
-            Parcel parcel = new Parcel(0L, weight);
+        try (DatabaseManager db = new DatabaseManager()) {
+            for(int i = 0; i < amount; i++) {
+                double weight = random.nextDouble(0, 50);
+                Parcel parcel = new Parcel(0L, weight);
+                parcels.add(parcel);
+                db.saveParcel(parcel);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
 
         return parcels;
     }
@@ -76,8 +86,20 @@ public class SimulationController {
     public void simulateProcess2() {
         setCheckpointOnParcelsInShipment(2L, 1, "Bøgata 6008", 15);
     }
+
     public void simulateProcess3() {
-        setCheckpointOnParcelsInShipment(3L, 3, "Trondheim", 7.5);
+        setCheckpointOnParcelsInShipment(3L, 1, "Trondheim", 7.5);
+    }
+
+    public void readTerminalFromZipCode() {
+        try (DatabaseManager db = new DatabaseManager()) {
+            Terminal terminal = db.getTerminalByZip("6008");
+            System.out.println("ID: " + terminal.getId()+ ", Address: " + terminal.getLocation());
+        } catch (Exception e) {
+
+        }
     }
 
 }
+
+ */

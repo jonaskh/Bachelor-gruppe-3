@@ -1,3 +1,4 @@
+/*
 package no.ntnu.bachelor_group3.jdbcevaluation;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ public class MultiThreadedRunner {
         SimulationController simulationController = new SimulationController();
 
         List<Runnable> tasks = new ArrayList<>();
-        for (int i = 1; i < 8; i++) {
+        for (int i = 1; i < 1; i++) {
             // Creating shipments
             for (int j = 0; j < 300; j++) {
                 tasks.add(simulationController::createShipmentProcess);
@@ -23,6 +24,7 @@ public class MultiThreadedRunner {
                 tasks.add(simulationController::runSixCheckpointsOnShipment);
             }
         }
+        tasks.add(simulationController::readTerminalFromZipCode);
 
         for (Runnable task : tasks) {
             executorService.submit(task);
@@ -31,3 +33,6 @@ public class MultiThreadedRunner {
         executorService.shutdown();
     }
 }
+
+
+ */

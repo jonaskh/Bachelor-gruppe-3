@@ -33,7 +33,7 @@ public class Checkpoint {
     private Terminal terminal;
 
     @ManyToOne
-    @JoinColumn(name = "fk_parcel")
+    @JoinColumn(name = "parcel_id")
     private Parcel parcel;
 
     private LocalDateTime time;

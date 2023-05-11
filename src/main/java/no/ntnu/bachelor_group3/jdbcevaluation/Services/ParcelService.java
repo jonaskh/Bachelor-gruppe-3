@@ -50,18 +50,18 @@ public class ParcelService {
      * @return the id of the parcel saved or null
      * @throws SQLException
      */
-    public Long save(Parcel parcel, Connection conn) throws SQLException {
+    public Long save(Parcel parcel, Long shipmentId, Connection conn) throws SQLException {
         long startTime = System.nanoTime();
         long executionTime = 0;
         long endTime;
         if (parcelExists(parcel.getId(), conn)) {
-            update(parcel, conn);
+            update(parcel, shipmentId, conn);
             endTime = System.nanoTime();
             executionTime = endTime - startTime;
             System.out.println(UPDATE_PARCEL_QUERY + " || Execution time: " + executionTime + " ns");
 
         } else {
-            return insert(parcel, conn);
+            return insert(parcel, shipmentId, conn);
         }
         return null;
     }
@@ -73,8 +73,8 @@ public class ParcelService {
      * @param conn the connection to the database
      * @throws SQLException
      */
-    private void update(Parcel parcel, Connection conn) throws SQLException {
-        try (PreparedStatement stmt = createUpdateStatement(parcel, conn)) {
+    private void update(Parcel parcel, Long shipmentId, Connection conn) throws SQLException {
+        try (PreparedStatement stmt = createUpdateStatement(parcel, shipmentId, conn)) {
             stmt.executeUpdate();
         }
     }
@@ -87,11 +87,11 @@ public class ParcelService {
      * @return the id of the inserted parcel
      * @throws SQLException
      */
-    private Long insert(Parcel parcel, Connection conn) throws SQLException {
+    private Long insert(Parcel parcel, Long shipmentId, Connection conn) throws SQLException {
         long startTime = System.nanoTime();
         long executionTime = 0;
         long endTime;
-        try (PreparedStatement stmt = createInsertStatement(parcel, conn)) {
+        try (PreparedStatement stmt = createInsertStatement(parcel, shipmentId, conn)) {
             int rowsAffected = stmt.executeUpdate();
             endTime = System.nanoTime();
             executionTime = endTime - startTime;
@@ -128,17 +128,17 @@ public class ParcelService {
         }
     }
 
-    private PreparedStatement createInsertStatement(Parcel parcel, Connection conn) throws SQLException {
+    private PreparedStatement createInsertStatement(Parcel parcel, Long shipmentId, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(INSERT_PARCEL_QUERY, Statement.RETURN_GENERATED_KEYS);
-        stmt.setLong(1, parcel.getShipment().getId());
+        stmt.setLong(1, shipmentId);
         stmt.setDouble(2, parcel.getWeight());
         stmt.setInt(3, parcel.getWeight_class());
         return stmt;
     }
 
-    private PreparedStatement createUpdateStatement(Parcel parcel, Connection conn) throws SQLException {
+    private PreparedStatement createUpdateStatement(Parcel parcel, Long shipmentId, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(UPDATE_PARCEL_QUERY);
-        stmt.setLong(1, parcel.getShipment().getId());
+        stmt.setLong(1, shipmentId);
         stmt.setDouble(2, parcel.getWeight());
         stmt.setInt(3, parcel.getWeight_class());
         stmt.setLong(4, parcel.getId());

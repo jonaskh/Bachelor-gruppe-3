@@ -15,7 +15,9 @@ public class Shipment {
     private double totalCost;
     private List<Parcel> parcels;
     private boolean delivered;
-    private List<Terminal> terminals;
+
+    private Terminal startTerminal;
+    private Terminal endTerminal;
 
     public boolean isDelivered() {
         return delivered;
@@ -34,8 +36,23 @@ public class Shipment {
         this.payer = payer;
         this.totalCost = totalCost;
         this.parcels = new ArrayList<>();
-        this.terminals = new ArrayList<>();
         this.delivered = false;
+    }
+
+    public Terminal getStartTerminal() {
+        return startTerminal;
+    }
+
+    public void setStartTerminal(Terminal startTerminal) {
+        this.startTerminal = startTerminal;
+    }
+
+    public Terminal getEndTerminal() {
+        return endTerminal;
+    }
+
+    public void setEndTerminal(Terminal endTerminal) {
+        this.endTerminal = endTerminal;
     }
 
     // Getters and setters for each field
@@ -86,13 +103,4 @@ public class Shipment {
     public void setParcels(List<Parcel> parcels) {
         this.parcels = parcels;
     }
-
-    public List<Terminal> getTerminals() {
-        return terminals;
-    }
-
-    public void setTerminals(List<Terminal> terminals) {
-        this.terminals = terminals;
-    }
-
 }

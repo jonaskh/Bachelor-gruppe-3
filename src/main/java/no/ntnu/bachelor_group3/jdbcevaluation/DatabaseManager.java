@@ -70,8 +70,12 @@ public class DatabaseManager implements AutoCloseable {
         return shipmentService.getShipmentById(shipmentId, customerService, conn);
     }
 
-    public void saveShipment(Shipment shipment) throws SQLException {
-        shipmentService.save(shipment, parcelService, conn);
+    public Long saveShipment(Shipment shipment) throws SQLException {
+        return shipmentService.save(shipment, parcelService, terminalService, conn);
+    }
+
+    public Long saveShipmentWithParcel(Shipment shipment, Parcel parcel) throws  SQLException {
+        return shipmentService.save(shipment, parcel, parcelService, terminalService, conn);
     }
 
     public void deleteShipment(Shipment shipment) throws SQLException {
@@ -82,8 +86,8 @@ public class DatabaseManager implements AutoCloseable {
         return parcelService.getParcelById(parcelId, customerService, shipmentService, conn);
     }
 
-    public Long saveParcel(Parcel parcel) throws SQLException {
-        return parcelService.save(parcel, conn);
+    public Long saveParcel(Parcel parcel, Long shipmentId) throws SQLException {
+        return parcelService.save(parcel, shipmentId, conn);
     }
 
     public Terminal getTerminalById(int terminalId) throws SQLException {
@@ -177,5 +181,17 @@ public class DatabaseManager implements AutoCloseable {
 
     public void savePostalCode(ValidPostalCode postalCode) throws SQLException {
         validPostalCodeService.save(postalCode, conn);
+    }
+
+    public Terminal getTerminalByZip(String zipCode) {
+        return terminalService.getTerminalByZip(zipCode, conn);
+    }
+
+    public void setCheckpointOnParcels(Shipment shipment, Checkpoint checkpoint) throws SQLException {
+        for (Parcel parcel : shipment.getParcels()) {
+
+            checkpoint.setParcel(parcel);
+            checkpointService.save(checkpoint, conn);
+        }
     }
 }
