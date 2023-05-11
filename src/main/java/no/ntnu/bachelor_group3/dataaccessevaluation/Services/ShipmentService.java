@@ -91,15 +91,16 @@ public class ShipmentService {
 
         shipment.getSender().addShipment(shipment);
 
-        var before = Instant.now(); //evaluates the time taken by repository method.
         try {
-            shipmentRepository.save(shipment);
+            var before = Instant.now(); //evaluates the time taken by repository method.
 
+            shipmentRepository.save(shipment);
+            var duration = Duration.between(before, Instant.now());
+
+            shipmentEvals.add(duration.get(ChronoUnit.NANOS) + ", shipment," + shipment.getShipment_id() + ", create");
         } catch (HibernateException e) {
             System.out.println("Shipment with that ID already exists");
         }
-        var duration = Duration.between(before, Instant.now());
-        shipmentEvals.add(duration.get(ChronoUnit.NANOS) + ", shipment create");
     }
 
 
@@ -116,7 +117,7 @@ public class ShipmentService {
             var before = Instant.now();
             checkpointService.addCheckpoint(checkpoint);
             var duration = Duration.between(before, Instant.now()).toNanos();
-            shipmentEvals.add(duration + " , checkpoint create");
+            shipmentEvals.add(duration + " , checkpoint, create");
         }
 
         //adds the shipment to terminal if checkpoint is at a terminal and has not already passed it.

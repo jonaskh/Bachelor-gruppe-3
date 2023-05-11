@@ -11,6 +11,7 @@ import org.apache.commons.lang3.time.StopWatch;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.*;
 
 public class SimulationRunner {
@@ -21,6 +22,8 @@ public class SimulationRunner {
     private ValidPostalCodeService validPostalCodeService;
     private ParcelService parcelService;
     private CheckpointService checkpointService;
+    private static List<String> evals = new CopyOnWriteArrayList<>();
+
 
 
     private ExecutorService executor1 = Executors.newFixedThreadPool(10);
@@ -119,6 +122,12 @@ public class SimulationRunner {
             System.out.println("Error in await termination");
         }
 
+        //evals.addAll(shipmentService.getShipmentEvals());
+        //evals.addAll(parcelService.getParcelEvals());
+        evals.addAll(customerService.getCustomerEval());
+        //evals.addAll(checkpointService.getCheckpointEvals());
+
+        evals.forEach(System.out::println);
 
         System.out.println("shipments in customer local: " + sender.getShipments().size());
         System.out.println("shipments in customer local: " + customerService.findByID(sender.getCustomerID()).get().getShipments().size());
