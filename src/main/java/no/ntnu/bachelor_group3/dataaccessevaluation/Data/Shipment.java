@@ -31,11 +31,11 @@ public class Shipment {
     @JoinColumn(name = "payer_id")
     private Customer payer;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "start_terminal_id")
     private Terminal firstTerminal;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "end_terminal_id")
     private Terminal finalTerminal;
 
