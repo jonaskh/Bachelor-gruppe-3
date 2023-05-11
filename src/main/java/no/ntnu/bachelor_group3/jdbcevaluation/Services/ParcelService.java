@@ -99,7 +99,7 @@ public class ParcelService {
             if (rowsAffected > 0) {
                 try (ResultSet rs = stmt.getGeneratedKeys()) {
                     if (rs.next()) {
-                        return rs.getLong(1);
+                        return rs.getLong(3);
                     }
                 }
             }
