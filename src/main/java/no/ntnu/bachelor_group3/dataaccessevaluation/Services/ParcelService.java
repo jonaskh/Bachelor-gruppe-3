@@ -43,7 +43,6 @@ public class ParcelService {
 
 
     //Updates the current checkpoint and adds it to total checkpoint list.
-    @Transactional
     public void addCheckpointToParcel(Checkpoint checkpoint, Parcel parcel) {
         parcel.addCheckpoint(checkpoint);
         checkpointService.addParcel(parcel, checkpoint);
@@ -51,7 +50,6 @@ public class ParcelService {
 //            checkpoint.setParcel(parcel);
         }
 
-    @Transactional
     public void save(Parcel parcel) {
         if (parcelRepository.findById(parcel.getParcel_id()).isEmpty()) {
             var before = Instant.now();

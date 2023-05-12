@@ -93,11 +93,11 @@ public class ShipmentService {
         setFirstTerminalToShipment(shipment);
         setEndTerminalToShipment(shipment);
 
+        //TODO: update eval here?
         shipment.getSender().addShipment(shipment);
 
         try {
             var before = Instant.now(); //evaluates the time taken by repository method.
-
             shipmentRepository.save(shipment);
             var duration = Duration.between(before, Instant.now());
 
@@ -117,15 +117,13 @@ public class ShipmentService {
     public void updateCheckpointsOnParcels(Shipment shipment, Checkpoint checkpoint) {
         for (Parcel parcel : shipment.getParcels()) {
             parcelService.addCheckpointToParcel(checkpoint, parcel);
-//            parcelService.addCheckpointToParcel(checkpoint, parcel);
-            var before = Instant.now();
+            //TODO: move eval
             checkpointService.addCheckpoint(checkpoint);
-            var duration = Duration.between(before, Instant.now()).toNanos();
-            shipmentEvals.add(duration + " , checkpoint, create");
         }
 
         //adds the shipment to terminal if checkpoint is at a terminal and has not already passed it.
         if (checkpoint.getTerminal() != null) {
+            //TODO: update?
             shipment.addTerminal(checkpoint.getTerminal());
             terminalService.addShipment(shipment, checkpoint.getTerminal());
         }

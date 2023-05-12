@@ -27,7 +27,6 @@ public class CheckpointService {
         return checkpointEvals;
     }
 
-    @jakarta.transaction.Transactional
     public Checkpoint findByID(Long id) {
         var current = Instant.now();
         Checkpoint cp = checkpointRepository.findById(id).orElse(null);
@@ -40,6 +39,7 @@ public class CheckpointService {
 //        return checkpointRepository.countCheckpointByparcel_parcel_id(parcelid);
 //    }
 
+
     public void addCheckpoint(Checkpoint checkpoint) {
         var before = Instant.now();
         checkpointRepository.save(checkpoint);
@@ -50,7 +50,7 @@ public class CheckpointService {
     /*
     Called by terminalService to calculate how many shipments have passed through a terminal.
      */
-    @jakarta.transaction.Transactional
+
     public long getAllShipmentsThroughTerminal(String loc) {
         var before = Instant.now();
         long count = checkpointRepository.findAllByLocation(loc);

@@ -8,6 +8,7 @@ import no.ntnu.bachelor_group3.dataaccessevaluation.Runnables.TerminalShipmentsR
 import no.ntnu.bachelor_group3.dataaccessevaluation.Runnables.UpdateShipmentRunnable;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.*;
 import org.apache.commons.lang3.time.StopWatch;
+import org.hibernate.sql.Update;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -55,14 +56,13 @@ public class SimulationRunner {
         System.out.println("Starting simulation...");
 
         for (int i = 0; i < 500; i++) {
-            Shipment shipment = new Shipment(sender, sender, receiver);
-            AddShipmentsRunnable shipmentsRunnable = new AddShipmentsRunnable(shipment, shipmentService, customerService);
-            try {
-                queue.put(shipment);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            executor1.execute(shipmentsRunnable);
+
+//            try {
+//                queue.put(shipment);
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+            executor1.execute(new UpdateShipmentRunnable(new Shipment(sender, sender, receiver), shipmentService, terminalService));
         }
 
 
@@ -78,25 +78,17 @@ public class SimulationRunner {
         }
 
 
-        //TODO: queue.take,
-        int i = 0;
-        var size = queue.size();
-        while (i < size) {
-            try {
-                updateShipmentsService.execute(new UpdateShipmentRunnable(queue.take(), shipmentService, terminalService));
-                i++;
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
+//        //TODO: queue.take,
+//        int i = 0;
+//        var size = queue.size();
+//        while (i < size) {
+//            try {
+//                updateShipmentsService.execute(new UpdateShipmentRunnable(queue.take(), shipmentService, terminalService));
+//                i++;
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
 
         try {
             //stops the executors from accepting new tasks
@@ -105,7 +97,6 @@ public class SimulationRunner {
             findShipmentsInTerminalService.shutdown();
             findShipmentInCustomerService.shutdown();
             executor1.shutdown();
-
 
             //stops the thread pools if no more tasks, an exception occurs or timeout.
             updateShipmentsService.awaitTermination(2, TimeUnit.MINUTES);
@@ -127,7 +118,7 @@ public class SimulationRunner {
         evals.addAll(customerService.getCustomerEval());
         //evals.addAll(checkpointService.getCheckpointEvals());
 
-        evals.forEach(System.out::println);
+//        evals.forEach(System.out::println);
 
         System.out.println("shipments in customer local: " + sender.getShipments().size());
         System.out.println("shipments in customer local: " + customerService.findByID(sender.getCustomerID()).get().getShipments().size());
