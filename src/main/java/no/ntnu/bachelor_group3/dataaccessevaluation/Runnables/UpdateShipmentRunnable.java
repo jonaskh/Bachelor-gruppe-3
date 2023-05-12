@@ -47,26 +47,9 @@ public class UpdateShipmentRunnable implements Runnable{
         this.shipmentService = shipmentService;
     }
 
-    @Override
-    //this method runs another in order to catch exceptions, else they are ignored.
-    public void run() {
-        try {
-            catchRun();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    /**
-     * Simulates the lifecycle of a shipment, where it simulates traveling through different checkpoints
-     * to the final terminal. The time is relative to real time.
-     */
-    public void catchRun() {
 
-        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp1);
-        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp2);
-        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp3);
-        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp4);
-        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp5);
-        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp6);
+    @Override
+    public void run() {
+
     }
 }

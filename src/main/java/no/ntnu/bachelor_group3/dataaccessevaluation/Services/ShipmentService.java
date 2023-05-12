@@ -104,27 +104,7 @@ public class ShipmentService {
     }
 
 
-    /**
-     * Adds a checkpoint to all parcels in the shipment, if the checkpoint is connected to a terminal, add shipment to it.
-     * @param shipment   to add checkpoint to
-     * @param checkpoint which checkpoint to add
-     */
-    @Transactional
-    public void updateCheckpointsOnParcels(Shipment shipment, Checkpoint checkpoint) {
-        for (Parcel parcel : shipment.getParcels()) {
-            parcelService.addCheckpointToParcel(checkpoint, parcel);
-//            parcelService.addCheckpointToParcel(checkpoint, parcel);
-            var before = Instant.now();
-            checkpointService.addCheckpoint(checkpoint);
-            var duration = Duration.between(before, Instant.now()).toNanos();
-            shipmentEvals.add(duration + " , checkpoint, create");
-        }
 
-        //adds the shipment to terminal if checkpoint is at a terminal and has not already passed it.
-        if (checkpoint.getTerminal() != null) {
-            addTerminal(checkpoint.getTerminal(), shipment);
-        }
-    }
 
     public void addTerminal(Terminal terminal, Shipment shipment) {
         shipment.addTerminal(terminal);

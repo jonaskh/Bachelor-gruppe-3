@@ -66,14 +66,12 @@ public class Shipment {
         this.sender = sender;
         this.payer = payer;
         this.receiver = receiver;
-        addParcels();
     }
 
     public Shipment(Customer sender, Customer payer, String receiver_address, String receiver_zip, String receiver_name) {
         this.shipment_id = counter++;
         this.sender = sender;
         this.payer = payer;
-        addParcels();
 
     }
 

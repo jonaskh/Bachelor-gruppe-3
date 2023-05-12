@@ -1,7 +1,7 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation;
 
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.*;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Simulation.SimulationRunner;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Simulation.SimpleSimulationRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +47,7 @@ public class DataAccessEvaluationApplication {
 
 	@Bean
 	public void runSimulation() {
-		SimulationRunner simulationRunner = new SimulationRunner(shipmentService, customerService, terminalService, validPostalCodeService, parcelService, checkpointService);
+		SimpleSimulationRunner simulationRunner = new SimpleSimulationRunner(shipmentService, customerService, terminalService, validPostalCodeService, parcelService, checkpointService);
 
 		validPostalCodeService.ReadCSVFile();
 		var before = Instant.now();
