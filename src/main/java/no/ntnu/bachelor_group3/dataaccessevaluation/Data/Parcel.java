@@ -15,7 +15,7 @@ public class Parcel {
     @Id
     private Long parcel_id;
 
-    private double weight;
+    private int weight;
 
     private int weight_class;
 
@@ -41,14 +41,14 @@ public class Parcel {
         this.parcel_id = counter++;
     }
 
-    public Parcel(Shipment shipment, double weight) {
+    public Parcel(Shipment shipment, int weight) {
 //        this.shipment = shipment;
         this.parcel_id = counter++;
         this.weight = weight;
         setWeightClass();
     }
 
-    public double getWeight() {
+    public int getWeight() {
         return weight;
     }
 
@@ -67,13 +67,7 @@ public class Parcel {
 
     //TODO: for each loop to generate cost through each checkpoint
 
-    public double generateCostForEachParcelBasedOnCheckpoints() {
-        double cost = 0;
-        for (Checkpoint checkpoint : checkpoints) {
-            cost += checkpoint.getCost() * this.weight;
-        }
-        return cost;
-    }
+
 
     //TODO: check performance
     public void setWeightClass() {

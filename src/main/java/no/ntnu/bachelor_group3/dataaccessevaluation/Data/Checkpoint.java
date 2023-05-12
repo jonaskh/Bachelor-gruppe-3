@@ -30,7 +30,6 @@ public class Checkpoint {
     @ManyToMany(mappedBy = "checkpoints", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Parcel> parcels = new ArrayList<>();
 
-    private LocalDateTime time;
 
     @Version
     @Column(name = "optlock", columnDefinition = "integer DEFAULT 0", nullable = false)
@@ -46,35 +45,34 @@ public class Checkpoint {
 
     private String location;
 
-    private double cost;
+    private int cost;
+
     public Checkpoint() {
     }
 
     public Checkpoint(String location, CheckpointType type) {
         this.location = location;
-        this.time = LocalDateTime.now();
         this.checkpoint_id = counter++;
         this.type = type;
         switch (type) {
             case Collected -> this.cost = 1;
-            case ReceivedFinalTerminal, ReceivedFirstTerminal -> this.cost = 1.25;
-            case LoadedOnCar -> this.cost = 1.5;
-            case UnderDelivery -> this.cost = 1.8;
+            case ReceivedFinalTerminal, ReceivedFirstTerminal -> this.cost = 3;
+            case LoadedOnCar -> this.cost = 2;
+            case UnderDelivery -> this.cost = 4;
             case Delivered -> this.cost = 2;
         }
     }
 
     public Checkpoint(Terminal terminal, CheckpointType type) {
-        this.time = LocalDateTime.now();
         this.checkpoint_id = counter++;
         this.type = type;
         this.terminal = terminal;
         switch (type) {
             case Collected -> this.cost = 1;
-            case ReceivedFinalTerminal, ReceivedFirstTerminal -> this.cost = 1.25;
-            case LoadedOnCar -> this.cost = 1.5;
-            case UnderDelivery -> this.cost = 1.8;
-            case Delivered -> this.cost = 2;
+            case ReceivedFinalTerminal, ReceivedFirstTerminal -> this.cost = 2;
+            case LoadedOnCar -> this.cost = 3;
+            case UnderDelivery -> this.cost = 4;
+            case Delivered -> this.cost = 5;
         }
     }
 //    public void setParcel(Parcel parcel) {
@@ -106,11 +104,8 @@ public class Checkpoint {
         return this.checkpoint_id;
     }
 
-    public String getTime() {
-        return sdf3.format(time);
-    }
 
-    public double getCost() {
+    public int getCost() {
         return cost;
     }
 
