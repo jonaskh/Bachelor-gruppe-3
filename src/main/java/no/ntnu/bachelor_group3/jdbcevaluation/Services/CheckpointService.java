@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +23,7 @@ public class CheckpointService {
     private static final String DELETE_CHECKPOINT_QUERY = "DELETE FROM checkpoint WHERE checkpoint_id = ?";
     private static final String GET_CHECKPOINTS_FROM_PARCEL = "SELECT * FROM checkpoint WHERE parcel_id = ?";
 
-    private List<Long> executionTimeList;
+    public List<Long> executionTimeList;
 
     public CheckpointService() {
         executionTimeList = new ArrayList<>();
@@ -73,9 +75,6 @@ public class CheckpointService {
     }
 
     public Long save(Checkpoint checkpoint, Connection conn) throws SQLException {
-        long startTime = System.nanoTime();
-        long executionTime = 0;
-        long endTime;
         PreparedStatement stmt;
         Long id = 0L;
         if (id == 0) {
@@ -86,11 +85,13 @@ public class CheckpointService {
             stmt.setString(2, checkpoint.getLocation());
             stmt.setTimestamp(3, new Timestamp(checkpoint.getTime().getTime()));
             stmt.setLong(4, checkpoint.getParcel().getId());
-            stmt.setLong(5, checkpoint.getTerminal().getId());
+            if (checkpoint.getTerminal() != null) {
+                stmt.setLong(5, checkpoint.getTerminal().getId());
+            }
             stmt.setInt(6, checkpoint.getType().ordinal());
+            var startTime = Instant.now();
             int rowsInserted = stmt.executeUpdate();
-            endTime = System.nanoTime();
-            executionTime = endTime - startTime;
+            var executionTime = Duration.between(startTime, Instant.now()).toNanos();
             executionTimeList.add(executionTime);
             //System.out.println(INSERT_CHECKPOINT_QUERY + " || Execution time: " + executionTime + " ns");
             if (rowsInserted > 0) {
@@ -106,12 +107,16 @@ public class CheckpointService {
             stmt.setString(2, checkpoint.getLocation());
             stmt.setTimestamp(3, new Timestamp(checkpoint.getTime().getTime()));
             stmt.setLong(4, checkpoint.getParcel().getId());
-            stmt.setLong(5, checkpoint.getTerminal().getId());
+            if (checkpoint.getTerminal() != null) {
+                stmt.setLong(5, checkpoint.getTerminal().getId());
+            } else {
+                stmt.setNull(5, 1);
+            }
             stmt.setInt(6, checkpoint.getType().ordinal());
+            var startTime = Instant.now();
             stmt.executeUpdate();
-            endTime = System.nanoTime();
-            executionTime = endTime - startTime;
-            System.out.println(UPDATE_CHECKPOINT_QUERY + " || Execution time: " + executionTime + " ns");
+            var executionTime = Duration.between(startTime, Instant.now()).toNanos();
+            executionTimeList.add(executionTime);
         }
         return id;
     }

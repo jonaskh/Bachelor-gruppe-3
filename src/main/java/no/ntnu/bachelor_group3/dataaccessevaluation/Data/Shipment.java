@@ -17,6 +17,7 @@ public class Shipment {
     private Long shipment_version = null;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long shipment_id;
 
     @ManyToOne

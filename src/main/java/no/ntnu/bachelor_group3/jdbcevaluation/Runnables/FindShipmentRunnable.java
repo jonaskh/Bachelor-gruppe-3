@@ -28,9 +28,15 @@ public class FindShipmentRunnable implements Runnable {
     }
 
     private void catchRun() throws SQLException {
-        Long parcelId = db.getShipmentById(shipment.getId()).getParcels().get(0).getId();
-        List<Checkpoint> checkpoints = db.getCheckpointsOnParcel(parcelId);
-        Checkpoint lastCheckpoint = checkpoints.get(checkpoints.size() - 1);
-        System.out.println("Status: " + lastCheckpoint.getType().name() + "   Location: " + lastCheckpoint.getTerminal().getLocation());
+        if (shipment != null) {
+            Long parcelId = db.getShipmentById(shipment.getId()).getParcels().get(0).getId();
+            List<Checkpoint> checkpoints = db.getCheckpointsOnParcel(parcelId);
+            if (checkpoints.size() > 0) {
+                Checkpoint lastCheckpoint = checkpoints.get(checkpoints.size() - 1);
+                System.out.println("Status: " + lastCheckpoint.getType().name() + "   Location: " + lastCheckpoint.getTerminal().getLocation());
+            } else {
+                System.out.println("No checkpoints on this shipment yet");
+            }
+        }
     }
 }

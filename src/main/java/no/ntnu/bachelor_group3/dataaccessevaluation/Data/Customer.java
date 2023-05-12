@@ -17,7 +17,7 @@ public class Customer {
     //private static int counter_id = 1; //unique id, incremented each time a new customer is made.
     @Id
     @Column(nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long customer_id;
 
     private String address;

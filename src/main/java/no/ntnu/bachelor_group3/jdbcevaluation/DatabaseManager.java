@@ -179,12 +179,16 @@ public class DatabaseManager implements AutoCloseable {
         execute("DELETE FROM valid_postal_codes");
 
         execute("DELETE FROM checkpoint");
+        execute("ALTER SEQUENCE checkpoint_checkpoint_id_seq RESTART WITH 1");
 
         execute("DELETE FROM parcel");
+        execute("ALTER SEQUENCE parcel_parcel_id_seq RESTART WITH 1");
 
         execute("DELETE FROM shipment");
+        execute("ALTER SEQUENCE shipment_shipment_id_seq RESTART WITH 1");
 
         execute("DELETE FROM customer");
+        execute("ALTER SEQUENCE customer_customer_id_seq RESTART WITH 1");
     }
 
     public void saveTerminal(Terminal terminal) throws SQLException {

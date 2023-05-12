@@ -12,6 +12,7 @@ public class Terminal {
     private static Integer counter = 1;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer terminal_id;
 
     private String address;

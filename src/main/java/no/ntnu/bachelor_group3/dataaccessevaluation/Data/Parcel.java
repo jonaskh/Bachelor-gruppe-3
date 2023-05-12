@@ -17,6 +17,7 @@ public class Parcel {
     private static Long counter = 1L;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long parcel_id;
 
     private double weight;
