@@ -45,7 +45,12 @@ public class ParcelService {
     //Updates the current checkpoint and adds it to total checkpoint list.
     @Transactional
     public void addCheckpointToParcel(Checkpoint checkpoint, Parcel parcel) {
+        var before = Instant.now();
         parcel.addCheckpoint(checkpoint);
+        var duration = Duration.between(before, Instant.now()).toNanos();
+        parcelEval.add(duration + ", shipment find");
+
+
         checkpointService.addParcel(parcel, checkpoint);
 
 //            checkpoint.setParcel(parcel);

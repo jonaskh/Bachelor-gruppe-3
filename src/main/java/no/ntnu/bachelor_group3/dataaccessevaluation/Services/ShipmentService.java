@@ -61,6 +61,7 @@ public class ShipmentService {
     }
 
     public long returnNrOfParcels(Shipment ship) {
+
         return ship.getParcels().size();
     }
 
@@ -103,7 +104,6 @@ public class ShipmentService {
         }
     }
 
-
     /**
      * Adds a checkpoint to all parcels in the shipment, if the checkpoint is connected to a terminal, add shipment to it.
      * @param shipment   to add checkpoint to
@@ -113,22 +113,22 @@ public class ShipmentService {
     public void updateCheckpointsOnParcels(Shipment shipment, Checkpoint checkpoint) {
         for (Parcel parcel : shipment.getParcels()) {
             parcelService.addCheckpointToParcel(checkpoint, parcel);
-//            parcelService.addCheckpointToParcel(checkpoint, parcel);
-            var before = Instant.now();
             checkpointService.addCheckpoint(checkpoint);
-            var duration = Duration.between(before, Instant.now()).toNanos();
-            shipmentEvals.add(duration + " , checkpoint, create");
         }
-
         //adds the shipment to terminal if checkpoint is at a terminal and has not already passed it.
         if (checkpoint.getTerminal() != null) {
             addTerminal(checkpoint.getTerminal(), shipment);
+            terminalService.addShipment(shipment, checkpoint.getTerminal());
         }
     }
 
+
+    @Transactional
     public void addTerminal(Terminal terminal, Shipment shipment) {
+        var before = Instant.now();
         shipment.addTerminal(terminal);
-        terminalService.addShipment(shipment, terminal);
+        var duration = Duration.between(before, Instant.now()).toNanos();
+        shipmentEvals.add(duration + " , shipment update");
     }
 
     //returns the last checkpoint for the shipment, used by customer to track location in Runnable
@@ -165,7 +165,10 @@ public class ShipmentService {
 
     @Transactional
     public void deleteOneShipment(Long shipmentId) {
+        var before = Instant.now();
         shipmentRepository.deleteById(shipmentId);
+        var duration = Duration.between(before, Instant.now()).toNanos();
+        shipmentEvals.add(duration + " , shipment delete");
     }
 //
 //    //saves a shipment to the repository, and thus the database

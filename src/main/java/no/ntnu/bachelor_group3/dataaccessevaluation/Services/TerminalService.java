@@ -39,14 +39,14 @@ public class TerminalService {
 
     //finds a terminal in database based on id, return null if no matching id
     public Terminal findByID(Integer id) {
-        return terminalRepository.findById(id).orElse(null);
+        var before = Instant.now();
+        Optional<Terminal> terminal = terminalRepository.findById(id);
+        var duration = Duration.between(before, Instant.now()).toNanos();
+        terminalEvals.add(duration + ", shipment find");
+        return terminal.orElse(null);
     }
 
-    public void findUniqueShipmentsThroughTerminal(Terminal terminal) {
-        for (Checkpoint cp :findByID(terminal.getTerminal_id()).getCheckpoints()) {
 
-        }
-    }
 
     //checks if terminal with this id exist already, if not add it to database
     @Transactional
@@ -56,14 +56,20 @@ public class TerminalService {
         if (existingTerminal.isPresent()) {
             return false;
         } else {
+            var before = Instant.now();
             terminalRepository.save(terminal);
+            var duration = Duration.between(before, Instant.now()).toNanos();
+            terminalEvals.add(duration + ", shipment find");
             return true;
         }
     }
 
     @Transactional
     public void addShipment(Shipment shipment, Terminal terminal) {
+        var before = Instant.now();
         terminal.addShipment(shipment);
+        var duration = Duration.between(before, Instant.now());
+        terminalEvals.add(duration + " terminal update");
     }
 
     @Transactional
@@ -108,7 +114,10 @@ public class TerminalService {
     public Terminal returnTerminalFromZip(String zip) {
         Terminal terminal;
         if (validPostalCodeRepository.findByPostalCode(zip).isPresent()) {
+            var before = Instant.now();
             terminal = validPostalCodeRepository.findByPostalCode(zip).get().getTerminal_id();
+            var duration = Duration.between(before, Instant.now());
+            terminalEvals.add(duration + " terminal read");
         } else {
             System.out.println("No terminal connected to that zip");
             return null;
