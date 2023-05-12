@@ -1,7 +1,7 @@
 //package no.ntnu.bachelor_group3.dataaccessevaluation.Controllers;
 //
-//import no.ntnu.bachelor_group3.dataaccessevaluation.Services.CustomerService;
-//import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;
+//
+//import JOOQ.service.ShipmentService;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.web.bind.annotation.CrossOrigin;
 //import org.springframework.web.bind.annotation.GetMapping;
@@ -15,13 +15,13 @@
 //@RestController
 //public class ShipmentController {
 //
-//    @Autowired
+//
 //    ShipmentService shipmentService;
 //
 //    @GetMapping("/shipment/eval")
 //    public List<String> getShipmentEval() {
 //
-//        Iterable<String> products = shipmentService.getShipmentEvals();
+//        Iterable<String> products = shipmentService.getTimeTakenList();
 //        List<String> evalList = StreamSupport
 //                .stream(products.spliterator(), false)
 //                .collect(Collectors.toList());

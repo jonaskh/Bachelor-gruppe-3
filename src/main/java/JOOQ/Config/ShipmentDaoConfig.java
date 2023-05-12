@@ -1,4 +1,4 @@
-package Config;
+package JOOQ.Config;
 
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.daos.ShipmentDao;
 import org.jooq.DSLContext;

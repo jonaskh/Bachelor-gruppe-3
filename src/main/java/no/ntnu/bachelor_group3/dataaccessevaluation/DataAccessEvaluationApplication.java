@@ -82,43 +82,45 @@
 
 package no.ntnu.bachelor_group3.dataaccessevaluation;
 
+import JOOQ.Simulation.ShipmentSim;
+import JOOQ.service.ShipmentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
-		import JOOQ.Simulation.ShipmentSim;
-
-		import org.slf4j.Logger;
-		import org.slf4j.LoggerFactory;
-		import org.springframework.beans.factory.annotation.Autowired;
-		import org.springframework.boot.SpringApplication;
-		import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-		import org.springframework.context.annotation.Bean;
-
-		import java.sql.SQLException;
-		import java.time.Duration;
-		import java.time.Instant;
-		import java.util.ArrayList;
-		import java.util.List;
-
+import java.sql.SQLException;
 
 @SpringBootApplication
-public class DataAccessEvaluationApplication {
+@ComponentScan(basePackages = {"JOOQ"})
+public class DataAccessEvaluationApplication implements ApplicationRunner {
+
+	private static final Logger log = LoggerFactory.getLogger(DataAccessEvaluationApplication.class);
+
+	@Autowired
+	private ShipmentService shipmentService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(DataAccessEvaluationApplication.class, args);
 	}
 
-	@Bean
-	public void runSimulation() throws SQLException {
-		ShipmentSim shipmentSim = new ShipmentSim();
+	@Override
+	public void run(ApplicationArguments args) throws Exception {
+		ShipmentSim shipmentSim = new ShipmentSim(shipmentService);
 		shipmentSim.simulate();
-
 	}
-
-
-
-
-
 }
+
+
+
+
+
+
+
 
 
 

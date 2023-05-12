@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import apiServiceInstance from "../APIService";
 import { Chart, registerables } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 Chart.register(...registerables);
 
@@ -68,6 +69,7 @@ function ShipmentEvalChart() {
                         },
                     },
                 },
+                plugins: [ChartDataLabels]
             });
         }
     }, [evalList]);
@@ -101,7 +103,7 @@ function ShipmentEvalChart() {
 
     function calculateAverage(values) {
         const sum = values.reduce((acc, val) => acc + val, 0);
-        console.log(values);
+        console.log(sum / values.length);
         return sum / values.length;
     }
 

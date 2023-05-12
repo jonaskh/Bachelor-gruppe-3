@@ -3,15 +3,19 @@ package JOOQ.extendedDaos;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.daos.TerminalIdDao;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.TerminalId;
 import org.jooq.DSLContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 import static no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.Tables.TERMINAL_ID;
 
+@Component // or @Repository
 public class CustomTerminalIdDao extends TerminalIdDao {
 
     private final DSLContext dsl;
 
+    @Autowired
     public CustomTerminalIdDao(DSLContext dsl) {
         super(dsl.configuration());
         this.dsl = dsl;
