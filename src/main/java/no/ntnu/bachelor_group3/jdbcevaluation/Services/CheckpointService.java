@@ -19,6 +19,7 @@ public class CheckpointService {
     private static final String INSERT_CHECKPOINT_QUERY = "INSERT INTO checkpoint (cost, location, time, parcel_id, terminal_id, type) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String UPDATE_CHECKPOINT_QUERY = "UPDATE checkpoint SET cost = ?, location = ?, time = ?, parcel_id = ?, terminal_id = ?, type = ? WHERE checkpoint_id = ?";
     private static final String DELETE_CHECKPOINT_QUERY = "DELETE FROM checkpoint WHERE checkpoint_id = ?";
+    private static final String GET_CHECKPOINTS_FROM_PARCEL = "SELECT * FROM checkpoint WHERE parcel_id = ?";
 
     private List<Long> executionTimeList;
 
@@ -31,7 +32,8 @@ public class CheckpointService {
         PreparedStatement stmt = conn.prepareStatement(GET_CHECKPOINT_BY_ID_QUERY);
         stmt.setInt(1, checkpointId);
         ResultSet rs = stmt.executeQuery();
-        Checkpoint.CheckpointType type = Checkpoint.CheckpointType.valueOf(rs.getString("type"));
+        int typeInt = rs.getInt("type");
+        Checkpoint.CheckpointType type = Checkpoint.CheckpointType.fromInteger(typeInt);
         Parcel parcel = parcelService.getParcelById(rs.getLong("parcel_id"),
                 customerService, shipmentService, conn);
         Terminal terminal = terminalService.getTerminalById(rs.getInt("terminal_id"), conn);
@@ -41,6 +43,33 @@ public class CheckpointService {
             return checkpoint;
         }
         return null;
+    }
+
+    public List<Checkpoint> getCheckpointsByParcelId(Long parcelId, ParcelService parcelService, ShipmentService shipmentService,
+                                                     CustomerService customerService, TerminalService terminalService, Connection conn) {
+        List<Checkpoint> checkpoints = new ArrayList<>();
+
+        try (PreparedStatement stmt = conn.prepareStatement(GET_CHECKPOINTS_FROM_PARCEL)) {
+            stmt.setLong(1, parcelId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int typeInt = rs.getInt("type");
+                Checkpoint.CheckpointType type = Checkpoint.CheckpointType.fromInteger(typeInt);
+                Parcel parcel = parcelService.getParcelById(rs.getLong("parcel_id"),
+                        customerService, shipmentService, conn);
+                Terminal terminal = terminalService.getTerminalById(rs.getInt("terminal_id"), conn);
+
+                Checkpoint checkpoint = new Checkpoint(rs.getLong("checkpoint_id"), rs.getDouble("cost"),
+                        rs.getString("location"), parcel, terminal, type);
+
+                checkpoints.add(checkpoint);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return checkpoints;
     }
 
     public Long save(Checkpoint checkpoint, Connection conn) throws SQLException {

@@ -9,17 +9,16 @@ public class JDBCEvaluationApplication {
         try (DatabaseManager db = new DatabaseManager()) {
             DataPopulator dataPopulator = new DataPopulator(db);
             // Comment out the two lines below if already populated
-            //dataPopulator.generateTerminals();
-            //dataPopulator.generateValidPostalCodes();
+            db.deleteRowsFromDB();
+            dataPopulator.generateTerminals();
+            dataPopulator.generateValidPostalCodes();
 
             SimulationRunner simulationRunner = new SimulationRunner(db);
             simulationRunner.simulate();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-
     }
 
 }

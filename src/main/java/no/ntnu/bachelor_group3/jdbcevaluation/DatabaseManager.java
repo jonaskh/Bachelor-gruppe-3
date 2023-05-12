@@ -175,6 +175,18 @@ public class DatabaseManager implements AutoCloseable {
         stmt.execute(sql);
     }
 
+    public void deleteRowsFromDB() throws SQLException {
+        execute("DELETE FROM valid_postal_codes");
+
+        execute("DELETE FROM checkpoint");
+
+        execute("DELETE FROM parcel");
+
+        execute("DELETE FROM shipment");
+
+        execute("DELETE FROM customer");
+    }
+
     public void saveTerminal(Terminal terminal) throws SQLException {
         terminalService.save(terminal, conn);
     }
@@ -193,5 +205,9 @@ public class DatabaseManager implements AutoCloseable {
             checkpoint.setParcel(parcel);
             checkpointService.save(checkpoint, conn);
         }
+    }
+
+    public List<Checkpoint> getCheckpointsOnParcel(Long parcelId) {
+        return checkpointService.getCheckpointsByParcelId(parcelId, parcelService, shipmentService, customerService, terminalService, conn);
     }
 }

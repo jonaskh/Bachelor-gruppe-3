@@ -3,6 +3,7 @@ package no.ntnu.bachelor_group3.jdbcevaluation;
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.jdbcevaluation.Runnables.AddShipmentsRunnable;
+import no.ntnu.bachelor_group3.jdbcevaluation.Runnables.FindShipmentRunnable;
 import no.ntnu.bachelor_group3.jdbcevaluation.Runnables.UpdateShipmentRunnable;
 import no.ntnu.bachelor_group3.jdbcevaluation.Services.*;
 import org.apache.commons.lang3.time.StopWatch;
@@ -21,7 +22,7 @@ public class SimulationRunner {
 
     private ExecutorService executor1 = Executors.newFixedThreadPool(5);
     private ExecutorService executor2 = Executors.newFixedThreadPool(5);
-    private ScheduledExecutorService executor3 = Executors.newScheduledThreadPool(5);
+    private ScheduledExecutorService findShipmentInCustomerService = Executors.newScheduledThreadPool(10);
 
     private final ArrayBlockingQueue<Shipment> queue = new ArrayBlockingQueue<>(10000);
 
@@ -66,6 +67,7 @@ public class SimulationRunner {
                     throw new RuntimeException(e);
                 }
             }
+
             executor2.shutdown();
 
             try {
@@ -75,6 +77,41 @@ public class SimulationRunner {
                 e.printStackTrace();
                 System.out.println("Error in await termination");
             }
+
+            for (int k = 0; k < 10; k++) {
+                findShipmentInCustomerService.scheduleAtFixedRate(new FindShipmentRunnable(db, db.getShipmentById(855l)), 0, 500, TimeUnit.MILLISECONDS);
+            }
+
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        try {
+            //stops the executors from accepting new tasks
+            executor2.shutdown();
+
+            //findShipmentsInTerminalService.shutdown();
+            findShipmentInCustomerService.shutdown();
+            executor1.shutdown();
+
+
+            //stops the thread pools if no more tasks, an exception occurs or timeout.
+            executor2.awaitTermination(2, TimeUnit.MINUTES);
+            System.out.println("Update shipments done");
+
+            findShipmentInCustomerService.awaitTermination(2, TimeUnit.MINUTES);
+            //findShipmentsInTerminalService.awaitTermination(2, TimeUnit.MINUTES);
+            executor1.awaitTermination(2, TimeUnit.MINUTES);
+            System.out.println("Adding done");
+
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            System.out.println("Error in await termination");
+        }
 
             db.commit();
 

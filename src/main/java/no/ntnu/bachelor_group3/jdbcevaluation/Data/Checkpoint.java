@@ -13,7 +13,27 @@ public class Checkpoint {
     private Terminal terminal;
     private CheckpointType type;
 
-    public enum CheckpointType{Collected, ReceivedFirstTerminal,LoadedOnCar,ReceivedFinalTerminal,UnderDelivery,Delivered}
+    public enum CheckpointType{
+        Collected, ReceivedFirstTerminal,LoadedOnCar,ReceivedFinalTerminal,UnderDelivery,Delivered;
+
+        public static CheckpointType fromInteger(int x) {
+            switch(x) {
+                case 0:
+                    return Collected;
+                case 1:
+                    return ReceivedFirstTerminal;
+                case 2:
+                    return LoadedOnCar;
+                case 3:
+                    return ReceivedFinalTerminal;
+                case 4:
+                    return UnderDelivery;
+                case 5:
+                    return Delivered;
+            }
+            return null;
+        }
+    }
 
     public CheckpointType getType() {
         return type;
