@@ -18,9 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseManager implements AutoCloseable {
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
-    private static final String DB_USER = "postgres";
-    private static final String DB_PASSWORD = "postgres";
+    private static final String DB_URL = "jdbc:informix-sqli://localhost:9088/mydatabase:INFORMIXSERVER=informix";
+    private static final String DB_USER = "informix";
+    private static final String DB_PASSWORD = "in4mix";
     private final CustomerService customerService;
     private final ShipmentService shipmentService;
     private final ParcelService parcelService;
