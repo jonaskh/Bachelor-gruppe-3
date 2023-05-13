@@ -1,31 +1,26 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Controllers;
 
-import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Parcel;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.ShipmentRepository;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Services.CustomerService;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Services.CheckpointService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-public class ShipmentController {
+public class CheckpointController {
 
     @Autowired
-    ShipmentService shipmentService;
+    CheckpointService checkpointService;
 
-    @GetMapping("/shipment/eval")
-    public List<String> getShipmentEval() {
+    @GetMapping("/checkpoint/eval")
+    public List<String> getCheckpointEval() {
 
-        Iterable<String> products = shipmentService.getShipmentEvals();
+        Iterable<String> products = checkpointService.getCheckpointEvals();
         List<String> evalList = StreamSupport
                 .stream(products.spliterator(), false)
                 .collect(Collectors.toList());

@@ -31,7 +31,7 @@ public class CheckpointService {
     public Checkpoint findByID(Long id) {
         var current = Instant.now();
         Checkpoint cp = checkpointRepository.findById(id).orElse(null);
-        var duration = Duration.between(current, Instant.now()).toNanos() + " , checkpoint read";
+        var duration = Duration.between(current, Instant.now()).toNanos() + ", checkpoint, read";
         checkpointEvals.add(duration);
         return cp;
     }
@@ -43,7 +43,7 @@ public class CheckpointService {
     public void addCheckpoint(Checkpoint checkpoint) {
         var before = Instant.now();
         checkpointRepository.save(checkpoint);
-        var duration = Duration.between(before, Instant.now()).getNano() + " , checkpoint create";
+        var duration = Duration.between(before, Instant.now()).getNano() + ", checkpoint: " + checkpoint.getCheckpoint_id() + ", create";
         checkpointEvals.add(duration);
     }
 

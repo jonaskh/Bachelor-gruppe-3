@@ -54,6 +54,7 @@ public class SimulationRunner {
 
         System.out.println("Starting simulation...");
 
+
         for (int i = 0; i < 500; i++) {
             Shipment shipment = new Shipment(sender, sender, receiver);
             AddShipmentsRunnable shipmentsRunnable = new AddShipmentsRunnable(shipment, shipmentService, customerService);
@@ -64,19 +65,6 @@ public class SimulationRunner {
             }
             executor1.execute(shipmentsRunnable);
         }
-
-
-
-        //run find shipment location after a 0.5 second delay every second to simulate higher load.
-        for (int k = 0; k < 10; k++) {
-            findShipmentInCustomerService.scheduleAtFixedRate(new FindShipmentRunnable(shipmentService, customerService, shipmentService.findByID(1L)), 0, 500, TimeUnit.MILLISECONDS);
-        }
-
-        //run find shipments in terminal every second to simulate higher load.
-        for (int j = 0; j < 10; j++) {
-            findShipmentsInTerminalService.scheduleAtFixedRate(new TerminalShipmentsRunnable(shipmentService, terminalService, terminalService.returnTerminalFromZip("6300")), 500, 10000, TimeUnit.MILLISECONDS);
-        }
-
 
         //TODO: queue.take,
         int i = 0;
@@ -91,11 +79,21 @@ public class SimulationRunner {
         }
 
 
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+
+        //run find shipment location after a 0.5 second delay every second to simulate higher load.
+        for (int k = 0; k < 10; k++) {
+            findShipmentInCustomerService.scheduleAtFixedRate(new FindShipmentRunnable(shipmentService, customerService, shipmentService.findByID(1L)), 0, 500, TimeUnit.MILLISECONDS);
         }
+
+        //run find shipments in terminal every second to simulate higher load.
+        for (int j = 0; j < 10; j++) {
+            findShipmentsInTerminalService.scheduleAtFixedRate(new TerminalShipmentsRunnable(shipmentService, terminalService, terminalService.returnTerminalFromZip("6300")), 0, 500, TimeUnit.MILLISECONDS);
+        }
+
+
+
+
+
 
 
         try {
@@ -124,8 +122,8 @@ public class SimulationRunner {
 
         //evals.addAll(shipmentService.getShipmentEvals());
         //evals.addAll(parcelService.getParcelEvals());
-        evals.addAll(customerService.getCustomerEval());
-        //evals.addAll(checkpointService.getCheckpointEvals());
+        //evals.addAll(customerService.getCustomerEval());
+        evals.addAll(checkpointService.getCheckpointEvals());
 
         evals.forEach(System.out::println);
 

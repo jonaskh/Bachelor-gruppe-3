@@ -56,7 +56,7 @@ public class ShipmentService {
         var before = Instant.now();
         Optional<Shipment> shipment = shipmentRepository.findById(id);
         var duration = Duration.between(before, Instant.now()).toNanos();
-        shipmentEvals.add(duration + ", shipment find");
+        shipmentEvals.add(duration + ", shipment: " + shipment.get().getShipment_id() + ", find");
         return shipment.orElse(null);
     }
 
@@ -97,7 +97,7 @@ public class ShipmentService {
             shipmentRepository.save(shipment);
             var duration = Duration.between(before, Instant.now());
 
-            shipmentEvals.add(duration.get(ChronoUnit.NANOS) + ", shipment," + shipment.getShipment_id() + ", create");
+            shipmentEvals.add(duration.get(ChronoUnit.NANOS) + ", shipment: " + shipment.getShipment_id() + ", create");
         } catch (HibernateException e) {
             System.out.println("Shipment with that ID already exists");
         }
@@ -113,11 +113,7 @@ public class ShipmentService {
     public void updateCheckpointsOnParcels(Shipment shipment, Checkpoint checkpoint) {
         for (Parcel parcel : shipment.getParcels()) {
             parcelService.addCheckpointToParcel(checkpoint, parcel);
-//            parcelService.addCheckpointToParcel(checkpoint, parcel);
-            var before = Instant.now();
-            checkpointService.addCheckpoint(checkpoint);
-            var duration = Duration.between(before, Instant.now()).toNanos();
-            shipmentEvals.add(duration + " , checkpoint, create");
+           checkpointService.addCheckpoint(checkpoint);
         }
 
         //adds the shipment to terminal if checkpoint is at a terminal and has not already passed it.

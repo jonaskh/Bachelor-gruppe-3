@@ -12,9 +12,8 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - PGDATABASE=test
-    volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+      - PGDATABASE=postgres
+
     ports:
     - '5432:5432'
     healthcheck:

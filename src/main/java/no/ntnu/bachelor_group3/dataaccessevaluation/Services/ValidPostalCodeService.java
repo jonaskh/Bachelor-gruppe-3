@@ -73,7 +73,7 @@ public class ValidPostalCodeService {
      */
     @Transactional
     public void ReadCSVFile() {
-        String csvFile = "Postnummerregister.csv";
+        String csvFile = "./Postnummerregister.csv";
         createTerminals();
         String line = "";
         String cvsSplitBy = ",";
