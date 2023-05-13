@@ -108,10 +108,17 @@ public class SimulationRunner {
             System.out.println("Error in await termination");
         }
 
+        System.out.println(" shipment evals: " +shipmentService.getShipmentEvals().size());
+        System.out.println(" customer evals: " +customerService.getCustomerEval().size());
+        System.out.println(" checkpoint evals: " +checkpointService.getCheckpointEvals().size());
+        System.out.println(" parcel evals: " +parcelService.getParcelEvals().size());
+
         evals.addAll(shipmentService.getShipmentEvals());
         evals.addAll(parcelService.getParcelEvals());
         evals.addAll(customerService.getCustomerEval());
         evals.addAll(checkpointService.getCheckpointEvals());
+
+        evals.removeIf(n -> (n.startsWith("0")));
 
 
         System.out.println("shipments in customer local: " + sender.getShipments().size());

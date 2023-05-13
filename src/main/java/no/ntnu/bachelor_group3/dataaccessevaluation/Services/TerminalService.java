@@ -31,7 +31,7 @@ public class TerminalService {
     @Autowired
     CheckpointService checkpointService;
 
-    private List<String> terminalEvals = new ArrayList<>();
+    private List<String> terminalEvals = new CopyOnWriteArrayList<>();
 
     public List<String> getTerminalEvals() {
         return terminalEvals;

@@ -13,6 +13,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 public class ParcelService {
@@ -23,7 +24,7 @@ public class ParcelService {
     @Autowired
     ParcelRepository parcelRepository;
 
-    private static List<String> parcelEval = new ArrayList<>();
+    private static List<String> parcelEval = new CopyOnWriteArrayList<>();
 
     public List<String> getParcelEvals() {
         return parcelEval;

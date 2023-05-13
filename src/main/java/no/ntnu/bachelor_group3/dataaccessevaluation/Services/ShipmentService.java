@@ -50,7 +50,6 @@ public class ShipmentService {
     }
 
 
-
     @Transactional
     public Shipment findByID(Long id) {
         var before = Instant.now();

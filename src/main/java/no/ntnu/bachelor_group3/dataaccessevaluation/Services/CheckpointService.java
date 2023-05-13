@@ -36,9 +36,6 @@ public class CheckpointService {
         return cp;
     }
 
-//    public long countCPInParcel(Long parcelid) {
-//        return checkpointRepository.countCheckpointByparcel_parcel_id(parcelid);
-//    }
 
     public void addCheckpoint(Checkpoint checkpoint) {
         var before = Instant.now();

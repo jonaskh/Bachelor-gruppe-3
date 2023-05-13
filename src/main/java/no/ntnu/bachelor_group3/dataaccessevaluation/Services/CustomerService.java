@@ -26,7 +26,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Service
 public class CustomerService {
 
-    private static List<String> customerEval = new ArrayList<>();
+    private static List<String> customerEval = new CopyOnWriteArrayList<>();
 
     @Autowired
     private CustomerRepository customerRepository;
