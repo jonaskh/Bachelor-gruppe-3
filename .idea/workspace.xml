@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="096b0585-fb84-421c-97c0-1e03b7c5064e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/api/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.jar" beforeDir="false" afterPath="$PROJECT_DIR$/api/.mvn/wrapper/maven-wrapper.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/api/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Postnummerregister.csv" beforeDir="false" afterPath="$PROJECT_DIR$/api/Postnummerregister.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customers.csv" beforeDir="false" afterPath="$PROJECT_DIR$/api/customers.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mvnw" beforeDir="false" afterPath="$PROJECT_DIR$/api/mvnw" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mvnw.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/api/mvnw.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/api/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/NTNU-logo.svg.png" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/public/NTNU-logo.svg.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/public/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/postnord.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/public/postnord.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/frontend/APIService.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/APIService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/frontend/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/frontend/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/frontend/App.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.test.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/frontend/components/CheckpointEvalChart.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/CheckpointEvalChart.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/frontend/components/CustomerTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/CustomerTable.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/frontend/components/ShipmentEvalChart.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ShipmentEvalChart.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/frontend/components/TerminalTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/TerminalTable.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/frontend/components/ZoomOptions.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ZoomOptions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/frontend/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/frontend/logo.svg" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/logo.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/frontend/reportWebVitals.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/reportWebVitals.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/frontend/setupTests.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/setupTests.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Controllers/CheckpointController.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Controllers/CheckpointController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Controllers/CustomerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Controllers/CustomerController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Controllers/ShipmentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Controllers/ShipmentController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Controllers/TerminalController.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Controllers/TerminalController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Data/AdditionalServices.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Data/AdditionalServices.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Data/AdditonalService.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Data/AdditonalService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Data/Checkpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Data/Checkpoint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Data/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Data/Customer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Data/Parcel.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Data/Parcel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Data/Shipment.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Data/Shipment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Data/Terminal.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Data/Terminal.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Data/ValidPostalCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Data/ValidPostalCode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/DataAccessEvaluationApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/DataAccessEvaluationApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Generators/CustomerGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Generators/CustomerGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/CheckpointRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/CheckpointRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/CheckpointTypeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/CheckpointTypeRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/CustomerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/CustomerRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/OrderServicesRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/OrderServicesRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/ParcelRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/ParcelRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/ShipmentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/ShipmentRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/TerminalRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/TerminalRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/ValidPostalCodeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/ValidPostalCodeRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Runnables/CustomerRunnable.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Runnables/CustomerRunnable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Runnables/ShipmentRunnable.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Runnables/ShipmentRunnable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Services/CheckpointService.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Services/CheckpointService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Services/CustomerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Services/CustomerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Services/ParcelService.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Services/ParcelService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Services/ShipmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Services/ShipmentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Services/TerminalService.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Services/TerminalService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Services/ValidPostalCodeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Services/ValidPostalCodeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Simulation/SimulationRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Simulation/SimulationRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/WebConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/WebConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Controllers/CustomerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Controllers/CustomerController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Data/Checkpoint.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Data/Checkpoint.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Data/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Data/Customer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Data/Parcel.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Data/Parcel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Data/Shipment.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Data/Shipment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Data/Terminal.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Data/Terminal.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Data/ValidPostalCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Data/ValidPostalCode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/DatabaseManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/DatabaseManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/JDBCEvaluationApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/JDBCEvaluationApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/MultiThreadedRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/MultiThreadedRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Runnables/AddShipmentsRunnable.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Runnables/AddShipmentsRunnable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Runnables/FindShipmentRunnable.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Runnables/FindShipmentRunnable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Runnables/TerminalShipmentsRunnable.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Runnables/TerminalShipmentsRunnable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Runnables/UpdateShipmentRunnable.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Runnables/UpdateShipmentRunnable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Services/CheckpointService.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Services/CheckpointService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Services/CustomerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Services/CustomerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Services/ParcelService.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Services/ParcelService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Services/ShipmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Services/ShipmentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Services/TerminalService.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Services/TerminalService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Services/ValidPostalCodeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/Services/ValidPostalCodeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/SimulationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/SimulationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/SimulationRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/SimulationRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/deletelater/CustomerDataGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/deletelater/CustomerDataGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/deletelater/ParcelDataGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/deletelater/ParcelDataGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/deletelater/PostalCodeDataGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/deletelater/PostalCodeDataGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/deletelater/SetCheckpointOnParcel.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/deletelater/SetCheckpointOnParcel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/deletelater/ShipmentDataGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/deletelater/ShipmentDataGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/deletelater/TerminalDataGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/deletelater/TerminalDataGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/generators/CustomerCSVReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/generators/CustomerCSVReader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/generators/DataPopulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/generators/DataPopulator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/generators/PostalCodeCSVReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/no/ntnu/bachelor_group3/jdbcevaluation/generators/PostalCodeCSVReader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/CheckpointTests/CreateCheckpointTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/CheckpointTests/CreateCheckpointTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/CustomerTests/CreateCustomerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/CustomerTests/CreateCustomerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/CustomerTests/TestAllEntities.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/CustomerTests/TestAllEntities.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/Lifecycle/ConcurrencyMultiTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/Lifecycle/ConcurrencyMultiTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/Lifecycle/LifecycleTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/Lifecycle/LifecycleTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/Lifecycle/MultiThreadTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/Lifecycle/MultiThreadTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/OrderTests/CreateOrderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/OrderTests/CreateOrderTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/ParcelTests/CreateParcelTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/ParcelTests/CreateParcelTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/SmallTests/EvaluationMethodsTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/SmallTests/EvaluationMethodsTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/TerminalTests/CreateTerminalTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/TerminalTests/CreateTerminalTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/TerminalTests/NewTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/TerminalTests/NewTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/TerminalTests/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/TerminalTests/Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/TerminalTests/ValidPostalCodeTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/TerminalTests/ValidPostalCodeTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/TestConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/TestConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/testSetup.sql" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/testSetup.sql" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="postgresql/springjpa" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
+  </component>
+  <component name="JpbToolWindowState">
+    <option name="myId2FirstActivated">
+      <map>
+        <entry key="com.haulmont.jpb.jpaInspector" value="true" />
+        <entry key="com.haulmont.jpb.jpaPalette" value="true" />
+        <entry key="com.haulmont.jpb.jpaStructure" value="true" />
+      </map>
+    </option>
+    <option name="myId2Visible">
+      <map>
+        <entry key="com.haulmont.jpb.jpaInspector" value="false" />
+        <entry key="com.haulmont.jpb.jpaPalette" value="false" />
+        <entry key="com.haulmont.jpb.jpaStructure" value="false" />
+      </map>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="Use Maven wrapper" />
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="2OK32xAM8ri0yNP3cWFXykIfUvb" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Sbk98/OneDrive/Skrivebord/Bachelor/Bachelor-gruppe-3/frontend&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;spring.configuration.checksum&quot;: &quot;feb3f440a959f791dd50082c15b8fd7d&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
+    ]
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Sbk98\OneDrive\Skrivebord\Bachelor\Bachelor-gruppe-3\frontend" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Sbk98\OneDrive\Skrivebord\Bachelor\Bachelor-gruppe-3\api" />
+      <recent name="C:\Users\Sbk98\OneDrive\Skrivebord\Bachelor\Bachelor-gruppe-3\frontend" />
+      <recent name="C:\Users\Sbk98\OneDrive\Skrivebord\Bachelor\Bachelor-gruppe-3\frontend\src" />
+      <recent name="C:\Users\Sbk98\OneDrive\Skrivebord\Bachelor\Bachelor-gruppe-3\public" />
+      <recent name="C:\Users\Sbk98\OneDrive\Skrivebord\Bachelor\Bachelor-gruppe-3\src\frontend" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="no.ntnu.bachelor_group3.dataaccessevaluation" />
+    </key>
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="mvn clean install" />
+      <command value="mvn clean" />
+      <command value="mvn install" />
+    </option>
+  </component>
+  <component name="RunManager" selected="Spring Boot.DataAccessEvaluationApplication">
+    <configuration name="AddTerminal" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="no.ntnu.bachelor_group3.dataaccessevaluation.Simulation.AddTerminal" />
+      <module name="data-access-evaluation" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="no.ntnu.bachelor_group3.dataaccessevaluation.Simulation.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AddingCustomers" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="no.ntnu.bachelor_group3.dataaccessevaluation.Simulation.AddingCustomers" />
+      <module name="data-access-evaluation" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="no.ntnu.bachelor_group3.dataaccessevaluation.Simulation.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LifecycleTest.OneShipmentFullLifecycleTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="data-access-evaluation" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle" />
+      <option name="MAIN_CLASS_NAME" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle.LifecycleTest" />
+      <option name="METHOD_NAME" value="OneShipmentFullLifecycleTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MultiThreadTests.concurrentShipmentRunnableAddTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="data-access-evaluation" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle" />
+      <option name="MAIN_CLASS_NAME" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle.MultiThreadTests" />
+      <option name="METHOD_NAME" value="concurrentShipmentRunnableAddTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DataAccessEvaluationApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="data-access-evaluation" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="no.ntnu.bachelor_group3.dataaccessevaluation.DataAccessEvaluationApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.start" />
+        <item itemvalue="Application.AddTerminal" />
+        <item itemvalue="JUnit.LifecycleTest.OneShipmentFullLifecycleTest" />
+        <item itemvalue="Application.AddingCustomers" />
+        <item itemvalue="JUnit.MultiThreadTests.concurrentShipmentRunnableAddTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="096b0585-fb84-421c-97c0-1e03b7c5064e" name="Changes" comment="" />
+      <created>1681295243685</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1681295243685</updated>
+      <workItem from="1681295245104" duration="17096000" />
+      <workItem from="1681393423105" duration="3238000" />
+      <workItem from="1681460442199" duration="365000" />
+      <workItem from="1681460820023" duration="5052000" />
+      <workItem from="1681465935690" duration="893000" />
+      <workItem from="1681468527009" duration="4985000" />
+      <workItem from="1681804906577" duration="3845000" />
+      <workItem from="1681976866180" duration="11041000" />
+      <workItem from="1682063284920" duration="11688000" />
+      <workItem from="1682410226541" duration="22954000" />
+      <workItem from="1682507482193" duration="4661000" />
+      <workItem from="1682585910447" duration="17862000" />
+      <workItem from="1683033648931" duration="36171000" />
+      <workItem from="1683466701163" duration="2519000" />
+      <workItem from="1683534026899" duration="7085000" />
+      <workItem from="1683558950371" duration="144000" />
+      <workItem from="1683705495825" duration="69744000" />
+      <workItem from="1683979569139" duration="8256000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
