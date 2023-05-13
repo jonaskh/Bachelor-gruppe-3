@@ -6,6 +6,8 @@ import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Cust
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.pojos.Shipment;
 import no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.records.ShipmentRecord;
 import org.jooq.DSLContext;
+import org.jooq.Query;
+import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,10 +17,7 @@ import java.text.MessageFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.Shipment.SHIPMENT;
@@ -75,34 +74,6 @@ public class ShipmentService {
       return timeTakenList;
     }
 
-//    public Map<String, Double> getTimeStats() {
-//        double total = 0;
-//        long highestTimeTaken = Long.MIN_VALUE;
-//        long lowestTimeTaken = Long.MAX_VALUE;
-//
-//        for (String timeTaken : timeTakenList) {
-//            total += timeTaken;
-//            if (timeTaken > highestTimeTaken) {
-//                highestTimeTaken = timeTaken;
-//            }
-//            if (timeTaken < lowestTimeTaken) {
-//                lowestTimeTaken = timeTaken;
-//            }
-//        }
-//
-//        double averageTimeTaken = total / timeTakenList.size();
-//        Map<String, Double> timeStats = new HashMap<>();
-//        timeStats.put("average", averageTimeTaken);
-//        timeStats.put("lowest", (double) lowestTimeTaken);
-//        timeStats.put("highest", (double) highestTimeTaken);
-//
-//        return timeStats;
-
-
-
-
-
-
     private Long getNextShipmentId(DSLContext dslContext) {
         return shipmentDao.configuration().dsl()
                 .fetchOne("SELECT nextval('nextShipmentId')::bigint")
@@ -111,25 +82,52 @@ public class ShipmentService {
 
 
 
-    public Shipment update(Shipment shipment) {
+    public void updateShipmentStatus(Shipment shipment) {
+        Instant startTime = Instant.now();
+
+        // Update the status of the shipment
+        shipment.setDelivered(true);
         shipmentDao.update(shipment);
-        return shipment;
+
+        Instant endTime = Instant.now();
+        Duration duration = Duration.between(startTime, endTime);
+        timeTakenList.add(duration.toNanos() + ", shipment, update ");
     }
+
+
 
     public List<Shipment> getAll() {
         return shipmentDao.findAll();
     }
 
     public Shipment getOne(long id) {
+        Instant startTime = Instant.now();
+
         Shipment shipment = shipmentDao.findById(id);
         if (shipment == null) {
             throw new NoSuchElementException(MessageFormat.format("Shipment id {0} not found", String.valueOf(id)));
         }
+
+        Instant endTime = Instant.now();
+        Duration duration = Duration.between(startTime, endTime);
+        timeTakenList.add(duration.toNanos() + ", shipment, read ");
+
         return shipment;
     }
 
+
     public void deleteById(long id) {
+        Instant startTime = Instant.now();
+
         shipmentDao.deleteById(id);
+
+        Instant endTime = Instant.now();
+        Duration duration = Duration.between(startTime, endTime);
+        timeTakenList.add(duration.toNanos() + ", shipment, delete ");
+    }
+
+    public void deleteAllShipments() {
+        dslContext.deleteFrom(SHIPMENT).execute();
     }
 
 

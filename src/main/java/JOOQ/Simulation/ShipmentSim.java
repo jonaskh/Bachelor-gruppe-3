@@ -27,7 +27,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-@SuppressWarnings("ALL")
 public class ShipmentSim {
     private final Connection conn;
     private final DSLContext dslContext;
@@ -37,7 +36,7 @@ public class ShipmentSim {
     private final CustomerService customerService;
     private final LocalDateTime now;
     private final LocalDateTime expectedDeliveryDate;
-    private final ShipmentService shipmentService;
+    private ShipmentService shipmentService;
 
     public ShipmentSim(ShipmentService shipmentService) throws SQLException {
         conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres");
@@ -52,10 +51,12 @@ public class ShipmentSim {
         this.shipmentService = shipmentService;
     }
 
+
     public void simulate() {
+        shipmentService.deleteAllShipments();
+
         Map<String, Integer> terminalIdsByPostalCode = terminalIdRepository.getAllTerminalIdsByPostalCode();
 
-        // Create two customers, sender and receiver
         String postalCode1 = validPostalCodesRepository.getRandomZipCode();
         String postalCode2 = validPostalCodesRepository.getRandomZipCode();
         Customer sender = new Customer()
@@ -75,7 +76,8 @@ public class ShipmentSim {
         ExecutorService executor = Executors.newFixedThreadPool(3);
         int shipmentCount = 10000;
         for (int i = 0; i < shipmentCount; i++) {
-            executor.submit(new ShipmentRunnable(savedSender, savedReceiver, terminalIdsByPostalCode));
+            executor.submit(new ShipmentRunnable(
+                    shipmentService, savedSender, savedReceiver, terminalIdsByPostalCode));
         }
         executor.shutdown();
         try {
@@ -84,42 +86,13 @@ public class ShipmentSim {
             e.printStackTrace();
         }
 
+        // Fetch the timeTakenList after the simulation is completed
+        List<String> timeList = new ArrayList<>(shipmentService.getTimeTakenList());
 
-
-        List<String> timeList = shipmentService.getTimeTakenList();
-
-
-//        Map<String, Double> timeStats = shipmentService.getTimeStats();
-//        System.out.println("Average time taken: " + timeStats.get("average") + " ns");
-//        System.out.println("Shipment that took the most time amount of time to create: " + timeStats.get("highest") + " ns");
-//        System.out.println("Shipment that took the least amount of time to create: " + timeStats.get("lowest") + " ns");
-    }
-
-
-    class ShipmentRunnable implements Runnable {
-        private final Map<String, Integer> terminalIdsByPostalCode;
-
-
-        private final Customer savedSender;
-        private final Customer savedReceiver;
-
-        public ShipmentRunnable(Customer savedSender, Customer savedReceiver, Map<String, Integer> terminalIdsByPostalCode) {
-            this.savedSender = savedSender;
-            this.savedReceiver = savedReceiver;
-            this.terminalIdsByPostalCode = terminalIdsByPostalCode;
-        }
-        @Override
-        public void run() {
-            int senderTerminalId = terminalIdsByPostalCode.get(savedSender.getZipCode());
-            int receiverTerminalId = terminalIdsByPostalCode.get(savedReceiver.getZipCode());
-
-            Shipment savedShipment = shipmentService.createShipment(savedSender, savedSender, savedReceiver, senderTerminalId, receiverTerminalId);
-        }
-
+        for (String time : timeList) {
+            System.out.println(time);
         }
     }
 
 
-
-
-
+}
