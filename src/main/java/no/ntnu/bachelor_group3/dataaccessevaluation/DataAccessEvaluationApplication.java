@@ -8,6 +8,9 @@ import no.ntnu.bachelor_group3.dataaccessevaluation.Generators.CustomerGenerator
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.CustomerRepository;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.CustomerService;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;
+import no.ntnu.bachelor_group3.jdbcevaluation.DatabaseManager;
+import no.ntnu.bachelor_group3.jdbcevaluation.SimulationRunner;
+import no.ntnu.bachelor_group3.jdbcevaluation.generators.DataPopulator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +34,22 @@ public class DataAccessEvaluationApplication {
 		SpringApplication.run(DataAccessEvaluationApplication.class, args);
 	}
 
+	@Bean
+	public void runSimulation() {
+		try (DatabaseManager db = new DatabaseManager()) {
+			DataPopulator dataPopulator = new DataPopulator(db);
+			// Comment out the two lines below if already populated
+			db.deleteRowsFromDB();
+			dataPopulator.generateTerminals();
+			dataPopulator.generateValidPostalCodes();
+
+			SimulationRunner simulationRunner = new SimulationRunner(db);
+			simulationRunner.simulate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 
 

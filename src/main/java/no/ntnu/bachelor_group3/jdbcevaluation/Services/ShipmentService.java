@@ -42,7 +42,10 @@ public class ShipmentService {
             // Retrieve all parcels associated with this shipment
             stmt = conn.prepareStatement(GET_PARCELS_IN_SHIPMENT_BY_ID_QUERY);
             stmt.setLong(1, shipmentId);
+            var startTime = Instant.now();
             rs = stmt.executeQuery();
+            var executionTime = Duration.between(startTime, Instant.now()).toNanos();
+            executionTimeList.add(executionTime + ", shipment, read");
             while (rs.next()) {
                 Parcel parcel = new Parcel(rs.getLong("parcel_id"), rs.getDouble("weight"));
                 shipment.getParcels().add(parcel);
@@ -92,9 +95,6 @@ public class ShipmentService {
     public Long save(Shipment shipment, Parcel parcel, ParcelService parcelService, TerminalService terminalService, Connection conn) throws SQLException {
         setFirstTerminal(shipment, terminalService, conn);
         setLastTerminal(shipment, terminalService, conn);
-        long executionTime = 0L;
-        long startTime = System.nanoTime();
-        long endTime;
         PreparedStatement stmt;
         Long id = shipment.getId();
         List<Parcel> parcels = shipment.getParcels();
@@ -103,10 +103,10 @@ public class ShipmentService {
             stmt = conn.prepareStatement(INSERT_SHIPMENT_QUERY,
                     Statement.RETURN_GENERATED_KEYS);
             setShipmentInfo(shipment, stmt);
+            var startTime = Instant.now();
             int rowsInserted = stmt.executeUpdate();
-            endTime = System.nanoTime();
-            executionTime = endTime - startTime;
-            System.out.println(INSERT_SHIPMENT_QUERY + " || Execution time: " + executionTime + " ns");
+            var executionTime = Duration.between(startTime, Instant.now()).toNanos();
+            executionTimeList.add(executionTime + ", shipment, create");
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()) {
                 id = rs.getLong(8);
@@ -128,10 +128,11 @@ public class ShipmentService {
             stmt = conn.prepareStatement(UPDATE_SHIPMENT_QUERY);
             setShipmentInfo(shipment, stmt);
             stmt.setLong(4, id);
-            stmt.executeUpdate();
-            endTime = System.nanoTime();
-            executionTime = endTime - startTime;
-            System.out.println(UPDATE_SHIPMENT_QUERY + " || Execution time: " + executionTime + " ns");
+            var startTime = Instant.now();
+            int rowsInserted = stmt.executeUpdate();
+            var executionTime = Duration.between(startTime, Instant.now()).toNanos();
+            executionTimeList.add(executionTime + ", shipment, create");
+
             // Update all parcels associated with this shipment
         }
         return id;

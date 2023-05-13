@@ -203,6 +203,24 @@ public class DatabaseManager implements AutoCloseable {
         return terminalService.getTerminalByZip(zipCode, conn);
     }
 
+    public List<Terminal> getAllTerminals() throws SQLException {
+        List<Terminal> terminals = new ArrayList<>();
+
+        String query = "SELECT * FROM terminal";
+        try (PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Long id = rs.getLong("terminal_id");
+                String address = rs.getString("address");
+
+                Terminal terminal = new Terminal(id, address);
+                terminals.add(terminal);
+            }
+        }
+
+        return terminals;
+    }
+
     public void setCheckpointOnParcels(Shipment shipment, Checkpoint checkpoint) throws SQLException {
         for (Parcel parcel : shipment.getParcels()) {
 

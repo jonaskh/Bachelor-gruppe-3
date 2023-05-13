@@ -1,57 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import Table from 'react-bootstrap/Table';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import apiServiceInstance from "./APIService";
+import ShipmentEvalChart from "./components/ShipmentEvalChart";
+import CheckpointEvalChart from "./components/CheckpointEvalChart";
+import CustomerTable from "./components/CustomerTable";
+import TerminalTable from "./components/TerminalTable";
+
 
 function App() {
-    const [data, setData] = useState([]);
 
 
-    useEffect(() => {
-        apiServiceInstance.getCustomers()
-            .then(response => setData(response.data))
-            .catch(error => console.log(error));
-    }, []);
-
-    /*const handleAddData = () => {
-        apiServiceInstance.addCustomers(newData)
-            .then(response => {
-                const newData = response.data;
-                setData([...data, newData]);
-            })
-            .catch(error => console.log(error));
-    };*/
-
-    const columns = [
-        { dataField: 'customer_id', text: 'ID' },
-        { dataField: 'address', text: 'Address'},
-        { dataField: 'name', text: 'Name' },
-        { dataField: 'zip_code', text: 'Zip Code' },
-    ];
 
     return (
         <>
-            {/*<button onClick={handleAddData}>Add Data</button>*/}
-            <Table striped bordered hover>
-                <thead>
-                <tr>
-                    {columns.map((column) => (
-                        <th key={column.dataField}>{column.text}</th>
-                    ))}
-                </tr>
-                </thead>
-                <tbody>
-                {data.map((row) => (
-                    <tr key={row.ID}>
-                        {columns.map((column) => (
-                            <td key={column.dataField}>{row[column.dataField]}</td>
-                        ))}
-                    </tr>
-                ))}
-                </tbody>
-            </Table>
+
+            <div style={{ textAlign: "center", margin: "20px", padding: "20px" }}>
+                <h1 style={{fontSize: "5rem", marginBottom: "25px"}}>Assessing data access layers</h1>
+                <img src={process.env.PUBLIC_URL + '/postnord.jpg'} alt="Postnord logo" />
+                <img style={{ width: "30%", marginLeft: "50px" }} src={process.env.PUBLIC_URL + '/NTNU-logo.svg.png'} alt="NTNU logo" />
+            </div>
+
+            <div style={{margin: "20px", padding: "10px" }}>
+                <h2>Table of customers</h2>
+                <CustomerTable />
+            </div>
+
+            <div style={{margin: "20px", padding: "10px" }}>
+                <h2>Table of terminals</h2>
+                <TerminalTable />
+            </div>
+
+
+            <div style={{margin: "20px", padding: "10px" }}>
+                <h2>Shipment Graph</h2>
+                <ShipmentEvalChart />
+
+                <h2>Checkpoint Graph</h2>
+                <CheckpointEvalChart />
+            </div>
+
         </>
     );
+
 }
 
 export default App;

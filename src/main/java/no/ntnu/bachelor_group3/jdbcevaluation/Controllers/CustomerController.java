@@ -1,4 +1,5 @@
-package no.ntnu.bachelor_group3.dataaccessevaluation.Controllers;
+package no.ntnu.bachelor_group3.jdbcevaluation.Controllers;
+
 
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.jdbcevaluation.DatabaseManager;
