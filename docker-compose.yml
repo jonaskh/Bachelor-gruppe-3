@@ -12,7 +12,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - PGDATABASE=test
+      - PGDATABASE=postgres
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
     ports:
