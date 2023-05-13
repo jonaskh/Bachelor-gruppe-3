@@ -72,9 +72,7 @@ public class CustomerService {
         return success;
     }
 
-    public void createShipment(Shipment shipment,Customer customer) {
-        customer.getShipments().put(shipment.getShipment_id(), shipment);
-    }
+
 
 
     public Terminal findNearestTerminalToCustomer(Customer customer) {

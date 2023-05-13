@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class Checkpoint {
     private Long id;
-    private double cost;
+    private float cost;
     private String location;
     private Date time;
     private Parcel parcel;
@@ -43,7 +43,7 @@ public class Checkpoint {
         this.type = type;
     }
 
-    public Checkpoint(Long id, double cost, String location, Parcel parcel, Terminal terminal, CheckpointType checkpointType) {
+    public Checkpoint(Long id, float cost, String location, Parcel parcel, Terminal terminal, CheckpointType checkpointType) {
         this.id = id;
         this.cost = cost;
         this.location = location;
@@ -58,11 +58,11 @@ public class Checkpoint {
         this.time = new Date();
         this.type = type;
         switch (type) {
-            case Collected -> this.cost = 1;
-            case ReceivedFinalTerminal, ReceivedFirstTerminal -> this.cost = 1.25;
-            case LoadedOnCar -> this.cost = 1.5;
-            case UnderDelivery -> this.cost = 1.8;
-            case Delivered -> this.cost = 2;
+            case Collected -> this.cost = 1f;
+            case ReceivedFinalTerminal, ReceivedFirstTerminal -> this.cost = 1.25f;
+            case LoadedOnCar -> this.cost = 1.5f;
+            case UnderDelivery -> this.cost = 1.8f;
+            case Delivered -> this.cost = 2f;
         }
     }
 
@@ -71,11 +71,11 @@ public class Checkpoint {
         this.type = type;
         this.terminal = terminal;
         switch (type) {
-            case Collected -> this.cost = 1;
-            case ReceivedFinalTerminal, ReceivedFirstTerminal -> this.cost = 1.25;
-            case LoadedOnCar -> this.cost = 1.5;
-            case UnderDelivery -> this.cost = 1.8;
-            case Delivered -> this.cost = 2;
+            case Collected -> this.cost = 1f;
+            case ReceivedFinalTerminal, ReceivedFirstTerminal -> this.cost = 1.25f;
+            case LoadedOnCar -> this.cost = 1.5f;
+            case UnderDelivery -> this.cost = 1.8f;
+            case Delivered -> this.cost = 2f;
         }
     }
 
@@ -87,11 +87,11 @@ public class Checkpoint {
         this.id = id;
     }
 
-    public double getCost() {
+    public float getCost() {
         return cost;
     }
 
-    public void setCost(double cost) {
+    public void setCost(float cost) {
         this.cost = cost;
     }
 

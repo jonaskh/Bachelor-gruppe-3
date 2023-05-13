@@ -1,3 +1,4 @@
+/*
 package no.ntnu.bachelor_group3.jdbcevaluation.deletelater;
 
 import com.github.javafaker.Faker;
@@ -30,7 +31,7 @@ public class ShipmentDataGenerator {
                 Customer payer = customers.get(payerIndex);
 
                 // Generate a random total cost for the shipment
-                double totalCost = faker.number().randomDouble(2, 10, 500);
+                float totalCost = faker.number().random(2, 10, 500);
 
 
                 // Create a new Shipment object with the generated data
@@ -50,3 +51,6 @@ public class ShipmentDataGenerator {
         }
     }
 }
+
+
+ */

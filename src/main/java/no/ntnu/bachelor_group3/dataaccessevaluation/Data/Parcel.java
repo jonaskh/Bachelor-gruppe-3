@@ -20,7 +20,7 @@ public class Parcel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long parcel_id;
 
-    private double weight;
+    private float weight;
 
     private int weight_class;
 
@@ -41,13 +41,13 @@ public class Parcel {
         this.parcel_id = counter++;
     }
 
-    public Parcel(Shipment shipment, double weight) {
+    public Parcel(Shipment shipment, float weight) {
         this.shipment = shipment;
         this.parcel_id = counter++;
         this.weight = weight;
     }
 
-    public double getWeight() {
+    public float getWeight() {
         return weight;
     }
 
@@ -62,8 +62,8 @@ public class Parcel {
 
     //TODO: for each loop to generate cost through each checkpoint
 
-    public double generateCostForEachParcelBasedOnCheckpoints() {
-        double cost = 0;
+    public float generateCostForEachParcelBasedOnCheckpoints() {
+        float cost = 0;
         for (Checkpoint checkpoint : checkpoints) {
             cost += checkpoint.getCost() * this.weight;
         }

@@ -161,7 +161,7 @@ public class Shipment {
 
 
         for (int i = 0; i < bound; i++) {
-            double weight = random.nextInt(1000) / 100.0; //returns a double value up to 10kg with 2 decimal places
+            float weight = random.nextFloat(10); //returns a double value up to 10kg with 2 decimal places
             Parcel parcel = new Parcel(this, weight);
             addParcel(parcel);
         }

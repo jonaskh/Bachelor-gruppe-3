@@ -12,7 +12,7 @@ public class Shipment {
 
     private Customer receiver;
     private Customer payer;
-    private double totalCost;
+    private float totalCost;
     private List<Parcel> parcels;
     private boolean delivered;
 
@@ -29,7 +29,7 @@ public class Shipment {
 
     // Constructor
     public Shipment(Long id, Customer sender, Customer receiver,
-                    Customer payer, double totalCost) {
+                    Customer payer, float totalCost) {
         this.id = id;
         this.sender = sender;
         this.receiver = receiver;
@@ -88,11 +88,11 @@ public class Shipment {
         this.payer = payer;
     }
 
-    public double getTotalCost() {
+    public float getTotalCost() {
         return totalCost;
     }
 
-    public void setTotalCost(double totalCost) {
+    public void setTotalCost(float totalCost) {
         this.totalCost = totalCost;
     }
 

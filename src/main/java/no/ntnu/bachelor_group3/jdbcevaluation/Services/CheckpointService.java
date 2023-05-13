@@ -40,7 +40,7 @@ public class CheckpointService {
                 customerService, shipmentService, conn);
         Terminal terminal = terminalService.getTerminalById(rs.getInt("terminal_id"), conn);
         if (rs.next()) {
-            Checkpoint checkpoint = new Checkpoint(rs.getLong("checkpoint_id"), rs.getDouble("cost"),
+            Checkpoint checkpoint = new Checkpoint(rs.getLong("checkpoint_id"), rs.getFloat("cost"),
                     rs.getString("location"), parcel, terminal, type);
             return checkpoint;
         }
@@ -62,7 +62,7 @@ public class CheckpointService {
                         customerService, shipmentService, conn);
                 Terminal terminal = terminalService.getTerminalById(rs.getInt("terminal_id"), conn);
 
-                Checkpoint checkpoint = new Checkpoint(rs.getLong("checkpoint_id"), rs.getDouble("cost"),
+                Checkpoint checkpoint = new Checkpoint(rs.getLong("checkpoint_id"), rs.getFloat("cost"),
                         rs.getString("location"), parcel, terminal, type);
 
                 checkpoints.add(checkpoint);
@@ -79,9 +79,8 @@ public class CheckpointService {
         Long id = 0L;
         if (id == 0) {
             // This is a new checkpoint, so insert it into the database
-            stmt = conn.prepareStatement(INSERT_CHECKPOINT_QUERY,
-                    Statement.RETURN_GENERATED_KEYS);
-            stmt.setDouble(1, checkpoint.getCost());
+            stmt = conn.prepareStatement(INSERT_CHECKPOINT_QUERY);
+            stmt.setFloat(1, checkpoint.getCost());
             stmt.setString(2, checkpoint.getLocation());
             stmt.setTimestamp(3, new Timestamp(checkpoint.getTime().getTime()));
             stmt.setLong(4, checkpoint.getParcel().getId());
@@ -93,24 +92,24 @@ public class CheckpointService {
             int rowsInserted = stmt.executeUpdate();
             var executionTime = Duration.between(startTime, Instant.now()).toNanos();
             executionTimeList.add(executionTime);
-            //System.out.println(INSERT_CHECKPOINT_QUERY + " || Execution time: " + executionTime + " ns");
             if (rowsInserted > 0) {
-                ResultSet rs = stmt.getGeneratedKeys();
-                if (rs.next()) {
-                    id = rs.getLong(4);
+                // Run a separate query to get the last inserted ID
+                try (Statement stmt2 = conn.createStatement();
+                     ResultSet rs = stmt2.executeQuery("SELECT DBINFO('sqlca.sqlerrd1') FROM checkpoint")) {
+                    if (rs.next()) {
+                        id = rs.getLong(1);
+                    }
                 }
             }
         } else {
             // This is an existing checkpoint, so update it in the database
             stmt = conn.prepareStatement(UPDATE_CHECKPOINT_QUERY);
-            stmt.setDouble(1, checkpoint.getCost());
+            stmt.setFloat(1, checkpoint.getCost());
             stmt.setString(2, checkpoint.getLocation());
             stmt.setTimestamp(3, new Timestamp(checkpoint.getTime().getTime()));
             stmt.setLong(4, checkpoint.getParcel().getId());
             if (checkpoint.getTerminal() != null) {
                 stmt.setLong(5, checkpoint.getTerminal().getId());
-            } else {
-                stmt.setNull(5, 1);
             }
             stmt.setInt(6, checkpoint.getType().ordinal());
             var startTime = Instant.now();

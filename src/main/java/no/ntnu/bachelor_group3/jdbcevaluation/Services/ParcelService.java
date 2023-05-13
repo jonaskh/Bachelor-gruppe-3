@@ -35,7 +35,7 @@ public class ParcelService {
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
             Shipment shipment = shipmentService.getShipmentById(rs.getLong("shipment_id"), customerService, conn);
-            Parcel parcel = new Parcel(rs.getLong("parcel_id"), rs.getDouble("weight"));
+            Parcel parcel = new Parcel(rs.getLong("parcel_id"), rs.getFloat("weight"));
             parcel.setShipment(shipment);
             return parcel;
         }
@@ -91,21 +91,24 @@ public class ParcelService {
         long startTime = System.nanoTime();
         long executionTime = 0;
         long endTime;
+        Long id = null;
         try (PreparedStatement stmt = createInsertStatement(parcel, shipmentId, conn)) {
             int rowsAffected = stmt.executeUpdate();
             endTime = System.nanoTime();
             executionTime = endTime - startTime;
-            //System.out.println(INSERT_PARCEL_QUERY + " || Execution time: " + executionTime + " ns");
             if (rowsAffected > 0) {
-                try (ResultSet rs = stmt.getGeneratedKeys()) {
+                // Run a separate query to get the last inserted ID
+                try (Statement stmt2 = conn.createStatement();
+                     ResultSet rs = stmt2.executeQuery("SELECT DBINFO('sqlca.sqlerrd1') FROM parcel")) {
                     if (rs.next()) {
-                        return rs.getLong(3);
+                        id = rs.getLong(1);
                     }
                 }
             }
         }
-        return null;
+        return id;
     }
+
 
     /**
      * Checks if the parcel exists in the parcel table
@@ -131,7 +134,7 @@ public class ParcelService {
     private PreparedStatement createInsertStatement(Parcel parcel, Long shipmentId, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(INSERT_PARCEL_QUERY, Statement.RETURN_GENERATED_KEYS);
         stmt.setLong(1, shipmentId);
-        stmt.setDouble(2, parcel.getWeight());
+        stmt.setFloat(2, parcel.getWeight());
         stmt.setInt(3, parcel.getWeight_class());
         return stmt;
     }
@@ -139,7 +142,7 @@ public class ParcelService {
     private PreparedStatement createUpdateStatement(Parcel parcel, Long shipmentId, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(UPDATE_PARCEL_QUERY);
         stmt.setLong(1, shipmentId);
-        stmt.setDouble(2, parcel.getWeight());
+        stmt.setFloat(2, parcel.getWeight());
         stmt.setInt(3, parcel.getWeight_class());
         stmt.setLong(4, parcel.getId());
         return stmt;

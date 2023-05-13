@@ -44,7 +44,7 @@ public class ShipmentService {
             stmt.setLong(1, shipmentId);
             rs = stmt.executeQuery();
             while (rs.next()) {
-                Parcel parcel = new Parcel(rs.getLong("parcel_id"), rs.getDouble("weight"));
+                Parcel parcel = new Parcel(rs.getLong("parcel_id"), rs.getFloat("weight"));
                 shipment.getParcels().add(parcel);
             }
             return shipment;
@@ -60,21 +60,23 @@ public class ShipmentService {
         List<Parcel> parcels = shipment.getParcels();
         if (id == 0) {
             // This is a new shipment, so insert it into the database
-            stmt = conn.prepareStatement(INSERT_SHIPMENT_QUERY,
-                    Statement.RETURN_GENERATED_KEYS);
+            stmt = conn.prepareStatement(INSERT_SHIPMENT_QUERY);
             setShipmentInfo(shipment, stmt);
             var startTime = Instant.now();
             int rowsInserted = stmt.executeUpdate();
             var executionTime = Duration.between(startTime, Instant.now()).toNanos();
             executionTimeList.add(executionTime);
-            //System.out.println(INSERT_SHIPMENT_QUERY + " || Execution time: " + executionTime + " ns");
-            ResultSet rs = stmt.getGeneratedKeys();
-            if (rs.next()) {
-                id = rs.getLong(8);
+            if (rowsInserted > 0) {
+                // Run a separate query to get the last inserted ID
+                try (Statement stmt2 = conn.createStatement();
+                     ResultSet rs = stmt2.executeQuery("SELECT DBINFO('sqlca.sqlerrd1') FROM shipment")) {
+                    if (rs.next()) {
+                        id = rs.getLong(8);
+                    }
+                }
             } else {
-                throw new SQLException("Failed to insert shipment, no generated keys returned.");
+                throw new SQLException("Failed to insert shipment, no rows affected.");
             }
-
         } else {
             // This is an existing shipment, so update it in the database
             stmt = conn.prepareStatement(UPDATE_SHIPMENT_QUERY);
@@ -89,6 +91,8 @@ public class ShipmentService {
         return id;
     }
 
+
+    /*
     public Long save(Shipment shipment, Parcel parcel, ParcelService parcelService, TerminalService terminalService, Connection conn) throws SQLException {
         setFirstTerminal(shipment, terminalService, conn);
         setLastTerminal(shipment, terminalService, conn);
@@ -118,7 +122,7 @@ public class ShipmentService {
             String parcelQuery = "INSERT INTO parcel (shipment_id, weight, weight_class) VALUES (?, ?, ?)";
             try (PreparedStatement parcelStatement = conn.prepareStatement(parcelQuery)) {
                 parcelStatement.setLong(1, id);
-                parcelStatement.setDouble(2, parcel.getWeight());
+                parcelStatement.setFloat(2, parcel.getWeight());
                 parcelStatement.setInt(3, parcel.getWeight_class());
 
                 parcelStatement.executeUpdate();
@@ -136,6 +140,8 @@ public class ShipmentService {
         }
         return id;
     }
+
+     */
 
     public void delete(Shipment shipment, ParcelService parcelService, Connection conn) throws SQLException {
         Long id = shipment.getId();

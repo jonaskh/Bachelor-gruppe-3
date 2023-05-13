@@ -9,7 +9,7 @@ import java.util.List;
 public class Parcel {
     private Long id;
     private Shipment shipment;
-    private double weight;
+    private float weight;
     private List<Checkpoint> checkpoints;
 
     public int getWeight_class() {
@@ -23,7 +23,7 @@ public class Parcel {
     private int weight_class;
 
     // Constructor
-    public Parcel(Long id, double weight) {
+    public Parcel(Long id, float weight) {
         this.id = id;
         this.weight = weight;
         this.checkpoints = new ArrayList<>();
@@ -60,11 +60,11 @@ public class Parcel {
         this.shipment = shipment;
     }
 
-    public double getWeight() {
+    public float getWeight() {
         return weight;
     }
 
-    public void setWeight(double weight) {
+    public void setWeight(float weight) {
         this.weight = weight;
     }
 

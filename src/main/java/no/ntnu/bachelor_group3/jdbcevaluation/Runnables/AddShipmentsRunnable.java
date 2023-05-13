@@ -36,7 +36,7 @@ public class AddShipmentsRunnable implements Runnable {
     }
 
     public void catchRun() throws SQLException {
-        Parcel parcel = new Parcel(0L, 1.2);
+        Parcel parcel = new Parcel(0L, 1.2f);
         Long shipmentId = db.saveShipment(shipment);
         Long parcelId = db.saveParcel(parcel, shipmentId);
         parcel.setId(parcelId);

@@ -137,7 +137,7 @@ public class MultiThreadTests {
         ExecutorService executor = Executors.newFixedThreadPool(5);
 
         for (int i = 0; i < 10; i++) {
-            Parcel parcel = new Parcel(shipment, 10.1);
+            Parcel parcel = new Parcel(shipment, 10.1f);
             executor.submit(() -> {
                 parcelService.save(parcel);
             });

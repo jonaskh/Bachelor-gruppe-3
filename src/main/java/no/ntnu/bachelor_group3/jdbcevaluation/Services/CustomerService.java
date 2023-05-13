@@ -7,11 +7,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Duration;
+import java.time.Instant;
 
 public class CustomerService {
 
     private static final String GET_CUSTOMER_BY_ID_QUERY = "SELECT * FROM customer WHERE customer_id = ?";
-    private static final String INSERT_CUSTOMER_QUERY = "INSERT INTO customer (name, address, zip_code) VALUES (?, ?, ?) RETURNING customer_id";
+    private static final String INSERT_CUSTOMER_QUERY = "INSERT INTO customer (name, address, zip_code) VALUES (?, ?, ?)";
     private static final String UPDATE_CUSTOMER_QUERY = "UPDATE customer SET name = ?, address = ?, zip_code = ? WHERE customer_id = ?";
     private static final String DELETE_CUSTOMER_QUERY = "DELETE FROM customer WHERE customer_id = ?";
 
@@ -38,70 +40,50 @@ public class CustomerService {
         return null;
     }
 
-    /**
-     * Saves a customer to the database or updates an existing one
-     *
-     * @param customer the customer to insert or update
-     * @param conn the connection to the database
-     * @throws SQLException
-     */
-    public void save(Customer customer, Connection conn) throws SQLException {
-        long executionTime = 0;
-        long startTime = System.nanoTime();
-        long endTime;
+    public Long save(Customer customer, Connection conn) throws SQLException {
+
         if (customerExists(customer.getId(), conn)) {
             update(customer, conn);
-            endTime = System.nanoTime();
-            executionTime = endTime - startTime;
+
         } else {
-            insert(customer, conn);
-            endTime = System.nanoTime();
-            executionTime = endTime - startTime;
+            return insert(customer, conn);
         }
-        System.out.println(executionTime);
+        return null;
     }
 
-    /**
-     * Updates a customer in the database
-     *
-     * @param customer the customer to update
-     * @param conn the connection to the database
-     * @throws SQLException
-     */
     private void update(Customer customer, Connection conn) throws SQLException {
         try (PreparedStatement stmt = createUpdateStatement(customer, conn)) {
+            var startTime = Instant.now();
             stmt.executeUpdate();
+            var executionTime = Duration.between(startTime, Instant.now()).toNanos();
+            System.out.println(executionTime);
         }
     }
 
-    /**
-     * Inserts a customer into the customer table
-     *
-     * @param customer the customer to insert
-     * @param conn the connection to the database
-     * @throws SQLException
-     */
-    private void insert(Customer customer, Connection conn) throws SQLException {
+    private Long insert(Customer customer, Connection conn) throws SQLException {
+        Long id = 0l;
         try (PreparedStatement stmt = createInsertStatement(customer, conn)) {
+            var startTime = Instant.now();
             int rowsAffected = stmt.executeUpdate();
+            var executionTime = Duration.between(startTime, Instant.now()).toNanos();
+            System.out.println(executionTime);
+
             if (rowsAffected > 0) {
-                try (ResultSet rs = stmt.getGeneratedKeys()) {
+                // Run a separate query to get the last inserted ID
+                try (Statement stmt2 = conn.createStatement();
+                     ResultSet rs = stmt2.executeQuery("SELECT DBINFO('sqlca.sqlerrd1') FROM customer")) {
                     if (rs.next()) {
-                        customer.setId(rs.getLong(1));
+                        id = rs.getLong(1);
                     }
+                } catch (Exception e) {
+                    System.out.println("Could not get id of inserted customer");
+                    e.printStackTrace();
                 }
             }
         }
+        return id;
     }
 
-    /**
-     * Checks if the customer exists in the customer table
-     *
-     * @param id the id of the customer
-     * @param conn the connection to the database
-     * @return true if the customer exists
-     * @throws SQLException
-     */
     private boolean customerExists(Long id, Connection conn) throws SQLException {
         if (id == null || id == 0) {
             return false;
@@ -115,14 +97,6 @@ public class CustomerService {
         }
     }
 
-
-    /**
-     * Deletes a customer from the customer table if it exists
-     *
-     * @param customer the customer to delete
-     * @param conn the connection to the database
-     * @throws SQLException
-     */
     public void delete(Customer customer, Connection conn) throws SQLException {
         Long id = customer.getId();
         if (id > 0) {
@@ -135,7 +109,7 @@ public class CustomerService {
     }
 
     private PreparedStatement createInsertStatement(Customer customer, Connection conn) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement(INSERT_CUSTOMER_QUERY, Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement stmt = conn.prepareStatement(INSERT_CUSTOMER_QUERY);
         stmt.setString(1, customer.getName());
         stmt.setString(2, customer.getAddress());
         stmt.setString(3, customer.getZipCode());
@@ -150,4 +124,5 @@ public class CustomerService {
         stmt.setLong(4, customer.getId());
         return stmt;
     }
+
 }

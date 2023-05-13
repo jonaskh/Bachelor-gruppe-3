@@ -52,25 +52,28 @@ public class TerminalService {
         PreparedStatement stmt;
         Long id = terminal.getId();
         if (id == 0) {
-            // This is a new customer, so insert it into the database
-            stmt = conn.prepareStatement("INSERT INTO terminal (address) VALUES (?)",
-                    Statement.RETURN_GENERATED_KEYS);
+            // This is a new terminal, so insert it into the database
+            stmt = conn.prepareStatement("INSERT INTO terminal (address) VALUES (?)");
             stmt.setString(1, terminal.getLocation());
             int rowsInserted = stmt.executeUpdate();
             if (rowsInserted > 0) {
-                ResultSet rs = stmt.getGeneratedKeys();
-                if (rs.next()) {
-                    id = rs.getLong(1);
+                // Run a separate query to get the last inserted ID
+                try (Statement stmt2 = conn.createStatement();
+                     ResultSet rs = stmt2.executeQuery("SELECT DBINFO('sqlca.sqlerrd1') FROM terminal")) {
+                    if (rs.next()) {
+                        id = rs.getLong(1);
+                    }
                 }
             }
         } else {
-            // This is an existing customer, so update it in the database
+            // This is an existing terminal, so update it in the database
             stmt = conn.prepareStatement("UPDATE terminal SET address = ? WHERE terminal_id = ?");
-            stmt.setString(2, terminal.getLocation());
-            stmt.setLong(1, id);
+            stmt.setString(1, terminal.getLocation());
+            stmt.setLong(2, id);
             stmt.executeUpdate();
         }
     }
+
 
     public void delete(Terminal terminal, Connection conn) throws SQLException {
         Long id = terminal.getId();

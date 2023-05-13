@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseManager implements AutoCloseable {
-    private static final String DB_URL = "jdbc:informix-sqli://localhost:9088/mydatabase:INFORMIXSERVER=informix";
+    private static final String DB_URL = "jdbc:informix-sqli://localhost:9088/informix_db:INFORMIXSERVER=informix";
     private static final String DB_USER = "informix";
     private static final String DB_PASSWORD = "in4mix";
     private final CustomerService customerService;
@@ -58,8 +58,8 @@ public class DatabaseManager implements AutoCloseable {
         return customerService.getCustomerById(customerId, conn);
     }
 
-    public void saveCustomer(Customer customer) throws SQLException {
-        customerService.save(customer, conn);
+    public Long saveCustomer(Customer customer) throws SQLException {
+        return customerService.save(customer, conn);
     }
 
     public void deleteCustomer(Customer customer) throws SQLException {
@@ -73,10 +73,12 @@ public class DatabaseManager implements AutoCloseable {
     public Long saveShipment(Shipment shipment) throws SQLException {
         return shipmentService.save(shipment, parcelService, terminalService, conn);
     }
-
+    /*
     public Long saveShipmentWithParcel(Shipment shipment, Parcel parcel) throws  SQLException {
         return shipmentService.save(shipment, parcel, parcelService, terminalService, conn);
     }
+
+     */
 
     public void deleteShipment(Shipment shipment) throws SQLException {
         shipmentService.delete(shipment, parcelService, conn);
@@ -159,7 +161,7 @@ public class DatabaseManager implements AutoCloseable {
             while (rs.next()) {
                 Parcel parcel = new Parcel(
                         rs.getLong("parcel_id"),
-                        rs.getDouble("weight")
+                        rs.getFloat("weight")
                 );
                 parcel.setShipment(shipment);
                 parcels.add(parcel);
@@ -179,16 +181,16 @@ public class DatabaseManager implements AutoCloseable {
         execute("DELETE FROM valid_postal_codes");
 
         execute("DELETE FROM checkpoint");
-        execute("ALTER SEQUENCE checkpoint_checkpoint_id_seq RESTART WITH 1");
+        //execute("ALTER SEQUENCE checkpoint_checkpoint_id_seq RESTART WITH 1");
 
         execute("DELETE FROM parcel");
-        execute("ALTER SEQUENCE parcel_parcel_id_seq RESTART WITH 1");
+        //execute("ALTER SEQUENCE parcel_parcel_id_seq RESTART WITH 1");
 
         execute("DELETE FROM shipment");
-        execute("ALTER SEQUENCE shipment_shipment_id_seq RESTART WITH 1");
+        //execute("ALTER SEQUENCE shipment_shipment_id_seq RESTART WITH 1");
 
         execute("DELETE FROM customer");
-        execute("ALTER SEQUENCE customer_customer_id_seq RESTART WITH 1");
+        //execute("ALTER SEQUENCE customer_customer_id_seq RESTART WITH 1");
     }
 
     public void saveTerminal(Terminal terminal) throws SQLException {

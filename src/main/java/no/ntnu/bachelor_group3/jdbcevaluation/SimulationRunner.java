@@ -19,14 +19,14 @@ public class SimulationRunner {
     private static List<String> evals = new CopyOnWriteArrayList<>();
     private DatabaseManager db;
 
-
-
-    private ExecutorService executor1 = Executors.newFixedThreadPool(5);
-    private ExecutorService executor2 = Executors.newFixedThreadPool(5);
-    private ScheduledExecutorService findShipmentInCustomerService = Executors.newScheduledThreadPool(10);
-    private ScheduledExecutorService findShipmentsInTerminalService = Executors.newScheduledThreadPool(2);
-
-    private final ArrayBlockingQueue<Shipment> queue = new ArrayBlockingQueue<>(10000);
+//
+//
+//    private ExecutorService executor1 = Executors.newFixedThreadPool(5);
+//    private ExecutorService executor2 = Executors.newFixedThreadPool(5);
+//    private ScheduledExecutorService findShipmentInCustomerService = Executors.newScheduledThreadPool(10);
+//    private ScheduledExecutorService findShipmentsInTerminalService = Executors.newScheduledThreadPool(2);
+//
+//    private final ArrayBlockingQueue<Shipment> queue = new ArrayBlockingQueue<>(10000);
 
 
     public SimulationRunner(DatabaseManager db) {
@@ -36,69 +36,76 @@ public class SimulationRunner {
     public void simulate() throws SQLException {
             Customer sender = new Customer(0l, "Ålesund", "Jonas", "6008");
             Customer receiver = new Customer(0l, "Oslo", "Tarjei", "0021");
-            db.saveCustomer(sender);
-            db.saveCustomer(receiver);
+        Customer payer = new Customer(0l, "Trondheim", "Fredrik", "7041");
+            Long senderId = db.saveCustomer(sender);
+            Long payerId = db.saveCustomer(receiver);
+            Long receiverId = db.saveCustomer(payer);
+            sender.setId(senderId);
+            payer.setId(payerId);
+            receiver.setId(receiverId);
+        Shipment shipment2 = new Shipment(0L, sender, payer, receiver, 1.2f);
+        db.saveShipment(shipment2);
 
-            System.out.println("Starting simulation...");
-            for (int i = 0; i < 50; i++) {
-                Shipment shipment = new Shipment(0L, sender, sender, receiver, 1.2);
-                AddShipmentsRunnable shipmentsRunnable = new AddShipmentsRunnable(shipment, db);
-                try {
-                    queue.put(shipment);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                executor1.execute(shipmentsRunnable);
-            }
-
-
-
-            for (int k = 0; k < 100; k++) {
-                findShipmentInCustomerService.scheduleAtFixedRate(new FindShipmentRunnable(db, db.getShipmentById(1l)), 0, 500, TimeUnit.MILLISECONDS);
-            }
-
-            for (int j = 0; j < 10; j++) {
-                findShipmentsInTerminalService.scheduleAtFixedRate(new TerminalShipmentsRunnable(db), 0, 10000, TimeUnit.MILLISECONDS);
-            }
-
-            int i = 0;
-            //var size = queue.size();
-            while (i < queue.size()) {
-                try {
-                    executor2.execute(new UpdateShipmentRunnable(queue.take(), db));
-                    i++;
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-
-        try {
-                //stops the executors from accepting new tasks
-
-
-                findShipmentsInTerminalService.shutdown();
-                findShipmentInCustomerService.shutdown();
-            executor1.shutdown();
-            executor2.shutdown();
-
-
-                executor1.awaitTermination(2, TimeUnit.MINUTES);
-                System.out.println("Adding done");
-
-                //stops the thread pools if no more tasks, an exception occurs or timeout.
-                executor2.awaitTermination(2, TimeUnit.MINUTES);
-                System.out.println("Update shipments done");
-
-                findShipmentInCustomerService.awaitTermination(2, TimeUnit.MINUTES);
-                findShipmentsInTerminalService.awaitTermination(2, TimeUnit.MINUTES);
-
-
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                System.out.println("Error in await termination");
-            }
+//        System.out.println("Starting simulation...");
+//            for (int i = 0; i < 50; i++) {
+//                Shipment shipment = new Shipment(0L, sender, sender, receiver, 1.2f);
+//                AddShipmentsRunnable shipmentsRunnable = new AddShipmentsRunnable(shipment, db);
+//                try {
+//                    queue.put(shipment);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//                executor1.execute(shipmentsRunnable);
+//            }
+//
+//
+//
+//            for (int k = 0; k < 100; k++) {
+//                findShipmentInCustomerService.scheduleAtFixedRate(new FindShipmentRunnable(db, db.getShipmentById(1l)), 0, 500, TimeUnit.MILLISECONDS);
+//            }
+//
+//            for (int j = 0; j < 10; j++) {
+//                findShipmentsInTerminalService.scheduleAtFixedRate(new TerminalShipmentsRunnable(db), 0, 10000, TimeUnit.MILLISECONDS);
+//            }
+//
+//            int i = 0;
+//            //var size = queue.size();
+//            while (i < queue.size()) {
+//                try {
+//                    executor2.execute(new UpdateShipmentRunnable(queue.take(), db));
+//                    i++;
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//
+//
+//        try {
+//                //stops the executors from accepting new tasks
+//
+//
+//                findShipmentsInTerminalService.shutdown();
+//                findShipmentInCustomerService.shutdown();
+//            executor1.shutdown();
+//            executor2.shutdown();
+//
+//
+//                executor1.awaitTermination(2, TimeUnit.MINUTES);
+//                System.out.println("Adding done");
+//
+//                //stops the thread pools if no more tasks, an exception occurs or timeout.
+//                executor2.awaitTermination(2, TimeUnit.MINUTES);
+//                System.out.println("Update shipments done");
+//
+//                findShipmentInCustomerService.awaitTermination(2, TimeUnit.MINUTES);
+//                findShipmentsInTerminalService.awaitTermination(2, TimeUnit.MINUTES);
+//
+//
+//
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//                System.out.println("Error in await termination");
+//            }
 
             db.commit();
 
