@@ -27,9 +27,7 @@ public class SimpleSimulationRunner {
 
 
     private ExecutorService executor1 = Executors.newFixedThreadPool(3);
-    private ExecutorService updateShipmentsService = Executors.newFixedThreadPool(10);
-    private ScheduledExecutorService findShipmentInCustomerService = Executors.newScheduledThreadPool(10);
-    private ScheduledExecutorService findShipmentsInTerminalService = Executors.newScheduledThreadPool(2);
+
 
 
     private final ArrayBlockingQueue<Shipment> queue = new ArrayBlockingQueue<>(10000);
@@ -54,7 +52,7 @@ public class SimpleSimulationRunner {
 
         System.out.println("Starting simulation...");
 
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 100; i++) {
             Shipment shipment = new Shipment(sender, sender, receiver);
             AddShipmentsRunnable shipmentsRunnable = new AddShipmentsRunnable(shipment, shipmentService, customerService);
             try {
@@ -66,18 +64,14 @@ public class SimpleSimulationRunner {
         }
         try {
             //stops the executors from accepting new tasks
-            updateShipmentsService.shutdown();
-            findShipmentsInTerminalService.shutdown();
-            findShipmentInCustomerService.shutdown();
+
             executor1.shutdown();
 
 
             //stops the thread pools if no more tasks, an exception occurs or timeout.
-            updateShipmentsService.awaitTermination(2, TimeUnit.MINUTES);
             System.out.println("Update shipments done");
 
-            findShipmentInCustomerService.awaitTermination(2, TimeUnit.MINUTES);
-            findShipmentsInTerminalService.awaitTermination(2, TimeUnit.MINUTES);
+
             executor1.awaitTermination(2, TimeUnit.MINUTES);
             System.out.println("Adding done");
 
