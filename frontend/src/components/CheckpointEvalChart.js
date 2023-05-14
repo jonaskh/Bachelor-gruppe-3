@@ -13,15 +13,16 @@ function CheckpointEvalChart() {
             // Fetch data from API endpoint
             apiServiceInstance.getCheckpointEval().then((response) => {
                 console.log(response.data)
-                setEvalList3(
-                    response.data
-                        .filter((line) => line.includes("create"))
-                        .map((line) => {
-                            const [time, checkpoint, operation] = line.split(', ');
-                            return { time, checkpoint, operation };
-                        })
-                        .filter((obj) => parseInt(obj.time) !== 0 && !isNaN(parseInt(obj.time)))
-                );
+                const filteredData3 = response.data
+                    .filter((line) => line.includes("create"))
+                    .map((line) => {
+                        const [time, checkpoint, operation] = line.split(', ');
+                        return { time, checkpoint, operation };
+                    })
+                    .filter((obj) => parseInt(obj.time) !== 0 && !isNaN(parseInt(obj.time)));
+                const slicedData3 = filteredData3.slice(10);
+
+                setEvalList3(slicedData3);
             });
 
         }, []);
