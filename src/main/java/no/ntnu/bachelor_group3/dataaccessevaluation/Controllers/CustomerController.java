@@ -1,13 +1,13 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Controllers;
 
-import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.CustomerRepository;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Services.CustomerService;
-import org.springframework.beans.factory.annotation.Autowired;
+import no.ntnu.bachelor_group3.jdbcevaluation.Data.Customer;
+import no.ntnu.bachelor_group3.jdbcevaluation.DatabaseManager;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -16,20 +16,23 @@ import java.util.stream.StreamSupport;
 @RestController
 public class CustomerController {
 
-    @Autowired
-    CustomerService customerService;
-
-    @Autowired
-    CustomerRepository customerRepository;
 
     @GetMapping("/customer")
     public List<Customer> getAllProducts() {
 
-        Iterable<Customer> products = customerRepository.findAll();
+        List<Customer> products;
+        try (DatabaseManager db = new DatabaseManager()) {
+            products = db.getAllCustomers();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         List<Customer> customerList = StreamSupport
                 .stream(products.spliterator(), false)
                 .collect(Collectors.toList());
+
         return customerList;
     }
+
+
 
 }
