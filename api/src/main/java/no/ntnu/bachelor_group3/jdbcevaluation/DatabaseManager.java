@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseManager implements AutoCloseable {
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
+    private static final String DB_URL = "jdbc:postgresql://database:5432/postgres";
     private static final String DB_USER = "postgres";
     private static final String DB_PASSWORD = "postgres";
     private final CustomerService customerService;
