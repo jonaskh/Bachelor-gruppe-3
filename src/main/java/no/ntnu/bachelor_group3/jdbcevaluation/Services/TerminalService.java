@@ -59,7 +59,7 @@ public class TerminalService {
             if (rowsInserted > 0) {
                 // Run a separate query to get the last inserted ID
                 try (Statement stmt2 = conn.createStatement();
-                     ResultSet rs = stmt2.executeQuery("SELECT DBINFO('sqlca.sqlerrd1') FROM terminal")) {
+                     ResultSet rs = stmt2.executeQuery("SELECT DBINFO('sqlca.sqlerrd1') FROM systables WHERE tabid=1")) {
                     if (rs.next()) {
                         id = rs.getLong(1);
                     }

@@ -70,8 +70,7 @@ public class CustomerService {
 
             if (rowsAffected > 0) {
                 // Run a separate query to get the last inserted ID
-                try (Statement stmt2 = conn.createStatement();
-                     ResultSet rs = stmt2.executeQuery("SELECT DBINFO('sqlca.sqlerrd1') FROM customer")) {
+                try (ResultSet rs = stmt.getGeneratedKeys()) {
                     if (rs.next()) {
                         id = rs.getLong(1);
                     }
@@ -109,7 +108,7 @@ public class CustomerService {
     }
 
     private PreparedStatement createInsertStatement(Customer customer, Connection conn) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement(INSERT_CUSTOMER_QUERY);
+        PreparedStatement stmt = conn.prepareStatement(INSERT_CUSTOMER_QUERY, Statement.RETURN_GENERATED_KEYS);
         stmt.setString(1, customer.getName());
         stmt.setString(2, customer.getAddress());
         stmt.setString(3, customer.getZipCode());

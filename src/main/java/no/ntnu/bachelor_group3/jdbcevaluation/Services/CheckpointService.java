@@ -79,7 +79,7 @@ public class CheckpointService {
         Long id = 0L;
         if (id == 0) {
             // This is a new checkpoint, so insert it into the database
-            stmt = conn.prepareStatement(INSERT_CHECKPOINT_QUERY);
+            stmt = conn.prepareStatement(INSERT_CHECKPOINT_QUERY, Statement.RETURN_GENERATED_KEYS);
             stmt.setFloat(1, checkpoint.getCost());
             stmt.setString(2, checkpoint.getLocation());
             stmt.setTimestamp(3, new Timestamp(checkpoint.getTime().getTime()));
@@ -94,8 +94,7 @@ public class CheckpointService {
             executionTimeList.add(executionTime + ", create, checkpoint");
             if (rowsInserted > 0) {
                 // Run a separate query to get the last inserted ID
-                try (Statement stmt2 = conn.createStatement();
-                     ResultSet rs = stmt2.executeQuery("SELECT DBINFO('sqlca.sqlerrd1') FROM checkpoint")) {
+                try (ResultSet rs = stmt.getGeneratedKeys()) {
                     if (rs.next()) {
                         id = rs.getLong(1);
                     }

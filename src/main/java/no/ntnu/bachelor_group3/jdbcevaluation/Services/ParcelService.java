@@ -98,8 +98,7 @@ public class ParcelService {
             executionTime = endTime - startTime;
             if (rowsAffected > 0) {
                 // Run a separate query to get the last inserted ID
-                try (Statement stmt2 = conn.createStatement();
-                     ResultSet rs = stmt2.executeQuery("SELECT DBINFO('sqlca.sqlerrd1') FROM parcel")) {
+                try (ResultSet rs = stmt.getGeneratedKeys()) {
                     if (rs.next()) {
                         id = rs.getLong(1);
                     }
