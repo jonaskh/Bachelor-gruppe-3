@@ -29,7 +29,7 @@ function ShipmentEvalChart() {
 
             setEvalList(slicedData);
             const filteredData2 = response.data
-                .filter((line) => line.includes("find"))
+                .filter((line) => line.includes("create"))
                 .map((line) => {
                     const [time, shipment, operation] = line.split(', ');
                     return {shipment, operation, time };
