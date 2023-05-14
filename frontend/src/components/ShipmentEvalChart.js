@@ -18,24 +18,26 @@ function ShipmentEvalChart() {
         // Fetch data from API endpoint
         apiServiceInstance.getShipmentEval().then((response) => {
             console.log(response.data)
-            setEvalList(
-                response.data
-                    .filter((line) => line.includes("create"))
-                    .map((line) => {
-                        const [time, shipment, operation] = line.split(', ');
-                        return {time, shipment, operation};
-                    })
-                    .filter((obj) => parseInt(obj.time) !== 0 && !isNaN(parseInt(obj.time)))
-            );
-            setEvalList2(
-                response.data
-                    .filter((line) => line.includes("read"))
-                    .map((line) => {
-                        const [time, shipment, operation] = line.split(', ');
-                        return {shipment, operation, time };
-                    })
-                    .filter((obj) => parseInt(obj.time) !== 0 && !isNaN(parseInt(obj.time)))
-            );
+            const filteredData = response.data
+                .filter((line) => line.includes("create"))
+                .map((line) => {
+                    const [time, shipment, operation] = line.split(', ');
+                    return {time, shipment, operation};
+                })
+                .filter((obj) => parseInt(obj.time) !== 0 && !isNaN(parseInt(obj.time)))
+            const slicedData = filteredData.slice(10);
+
+            setEvalList(slicedData);
+            const filteredData2 = response.data
+                .filter((line) => line.includes("find"))
+                .map((line) => {
+                    const [time, shipment, operation] = line.split(', ');
+                    return {shipment, operation, time };
+                })
+                .filter((obj) => parseInt(obj.time) !== 0 && !isNaN(parseInt(obj.time)))
+            const slicedData2 = filteredData2.slice(10);
+
+            setEvalList2(slicedData2);
         });
 
     }, []);

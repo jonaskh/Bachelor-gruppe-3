@@ -33,6 +33,7 @@ public class DataPopulator {
 
     public void generateValidPostalCodes() {
         String csvFilePath = new File("./Postnummerregister.csv").getAbsolutePath();
+
         PostalCodeCSVReader csvReader = new PostalCodeCSVReader(csvFilePath);
         csvReader.readAndAddPostalCodesToDatabase(db);
     }
