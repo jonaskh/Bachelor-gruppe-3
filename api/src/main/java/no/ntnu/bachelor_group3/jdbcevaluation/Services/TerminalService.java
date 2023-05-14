@@ -42,6 +42,7 @@ public class TerminalService {
 
         } catch (SQLException e) {
             System.out.println("Error while fetching terminal by zip code: " + e.getMessage());
+            e.printStackTrace();
         }
 
         return terminal;

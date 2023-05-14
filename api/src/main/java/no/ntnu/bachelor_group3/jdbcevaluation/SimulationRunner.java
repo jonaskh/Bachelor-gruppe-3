@@ -39,7 +39,7 @@ public class SimulationRunner {
             db.saveCustomer(receiver);
 
             System.out.println("Starting simulation...");
-            for (int i = 0; i < 50; i++) {
+            for (int i = 0; i < 1000; i++) {
                 Shipment shipment = new Shipment(0L, sender, sender, receiver, 1.2);
                 AddShipmentsRunnable shipmentsRunnable = new AddShipmentsRunnable(shipment, db);
                 try {

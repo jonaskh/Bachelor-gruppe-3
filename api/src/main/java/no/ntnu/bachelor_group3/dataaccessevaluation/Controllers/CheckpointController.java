@@ -17,8 +17,10 @@ public class CheckpointController {
 
     CheckpointService checkpointService = new CheckpointService();
 
+
     @GetMapping("/checkpoint/eval")
     public List<String> getCheckpointEval() {
+
 
         Iterable<String> products = checkpointService.getExecutionTimeList();
         List<String> evalList = StreamSupport

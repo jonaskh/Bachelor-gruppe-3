@@ -19,6 +19,8 @@ public class CheckpointService {
 
     private static final String GET_CHECKPOINT_BY_ID_QUERY = "SELECT * FROM checkpoint WHERE checkpoint_id = ?";
     private static final String INSERT_CHECKPOINT_QUERY = "INSERT INTO checkpoint (cost, location, time, parcel_id, terminal_id, type) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_CHECKPOINT_QUERY_WITHOUT_TERMINAL = "INSERT INTO checkpoint (cost, location, time, parcel_id, type) VALUES (?, ?, ?, ?, ?)";
+
     private static final String UPDATE_CHECKPOINT_QUERY = "UPDATE checkpoint SET cost = ?, location = ?, time = ?, parcel_id = ?, terminal_id = ?, type = ? WHERE checkpoint_id = ?";
     private static final String DELETE_CHECKPOINT_QUERY = "DELETE FROM checkpoint WHERE checkpoint_id = ?";
     private static final String GET_CHECKPOINTS_FROM_PARCEL = "SELECT * FROM checkpoint WHERE parcel_id = ?";
@@ -26,7 +28,10 @@ public class CheckpointService {
     public static List<String> executionTimeList;
 
     public CheckpointService() {
-        executionTimeList = new ArrayList<>();
+        if (executionTimeList == null) {
+            executionTimeList = new ArrayList<>();
+        }
+
     }
 
     public Checkpoint getCheckpointById(int checkpointId, ParcelService parcelService, ShipmentService shipmentService,
@@ -78,17 +83,26 @@ public class CheckpointService {
         PreparedStatement stmt;
         Long id = 0L;
         if (id == 0) {
-            // This is a new checkpoint, so insert it into the database
-            stmt = conn.prepareStatement(INSERT_CHECKPOINT_QUERY,
-                    Statement.RETURN_GENERATED_KEYS);
-            stmt.setDouble(1, checkpoint.getCost());
-            stmt.setString(2, checkpoint.getLocation());
-            stmt.setTimestamp(3, new Timestamp(checkpoint.getTime().getTime()));
-            stmt.setLong(4, checkpoint.getParcel().getId());
             if (checkpoint.getTerminal() != null) {
+                // This is a new checkpoint, so insert it into the database
+                stmt = conn.prepareStatement(INSERT_CHECKPOINT_QUERY,
+                        Statement.RETURN_GENERATED_KEYS);
+                stmt.setDouble(1, checkpoint.getCost());
+                stmt.setString(2, checkpoint.getLocation());
+                stmt.setTimestamp(3, new Timestamp(checkpoint.getTime().getTime()));
+                stmt.setLong(4, checkpoint.getParcel().getId());
                 stmt.setLong(5, checkpoint.getTerminal().getId());
+                stmt.setInt(6, checkpoint.getType().ordinal());
+            } else {
+                // This is a new checkpoint, so insert it into the database
+                stmt = conn.prepareStatement(INSERT_CHECKPOINT_QUERY_WITHOUT_TERMINAL,
+                        Statement.RETURN_GENERATED_KEYS);
+                stmt.setDouble(1, checkpoint.getCost());
+                stmt.setString(2, checkpoint.getLocation());
+                stmt.setTimestamp(3, new Timestamp(checkpoint.getTime().getTime()));
+                stmt.setLong(4, checkpoint.getParcel().getId());
+                stmt.setInt(5, checkpoint.getType().ordinal());
             }
-            stmt.setInt(6, checkpoint.getType().ordinal());
             var startTime = Instant.now();
             int rowsInserted = stmt.executeUpdate();
             var executionTime = Duration.between(startTime, Instant.now()).toNanos();

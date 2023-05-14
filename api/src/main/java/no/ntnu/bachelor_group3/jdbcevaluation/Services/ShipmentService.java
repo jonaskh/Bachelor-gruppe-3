@@ -26,7 +26,9 @@ public class ShipmentService {
     public static List<String> executionTimeList;
 
     public ShipmentService() {
-        executionTimeList = new ArrayList<>();
+        if (executionTimeList == null) {
+            executionTimeList = new ArrayList<>();
+        }
     }
 
     public Shipment getShipmentById(Long shipmentId, CustomerService customerService, Connection conn) throws SQLException {
