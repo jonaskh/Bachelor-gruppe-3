@@ -23,7 +23,7 @@ public class CheckpointService {
     private static final String DELETE_CHECKPOINT_QUERY = "DELETE FROM checkpoint WHERE checkpoint_id = ?";
     private static final String GET_CHECKPOINTS_FROM_PARCEL = "SELECT * FROM checkpoint WHERE parcel_id = ?";
 
-    public List<Long> executionTimeList;
+    public List<String> executionTimeList;
 
     public CheckpointService() {
         executionTimeList = new ArrayList<>();
@@ -91,7 +91,7 @@ public class CheckpointService {
             var startTime = Instant.now();
             int rowsInserted = stmt.executeUpdate();
             var executionTime = Duration.between(startTime, Instant.now()).toNanos();
-            executionTimeList.add(executionTime);
+            executionTimeList.add(executionTime + ", create, checkpoint");
             if (rowsInserted > 0) {
                 // Run a separate query to get the last inserted ID
                 try (Statement stmt2 = conn.createStatement();
@@ -115,7 +115,7 @@ public class CheckpointService {
             var startTime = Instant.now();
             stmt.executeUpdate();
             var executionTime = Duration.between(startTime, Instant.now()).toNanos();
-            executionTimeList.add(executionTime);
+            executionTimeList.add(executionTime + ", checkpoint, update");
         }
         return id;
     }
@@ -130,7 +130,7 @@ public class CheckpointService {
         }
     }
 
-    public List<Long> getExecutionTimeList() {
+    public List<String> getExecutionTimeList() {
         return executionTimeList;
     }
 }

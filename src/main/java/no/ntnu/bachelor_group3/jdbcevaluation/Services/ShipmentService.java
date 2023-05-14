@@ -23,7 +23,7 @@ public class ShipmentService {
     private static final String UPDATE_SHIPMENT_QUERY = "UPDATE Shipment SET sender_id = ?, receiver_id = ?, payer_id = ?, delivered = ?, start_terminal_id = ?, end_terminal_id WHERE id = ?";
     private static final String DELETE_SHIPMENT_QUERY = "DELETE FROM Shipment WHERE id = ?";
 
-    public List<Long> executionTimeList;
+    public List<String> executionTimeList;
 
     public ShipmentService() {
         executionTimeList = new ArrayList<>();
@@ -65,7 +65,7 @@ public class ShipmentService {
             var startTime = Instant.now();
             int rowsInserted = stmt.executeUpdate();
             var executionTime = Duration.between(startTime, Instant.now()).toNanos();
-            executionTimeList.add(executionTime);
+            executionTimeList.add(executionTime + ", create, shipment");
             if (rowsInserted > 0) {
                 // Run a separate query to get the last inserted ID
                 try (Statement stmt2 = conn.createStatement();
@@ -85,7 +85,7 @@ public class ShipmentService {
             var startTime = Instant.now();
             stmt.executeUpdate();
             var executionTime = Duration.between(startTime, Instant.now()).toNanos();
-            executionTimeList.add(executionTime);
+            executionTimeList.add(executionTime + ", update, shipment");
             // Update all parcels associated with this shipment
         }
         return id;
@@ -180,7 +180,7 @@ public class ShipmentService {
         shipment.setEndTerminal(terminal);
     }
 
-    public List<Long> getExecutionTimeList() {
+    public List<String> getExecutionTimeList() {
         return executionTimeList;
     }
 }

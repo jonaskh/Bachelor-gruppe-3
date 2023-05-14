@@ -216,4 +216,21 @@ public class DatabaseManager implements AutoCloseable {
     public List<Checkpoint> getCheckpointsOnParcel(Long parcelId) {
         return checkpointService.getCheckpointsByParcelId(parcelId, parcelService, shipmentService, customerService, terminalService, conn);
     }
+
+    public List<Terminal> getAllTerminals() throws SQLException {
+        List<Terminal> terminals = new ArrayList<>();
+
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT * FROM terminal");
+        while (rs.next()) {
+            Long id = rs.getLong("terminal_id");
+            String address = rs.getString("address");
+            Terminal terminal = new Terminal(id, address);
+
+            terminals.add(terminal);
+        }
+
+
+        return terminals;
+    }
 }

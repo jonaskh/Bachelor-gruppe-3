@@ -34,16 +34,16 @@ public class SimulationRunner {
     }
 
     public void simulate() throws SQLException {
-            Customer sender = new Customer(0l, "Ålesund", "Jonas", "6008");
-            Customer receiver = new Customer(0l, "Oslo", "Tarjei", "0021");
-        Customer payer = new Customer(0l, "Trondheim", "Fredrik", "7041");
+            Customer sender = new Customer(1l, "Ålesund", "Jonas", "6008");
+            Customer receiver = new Customer(2l, "Oslo", "Tarjei", "0021");
+        Customer payer = new Customer(3l, "Trondheim", "Fredrik", "7041");
             Long senderId = db.saveCustomer(sender);
             Long payerId = db.saveCustomer(receiver);
             Long receiverId = db.saveCustomer(payer);
             sender.setId(senderId);
             payer.setId(payerId);
             receiver.setId(receiverId);
-        Shipment shipment2 = new Shipment(0L, sender, payer, receiver, 1.2f);
+        Shipment shipment2 = new Shipment(1L, sender, payer, receiver, 1.2f);
         db.saveShipment(shipment2);
 
 //        System.out.println("Starting simulation...");
