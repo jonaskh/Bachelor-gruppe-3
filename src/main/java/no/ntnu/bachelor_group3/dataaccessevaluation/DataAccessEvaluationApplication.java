@@ -94,6 +94,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.Instant;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {"JOOQ"})
@@ -111,7 +113,12 @@ public class DataAccessEvaluationApplication implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		ShipmentSim shipmentSim = new ShipmentSim(shipmentService);
+
+		var before = Instant.now();
 		shipmentSim.simulate();
+
+		var duration = Duration.between(before, Instant.now()).toSeconds();
+		System.out.println("duration " + duration);
 	}
 }
 

@@ -20,6 +20,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -73,8 +74,10 @@ public class ShipmentSim {
                 .setZipCode(postalCode2);
         Customer savedReceiver = customerService.create(receiver);
 
-        ExecutorService executor = Executors.newFixedThreadPool(3);
-        int shipmentCount = 10000;
+        int threads = 5;
+        int shipmentCount = 100;
+
+        ExecutorService executor = Executors.newFixedThreadPool(threads);
         for (int i = 0; i < shipmentCount; i++) {
             executor.submit(new ShipmentRunnable(
                     shipmentService, savedSender, savedReceiver, terminalIdsByPostalCode));
@@ -86,13 +89,95 @@ public class ShipmentSim {
             e.printStackTrace();
         }
 
-        // Fetch the timeTakenList after the simulation is completed
-        List<String> timeList = new ArrayList<>(shipmentService.getTimeTakenList());
+        ExecutorService getExecutor = Executors.newFixedThreadPool(threads);
+        for (int i = 0; i < shipmentCount; i++) {
+            getExecutor.submit(new GetShipmentRunnable(shipmentService, 1)); // Pass 1 as the shipment ID
+        }
+        getExecutor.shutdown();
+        try {
+            getExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-        for (String time : timeList) {
-            System.out.println(time);
+        // Calculate and print statistics
+
+        List<Long> timeTakenToCreateList = shipmentService.getTimeTakenToCreateList();
+        Map<String, Long> createStatistics = shipmentService.calculateStatistics(timeTakenToCreateList);
+
+// Print the create statistics
+        System.out.println("Create Statistics:");
+        System.out.println("Min: " + createStatistics.get("min"));
+        System.out.println("Max: " + createStatistics.get("max"));
+        System.out.println("Standard Deviation: " + createStatistics.get("standardDeviation"));
+        System.out.println("Average: " + createStatistics.get("average"));
+
+
+        List<Long> timeTakenToReadList = shipmentService.getTimeTakenToReadList();
+        Map<String, Long> readStatistics = shipmentService.calculateStatistics(timeTakenToReadList);
+
+// Print the read statistics
+        System.out.println("Read Statistics:");
+        System.out.println("Min: " + readStatistics.get("min"));
+        System.out.println("Max: " + readStatistics.get("max"));
+        System.out.println("Standard Deviation: " + readStatistics.get("standardDeviation"));
+        System.out.println("Average: " + readStatistics.get("average"));
+
+
+
+
+
+
+    }}
+
+
+
+
+
+
+
+    class ShipmentRunnable implements Runnable {
+        private final Map<String, Integer> terminalIdsByPostalCode;
+        private final ShipmentService shipmentService;
+
+        private final Customer savedSender;
+        private final Customer savedReceiver;
+
+        public ShipmentRunnable(
+                ShipmentService shipmentService,
+                Customer savedSender,
+                Customer savedReceiver,
+                Map<String, Integer> terminalIdsByPostalCode) {
+            this.shipmentService = shipmentService;
+            this.savedSender = savedSender;
+            this.savedReceiver = savedReceiver;
+            this.terminalIdsByPostalCode = terminalIdsByPostalCode;
+        }
+
+        @Override
+        public void run() {
+            int senderTerminalId = terminalIdsByPostalCode.get(savedSender.getZipCode());
+            int receiverTerminalId = terminalIdsByPostalCode.get(savedReceiver.getZipCode());
+
+            Shipment savedShipment = shipmentService.createShipment(
+                    savedSender, savedSender, savedReceiver, senderTerminalId, receiverTerminalId);
+        }
+    }
+
+    class GetShipmentRunnable implements Runnable {
+        private final ShipmentService shipmentService;
+        private final long shipmentId;
+
+        public GetShipmentRunnable(ShipmentService shipmentService, long shipmentId) {
+            this.shipmentService = shipmentService;
+            this.shipmentId = shipmentId;
+        }
+
+        @Override
+        public void run() {
+            shipmentService.getOne(shipmentId);
         }
     }
 
 
-}
+
