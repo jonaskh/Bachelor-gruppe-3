@@ -118,9 +118,6 @@ public class SimulationRunner {
         evals.addAll(customerService.getCustomerEval());
         evals.addAll(checkpointService.getCheckpointEvals());
 
-        evals.removeIf(n -> (n.startsWith("0")));
-
-
         System.out.println("shipments in customer local: " + sender.getShipments().size());
         System.out.println("shipments in customer local: " + customerService.findByID(sender.getCustomerID()).get().getShipments().size());
 
