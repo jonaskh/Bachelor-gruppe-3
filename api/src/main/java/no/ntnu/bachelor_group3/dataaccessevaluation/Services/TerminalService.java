@@ -61,10 +61,9 @@ public class TerminalService {
         }
     }
 
-    @Transactional
     public void addShipment(Shipment shipment, Terminal terminal) {
         var before = Instant.now();
-        terminal.addShipment(shipment);
+        findByID(terminal.getTerminal_id()).addShipment(shipment);
         var duration = Duration.between(before, Instant.now());
         terminalEvals.add(duration + " terminal update");
     }

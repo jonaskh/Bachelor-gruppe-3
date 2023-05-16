@@ -56,7 +56,7 @@ public class SimulationRunner {
 
         //run find shipment location after a 0.5 second delay every second to simulate higher load.
         for (int k = 0; k < 5; k++) {
-            findShipmentInCustomerService.scheduleAtFixedRate(new FindShipmentRunnable(shipmentService, shipmentService.findByID(1L)), 500, 500, TimeUnit.MILLISECONDS);
+            findShipmentInCustomerService.scheduleAtFixedRate(new FindShipmentRunnable(shipmentService, shipmentService.findByID(1L)), 0, 500, TimeUnit.MILLISECONDS);
 
         }
 
@@ -116,6 +116,8 @@ public class SimulationRunner {
         System.out.println("shipments in customer local: " + customerService.findByID(sender.getCustomerID()).get().getShipments().size());
 
         System.out.println("Number of shipments in terminal 14: " + terminalService.returnTerminalFromZip("6008").getShipmentNumber());
+        System.out.println("Number of shipments in terminal 14: " + terminalService.returnTerminalFromZip("0021").getShipmentNumber());
+
     }
 }
 
