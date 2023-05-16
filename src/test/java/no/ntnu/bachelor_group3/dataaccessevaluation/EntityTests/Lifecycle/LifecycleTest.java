@@ -3,7 +3,6 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Checkpoint;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
 import no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.TestConfiguration;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.*;
 import org.junit.jupiter.api.DisplayName;
@@ -44,7 +43,7 @@ public class LifecycleTest {
 
         customerService.add(sender);
         customerService.add(receiver);
-        shipmentService.cascadingAdd(shipment);
+        shipmentService.addShipment(shipment);
 
         Checkpoint checkpoint = new Checkpoint(sender.getAddress(), Checkpoint.CheckpointType.Collected);
         Checkpoint checkpoint1 = new Checkpoint(shipment.getFirstTerminal(), Checkpoint.CheckpointType.ReceivedFirstTerminal);

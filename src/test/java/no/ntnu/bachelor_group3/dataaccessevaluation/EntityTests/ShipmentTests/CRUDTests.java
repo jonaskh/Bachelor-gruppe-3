@@ -19,7 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
-@DataJpaTest
+@DataJpaTest(showSql = false)
 @Import(TestConfiguration.class) //to load the required beans for the services
 public class CRUDTests {
 
@@ -39,10 +39,12 @@ public class CRUDTests {
     @DisplayName("Assert delete method works for shipment, and linked entities are deleted " +
             "in cascading fashion as well")
     public void createAndDeleteShipmentTest() {
-        Customer customer = new Customer();
+        Customer customer = new Customer("jonas", "ålesund", "6300");
         Shipment shipment = new Shipment(customer, customer, customer);
 
-        shipmentService.add(shipment);
+        validPostalCodeService.ReadCSVFile();
+
+        shipmentService.addShipment(shipment);
         assertNotNull(shipmentService.findByID(shipment.getShipment_id()));
     }
 
@@ -51,16 +53,12 @@ public class CRUDTests {
         Customer customer = new Customer();
         Shipment shipment = new Shipment(customer, customer, customer);
 
-        shipmentService.add(shipment);
-        assertNotNull(shipmentService.findByID(shipment.getShipment_id()));
+        customerService.save(customer);
+        shipmentService.addShipment(shipment);
 
-        System.out.println("customers before delete: " + customerService.count());
-
+        assertEquals(1, shipmentService.count());
         shipmentService.deleteOneShipment(shipment.getShipment_id());
-        assertEquals(0,shipmentService.count());
-
-        System.out.println("customers after delete: " + customerService.count());
-        System.out.println(shipmentService.count());
+        assertEquals(0, shipmentService.count());
     }
 
     }

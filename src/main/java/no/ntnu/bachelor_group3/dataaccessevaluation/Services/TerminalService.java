@@ -21,7 +21,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Service
 public class TerminalService {
 
-
     @Autowired
     TerminalRepository terminalRepository;
 
@@ -30,6 +29,8 @@ public class TerminalService {
 
     @Autowired
     CheckpointService checkpointService;
+
+    //further methods and imports excluded
 
     private List<String> terminalEvals = new CopyOnWriteArrayList<>();
 
@@ -45,8 +46,6 @@ public class TerminalService {
         terminalEvals.add(duration + ", shipment find");
         return terminal.orElse(null);
     }
-
-
 
     //checks if terminal with this id exist already, if not add it to database
     @Transactional
@@ -110,7 +109,7 @@ public class TerminalService {
         return terminal.getShipmentNumber();
     }
 
-    @Transactional
+
     public Terminal returnTerminalFromZip(String zip) {
         Terminal terminal;
         if (validPostalCodeRepository.findByPostalCode(zip).isPresent()) {

@@ -7,13 +7,11 @@ import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;
 public class FindShipmentRunnable implements Runnable {
 
     private ShipmentService shipmentService;
-    private CustomerService customerService;
     private Shipment shipment;
 
 
-    public FindShipmentRunnable(ShipmentService shipmentService, CustomerService customerService, Shipment shipment) {
+    public FindShipmentRunnable(ShipmentService shipmentService, Shipment shipment) {
         this.shipmentService = shipmentService;
-        this.customerService = customerService;
         this.shipment = shipment;
     }
 

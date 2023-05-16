@@ -15,7 +15,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest(showSql = false)
@@ -48,7 +47,7 @@ public class SingleThreadTests {
             Customer customer = new Customer();
             Customer customer2 = new Customer();
             Shipment shipment = new Shipment(customer, customer2, customer);
-            shipmentService.cascadingAdd(shipment);
+            shipmentService.addShipment(shipment);
         }
 
         evals.addAll(shipmentService.getShipmentEvals());
@@ -70,7 +69,7 @@ public class SingleThreadTests {
     public void positiveAndNegativeFindTimerTest() {
         Customer customer = new Customer();
         Shipment shipment = new Shipment(customer, customer, customer);
-        shipmentService.add(shipment);
+        shipmentService.addShipment(shipment);
 
         var before = Instant.now();
         Shipment shipment1 = shipmentService.findByID(shipment.getShipment_id());

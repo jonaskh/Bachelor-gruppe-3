@@ -3,13 +3,11 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.ParcelTests;
 
 import jakarta.transaction.Transactional;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Parcel;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.TestConfiguration;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.CustomerService;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ParcelService;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +45,7 @@ public class CreateParcelTest {
         Shipment shipment = new Shipment(new Customer(), new Customer(), new Customer());
 
         //       customerService.add(customer);
-        shipmentService.add(shipment);
+        shipmentService.addShipment(shipment);
         assertEquals(shipmentService.findByID(shipment.getShipment_id()).getParcels().size(),3);
 
         shipment.printParcels();

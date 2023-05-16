@@ -62,7 +62,7 @@ public class UpdateShipmentRunnable implements Runnable{
      */
     public void catchRun() {
 
-        shipmentService.cascadingAdd(shipment);
+        shipmentService.addShipment(shipment);
 
         shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp1);
         shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp2);

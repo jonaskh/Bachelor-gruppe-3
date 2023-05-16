@@ -3,7 +3,6 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.CustomerTests;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.TestConfiguration;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.CustomerRepository;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.CustomerService;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ParcelService;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;
@@ -37,7 +36,7 @@ public class TestAllEntities {
     public void addAll() {
         Customer customer = new Customer("Ålesund", "Stian", "6300");
         Shipment shipment = new Shipment(customer, customer, customer);
-        shipmentService.add(shipment);
+        shipmentService.addShipment(shipment);
         System.out.println("Number of parcels in db shipment: " + shipmentService.returnNrOfParcels(shipmentService.findByID(shipment.getShipment_id())));
         System.out.println("Number of parcels: " + parcelService.count());
         System.out.println("Number of shipments: " + shipmentService.count());

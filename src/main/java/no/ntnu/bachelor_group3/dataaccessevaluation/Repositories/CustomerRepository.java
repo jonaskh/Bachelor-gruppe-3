@@ -12,14 +12,19 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-@Component
 public interface CustomerRepository extends CrudRepository<Customer, Long> {
 
     Optional<Customer> findCustomerByName(String name);
 
+    @Query(value = "SELECT * from customer WHERE name = ?", nativeQuery = true)
+    Optional<Customer> findCustomerByNameCustom(String name);
 
     @Override
     <S extends Customer> S save(S entity);
+
+
+    @Override
+    Optional<Customer> findById(Long aLong);
 
     @Override
     <S extends Customer> Iterable<S> saveAll(Iterable<S> entities);

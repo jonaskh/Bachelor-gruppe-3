@@ -26,7 +26,8 @@ public class Terminal {
 
 
     //list of shipments for a period of time. Stored in a queue for first in first out.
-    @ManyToMany(cascade =  CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL
+    )
     @JoinTable(
             name = "shipment_terminals",
             joinColumns = { @JoinColumn(name = "terminal_id") },

@@ -19,6 +19,15 @@ public class Shipment {
     @Id
     private Long shipment_id;
 
+    @OneToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER)
+    @JoinColumn(name = "shipment_id")
+    private List<Parcel> parcels = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "shipments_passed", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Terminal> terminals = new ArrayList<>();
+
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "sender_id")
     private Customer sender;
@@ -31,27 +40,18 @@ public class Shipment {
     @JoinColumn(name = "payer_id")
     private Customer payer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "start_terminal_id")
-    private Terminal firstTerminal;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "end_terminal_id")
     private Terminal finalTerminal;
 
-    @ManyToMany(mappedBy = "shipments_passed", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<Terminal> terminals = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "start_terminal_id")
+    private Terminal firstTerminal;
 
-    @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER)
-    @JoinColumn(name = "parcel_shipments")
-    private List<Parcel> parcels = new ArrayList<>();
 
     private boolean delivered;
 
-    private LocalDateTime timeCreated;
 
-    private LocalDateTime expectedDeliveryDate;
 
     // if customer is both sender and receiver
     public Shipment() {
@@ -61,8 +61,6 @@ public class Shipment {
     // if receiver is not an existing customer
     public Shipment(Customer sender, Customer payer, Customer receiver) {
         this.shipment_id = counter++;
-        this.timeCreated = LocalDateTime.now();
-        this.expectedDeliveryDate = LocalDateTime.now().plusSeconds(10); //sets expected delivery date 10s from creation
         this.sender = sender;
         this.payer = payer;
         this.receiver = receiver;
@@ -204,7 +202,6 @@ public class Shipment {
     public String toString() {
         return "Shipment{" +
                 "shipment_id=" + shipment_id +
-                ", expected delivery: " + expectedDeliveryDate +
                 '}';
     }
 }

@@ -7,6 +7,8 @@ import no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.TestConfiguratio
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.CustomerRepository;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.CustomerService;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ValidPostalCodeService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,39 +26,40 @@ public class CreateCustomerTest {
         @Autowired
         private CustomerRepository customerRepositoryTest;
 
-
         @Autowired
         private CustomerService customerService;
 
         @Autowired
         private ShipmentService shipmentService;
 
+        @Autowired
+        private ValidPostalCodeService validPostalCodeService;
+
 
         @Test
         public void PositiveAddCustomerTest() {
             Customer customer = new Customer("Ålesund", "Stian", "6008");
             customerService.add(customer);
-            System.out.println(customer.toString());
-
             assertNotNull(customerRepositoryTest.findCustomerByName("Stian"));
-
         }
 
         @Test
+        @DisplayName("adds a customer to the database, and then creates a shipment and assert that the shipment " +
+                "has the correct values")
         public void addShipmentTest() {
-            Customer customer = new Customer("Ålesund", "Stian", "6008");
+            validPostalCodeService.ReadCSVFile();
 
+            Customer customer = new Customer("Ålesund", "Stian", "6008");
             customerService.add(customer);
 
             Shipment shipment = new Shipment(customer, customer, customer);
-            shipmentService.add(shipment);
-            System.out.println("Customers in db: " + customerService.count());
-
-        //    customerService.printShipments(customer);
-
-        //    System.out.println(shipmentService.findByID(shipment.getShipment_id()));
-
+            shipmentService.addShipment(shipment);
             assertNotNull(shipmentService.findByID(shipment.getShipment_id()));
+
+            shipmentService.updateCheckpointsOnParcels(shipment,
+                    new Checkpoint(shipment.getFirstTerminal(),
+                            Checkpoint.CheckpointType.ReceivedFirstTerminal));
+            assertNotNull(shipmentService.getLastCheckpoint(shipment));
         }
 
         @Test
@@ -66,11 +69,12 @@ public class CreateCustomerTest {
             customerService.add(customer);
 
             Shipment shipment = new Shipment(customer, customer, customer);
-            shipmentService.cascadingAdd(shipment);
+            shipmentService.addShipment(shipment);
             shipment.printParcels();
             Checkpoint checkpoint = new Checkpoint("NTNU", Checkpoint.CheckpointType.Collected);
             shipmentService.updateCheckpointsOnParcels(shipment, checkpoint);
             shipment.printParcels();
+
         }
 
     }

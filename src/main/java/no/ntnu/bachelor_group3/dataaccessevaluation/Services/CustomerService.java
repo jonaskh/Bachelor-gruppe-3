@@ -9,17 +9,13 @@ import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.CustomerReposit
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -31,22 +27,23 @@ public class CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
 
-
-    @Autowired
-    private TerminalService terminalService;
-
-    private static final Logger logger = LoggerFactory.getLogger("CustomerServiceLogger");
+    //further methods and imports excluded
 
     public List<String> getCustomerEval() {
         return customerEval;
     }
 
-    @jakarta.transaction.Transactional
+
+    //saves a customer to the database
+    @Transactional
     public void save(Customer customer) {
+        var before = Instant.now();
         customerRepository.save(customer);
+        var duration = Duration.between(before, Instant.now()).toNanos();
+        customerEval.add(duration + " , customer create");
     }
 
-
+    //returns one customer by id from database.
     @Transactional
     public Optional<Customer> findByID(Long id) {
         var before = Instant.now();
@@ -56,16 +53,7 @@ public class CustomerService {
         return customerOptional;
     }
 
-    @Transactional
-    public void addShipment(Shipment shipment, Customer customer) {
-        var before = Instant.now();
-        findByID(customer.getCustomerID()).get().addShipment(shipment);
-        var duration = Duration.between(before, Instant.now()).toNanos();
-        customerEval.add(duration + ", shipment find");
-    }
-
-
-
+    //returns total ammount of customers in database
     @Transactional
     public long count() {
         var before = Instant.now();
@@ -77,15 +65,19 @@ public class CustomerService {
     }
 
     @Transactional
+    public void addShipment(Shipment shipment, Customer customer) {
+        var before = Instant.now();
+        findByID(customer.getCustomerID()).get().addShipment(shipment);
+        var duration = Duration.between(before, Instant.now()).toNanos();
+        customerEval.add(duration + ", shipment find");
+    }
+
+    @Transactional
     public Customer findByName(String name) {
         Optional<Customer> customer = customerRepository.findCustomerByName(name);
 
         return customer.orElse(null);
     }
-
-//    public String findShipmentLocation(Shipment shipment, Customer customer) {
-//
-//    }
 
     @Transactional
     //saves a customer to the customerepo, and thus the database
@@ -99,12 +91,5 @@ public class CustomerService {
             customerEval.add(duration.get(ChronoUnit.NANOS) + " , customer create");
             System.out.println("Customer: " + customer.getCustomerID() + " has been saved to database");
         }
-    }
-
-
-
-
-    public Terminal findNearestTerminalToCustomer(Customer customer) {
-        return terminalService.returnTerminalFromZip(customer.getZip_code());
     }
 }

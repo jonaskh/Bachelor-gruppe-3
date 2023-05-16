@@ -14,15 +14,17 @@ import java.util.Optional;
 @Repository
 public interface CheckpointRepository extends CrudRepository<Checkpoint, Long> {
 
+    //SQL query to select last checkpoint
+    @Query(value = "SELECT * FROM checkpoint ORDER BY checkpoint_id DESC LIMIT 1", nativeQuery = true)
+    Optional<Checkpoint> findLastEntryInCheckpoint();
+
+    //further methods excluded
 
 //    long countCheckpointByparcel_id(Long id);
 
     @Query(value = "select count(checkpoint) where parcel_id = ?", nativeQuery = true)
     long checkpointsInParcel();
 
-    //SQL query to select last checkpoint
-    @Query(value = "SELECT * FROM checkpoint ORDER BY checkpoint_id DESC LIMIT 1", nativeQuery = true)
-    Optional<Checkpoint> findLastEntryInCheckpoint();
 
     Optional<Checkpoint> findById(Long id);
 

@@ -10,26 +10,33 @@ import java.util.List;
 @Table(name = "parcel")
 public class Parcel {
 
-    private static Long counter = 1L;
 
-    @Id
-    private Long parcel_id;
 
     private double weight;
 
     private int weight_class;
 
+    private static Long counter = 1L;
+
+    @Id
+    private Long parcel_id;
+
+
+
     @Version
     @Column(name = "optlock", columnDefinition = "integer DEFAULT 0", nullable = false)
     private long version = 0L;
 
-    //price is evaluated with weight times a constant
     @ManyToMany(cascade =  CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "cp_parcels",
             joinColumns = { @JoinColumn(name = "parcel_id") },
             inverseJoinColumns = { @JoinColumn(name = "checkpoint_id") })
     private List<Checkpoint> checkpoints = new ArrayList<>();
+
+
+
+    //price is evaluated with weight times a constant
 
 
 //    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

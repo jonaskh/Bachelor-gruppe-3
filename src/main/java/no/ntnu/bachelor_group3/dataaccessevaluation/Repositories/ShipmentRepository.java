@@ -2,6 +2,7 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.Repositories;
 
 import jakarta.transaction.Transactional;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
+import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.scheduling.annotation.Async;
 
@@ -11,6 +12,8 @@ public interface ShipmentRepository extends CrudRepository<Shipment, Long> {
 
     @Override
     Optional<Shipment> findById(Long id);
+
+    long findAllByFinalTerminal(Terminal term);
 
 
     @Override

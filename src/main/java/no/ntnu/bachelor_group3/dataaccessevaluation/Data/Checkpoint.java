@@ -15,6 +15,15 @@ import java.util.List;
 @Table(name = "checkpoint")
 public class Checkpoint {
 
+    @ManyToMany(mappedBy = "checkpoints",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private List<Parcel> parcels = new ArrayList<>();
+
+    //further methods and fields excluded
+
+
+
     //format used for the timestamps
     private static final SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -27,8 +36,7 @@ public class Checkpoint {
     @JoinColumn(name = "terminal_id")
     private Terminal terminal;
 
-    @ManyToMany(mappedBy = "checkpoints", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Parcel> parcels = new ArrayList<>();
+
 
     private LocalDateTime time;
 
