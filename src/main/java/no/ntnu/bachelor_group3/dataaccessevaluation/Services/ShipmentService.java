@@ -64,6 +64,14 @@ public class ShipmentService {
         return ship.getParcels().size();
     }
 
+    @Transactional
+    public void setDelivered(Shipment shipment) {
+        var before = Instant.now();
+        findByID(shipment.getShipment_id()).setDelivered();
+        var duration = Duration.between(before, Instant.now()).toNanos();
+        shipmentEvals.add(duration + " , shipment update");
+    }
+
     public void saveParcelsToDatabaseFromShipment(Shipment shipment) {
         parcelService.saveAll(findByID(shipment.getShipment_id()).getParcels());
     }

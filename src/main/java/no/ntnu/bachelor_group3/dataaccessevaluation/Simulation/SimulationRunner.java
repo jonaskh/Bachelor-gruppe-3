@@ -27,13 +27,11 @@ public class SimulationRunner {
 
 
 
-    private ExecutorService executor1 = Executors.newFixedThreadPool(10);
+    private ExecutorService executor1 = Executors.newSingleThreadExecutor();
     private ExecutorService updateShipmentsService = Executors.newFixedThreadPool(10);
-    private ScheduledExecutorService findShipmentInCustomerService = Executors.newScheduledThreadPool(10);
-    private ScheduledExecutorService findShipmentsInTerminalService = Executors.newScheduledThreadPool(2);
+    private ScheduledExecutorService findShipmentInCustomerService = Executors.newScheduledThreadPool(5);
+    private ScheduledExecutorService findShipmentsInTerminalService = Executors.newScheduledThreadPool(5);
 
-
-    private final ArrayBlockingQueue<Shipment> queue = new ArrayBlockingQueue<>(10000);
 
 
     public SimulationRunner(ShipmentService shipmentService, CustomerService customerService, TerminalService terminalService, ValidPostalCodeService validPostalCodeService, ParcelService parcelService, CheckpointService checkpointService) {
@@ -55,16 +53,16 @@ public class SimulationRunner {
 
         System.out.println("Starting simulation...");
 
-        for (int i = 0; i < 500; i++) {
-            executor1.execute(new UpdateShipmentRunnable(new Shipment(sender, sender, receiver), shipmentService, terminalService));
+        for (int i = 0; i < 100; i++) {
+            updateShipmentsService.execute(new UpdateShipmentRunnable(new Shipment(sender, sender, receiver), shipmentService, terminalService));
         }
-
 
 
         //run find shipment location after a 0.5 second delay every second to simulate higher load.
-        for (int k = 0; k < 10; k++) {
+        for (int k = 0; k < 5; k++) {
             findShipmentInCustomerService.scheduleAtFixedRate(new FindShipmentRunnable(shipmentService, customerService, shipmentService.findByID(1L)), 0, 500, TimeUnit.MILLISECONDS);
         }
+
 
         //run find shipments in terminal every second to simulate higher load.
         for (int j = 0; j < 10; j++) {
@@ -90,8 +88,6 @@ public class SimulationRunner {
 
             findShipmentsInTerminalService.shutdown();
             findShipmentInCustomerService.shutdown();
-            executor1.shutdown();
-
 
             //stops the thread pools if no more tasks, an exception occurs or timeout.
             updateShipmentsService.awaitTermination(2, TimeUnit.MINUTES);
@@ -99,7 +95,6 @@ public class SimulationRunner {
 
             findShipmentInCustomerService.awaitTermination(2, TimeUnit.MINUTES);
             findShipmentsInTerminalService.awaitTermination(2, TimeUnit.MINUTES);
-            executor1.awaitTermination(2, TimeUnit.MINUTES);
             System.out.println("Adding done");
 
 
@@ -118,6 +113,7 @@ public class SimulationRunner {
         evals.addAll(customerService.getCustomerEval());
         evals.addAll(checkpointService.getCheckpointEvals());
 
+
         System.out.println("shipments in customer local: " + sender.getShipments().size());
         System.out.println("shipments in customer local: " + customerService.findByID(sender.getCustomerID()).get().getShipments().size());
 
@@ -125,14 +121,15 @@ public class SimulationRunner {
         System.out.println("cp in parcel: " + shipmentService.findByID(1L).getParcels().size());
 
 
-        System.out.println("queue size: " + queue.size());
         System.out.println("shipments: " + shipmentService.count());
         System.out.println("parcels: " + parcelService.count());
         System.out.println("checkpoints: " + checkpointService.count());
 
-        System.out.println("Number of shipments in terminal 14: " + terminalService.returnTerminalFromZip("6008").getShipmentNumber());
-        System.out.println("Number of checkpoints in terminal 14: " + terminalService.returnTerminalFromZip("0021").getCheckpointNumber());
-        System.out.println("checkpoints in parcel from db: " + shipmentService.findByID(1L).getParcels().get(0).getCheckpoints().size());
+//        System.out.println("Number of shipments in terminal 14: " + terminalService.returnTerminalFromZip("6008").getShipmentNumber());
+//        System.out.println("Number of checkpoints in terminal 14: " + terminalService.returnTerminalFromZip("0021").getCheckpointNumber());
+//        System.out.println("checkpoints in parcel from db: " + shipmentService.findByID(1L).getParcels().get(0).getCheckpoints().size());
+
+        System.out.println("DELIVERED: " + shipmentService.findByID(1L).isDelivered());
 
 
     }
