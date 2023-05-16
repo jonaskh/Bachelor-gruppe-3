@@ -1,6 +1,6 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Controllers;
 
-import no.ntnu.bachelor_group3.jdbcevaluation.Services.ShipmentService;
+import no.ntnu.bachelor_group3.jdbcevaluation.Services.ShipmentDAO;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,13 +15,13 @@ public class ShipmentController {
 
 
 
-    ShipmentService shipmentService = new ShipmentService();
+    ShipmentDAO shipmentDAO = new ShipmentDAO();
 
 
     @GetMapping("/shipment/eval")
     public List<String> getShipmentEval() {
 
-        Iterable<String> products = shipmentService.getExecutionTimeList();
+        Iterable<String> products = shipmentDAO.getExecutionTimeList();
         List<String> evalList = StreamSupport
                 .stream(products.spliterator(), false)
                 .collect(Collectors.toList());

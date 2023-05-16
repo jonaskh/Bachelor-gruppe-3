@@ -15,7 +15,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CheckpointService {
+public class CheckpointDAO {
 
     private static final String GET_CHECKPOINT_BY_ID_QUERY = "SELECT * FROM checkpoint WHERE checkpoint_id = ?";
     private static final String INSERT_CHECKPOINT_QUERY = "INSERT INTO checkpoint (cost, location, time, parcel_id, terminal_id, type) VALUES (?, ?, ?, ?, ?, ?)";
@@ -27,15 +27,15 @@ public class CheckpointService {
 
     public static List<String> executionTimeList;
 
-    public CheckpointService() {
+    public CheckpointDAO() {
         if (executionTimeList == null) {
             executionTimeList = new ArrayList<>();
         }
 
     }
 
-    public Checkpoint getCheckpointById(int checkpointId, ParcelService parcelService, ShipmentService shipmentService,
-                                        CustomerService customerService, TerminalService terminalService, Connection conn) throws SQLException {
+    public Checkpoint getCheckpointById(int checkpointId, ParcelDAO parcelService, ShipmentDAO shipmentService,
+                                        CustomerDAO customerService, TerminalDAO terminalService, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(GET_CHECKPOINT_BY_ID_QUERY);
         stmt.setInt(1, checkpointId);
         ResultSet rs = stmt.executeQuery();
@@ -52,8 +52,8 @@ public class CheckpointService {
         return null;
     }
 
-    public List<Checkpoint> getCheckpointsByParcelId(Long parcelId, ParcelService parcelService, ShipmentService shipmentService,
-                                                     CustomerService customerService, TerminalService terminalService, Connection conn) {
+    public List<Checkpoint> getCheckpointsByParcelId(Long parcelId, ParcelDAO parcelService, ShipmentDAO shipmentService,
+                                                     CustomerDAO customerService, TerminalDAO terminalService, Connection conn) {
         List<Checkpoint> checkpoints = new ArrayList<>();
 
         try (PreparedStatement stmt = conn.prepareStatement(GET_CHECKPOINTS_FROM_PARCEL)) {

@@ -8,18 +8,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class TerminalService {
+public class TerminalDAO {
 
-    public TerminalService() {}
+    public TerminalDAO() {}
 
     public Terminal getTerminalById(int terminalId, Connection conn) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM terminal WHERE terminal_id = ?");
-        stmt.setInt(1, terminalId);
-        ResultSet rs = stmt.executeQuery();
-        if (rs.next()) {
-            Terminal terminal = new Terminal(rs.getLong("terminal_id"), rs.getString("address"));
-            return terminal;
+        try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM terminal WHERE terminal_id = ?")) {
+            stmt.setInt(1, terminalId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Terminal terminal = new Terminal(rs.getLong("terminal_id"), rs.getString("address"));
+                return terminal;
+            }
         }
+
         return null;
     }
 

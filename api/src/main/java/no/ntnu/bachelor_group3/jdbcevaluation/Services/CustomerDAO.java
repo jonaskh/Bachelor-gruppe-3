@@ -8,14 +8,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class CustomerService {
+public class CustomerDAO {
 
-    private static final String GET_CUSTOMER_BY_ID_QUERY = "SELECT * FROM customer WHERE customer_id = ?";
-    private static final String INSERT_CUSTOMER_QUERY = "INSERT INTO customer (name, address, zip_code) VALUES (?, ?, ?) RETURNING customer_id";
-    private static final String UPDATE_CUSTOMER_QUERY = "UPDATE customer SET name = ?, address = ?, zip_code = ? WHERE customer_id = ?";
-    private static final String DELETE_CUSTOMER_QUERY = "DELETE FROM customer WHERE customer_id = ?";
+    private static final String GET_CUSTOMER_BY_ID_QUERY =
+            "SELECT * FROM customer WHERE customer_id = ?";
+    private static final String INSERT_CUSTOMER_QUERY =
+            "INSERT INTO customer (name, address, zip_code) VALUES (?, ?, ?) RETURNING customer_id";
+    private static final String UPDATE_CUSTOMER_QUERY =
+            "UPDATE customer SET name = ?, address = ?, zip_code = ? WHERE customer_id = ?";
+    private static final String DELETE_CUSTOMER_QUERY =
+            "DELETE FROM customer WHERE customer_id = ?";
 
-    public CustomerService() {}
+    public CustomerDAO() {}
 
     /**
      * Returns a customer from the customer table if it exists
@@ -51,13 +55,11 @@ public class CustomerService {
         long endTime;
         if (customerExists(customer.getId(), conn)) {
             update(customer, conn);
-            endTime = System.nanoTime();
-            executionTime = endTime - startTime;
         } else {
             insert(customer, conn);
-            endTime = System.nanoTime();
-            executionTime = endTime - startTime;
         }
+        endTime = System.nanoTime();
+        executionTime = endTime - startTime;
         System.out.println(executionTime);
     }
 

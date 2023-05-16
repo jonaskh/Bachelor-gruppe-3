@@ -25,7 +25,7 @@ public class SimulationRunner {
     private ScheduledExecutorService findShipmentInCustomerService = Executors.newScheduledThreadPool(10);
     private ScheduledExecutorService findShipmentsInTerminalService = Executors.newScheduledThreadPool(2);
 
-    private final ArrayBlockingQueue<Shipment> queue = new ArrayBlockingQueue<>(10000);
+    private final ArrayBlockingQueue<Shipment> queue = new ArrayBlockingQueue<>(1000);
 
 
     public SimulationRunner(DatabaseManager db) {

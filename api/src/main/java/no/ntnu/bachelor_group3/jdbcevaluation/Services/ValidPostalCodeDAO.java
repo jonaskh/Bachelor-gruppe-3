@@ -8,9 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class ValidPostalCodeService {
+public class ValidPostalCodeDAO {
 
-    public ValidPostalCodeService() {}
+    public ValidPostalCodeDAO() {}
 
     public ValidPostalCode getPostalCodeById(Long postalCodeId, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM valid_postal_codes WHERE postal_code_id = ?");

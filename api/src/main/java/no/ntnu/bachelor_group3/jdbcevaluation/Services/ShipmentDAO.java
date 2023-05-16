@@ -15,7 +15,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShipmentService {
+public class ShipmentDAO {
 
     private static final String GET_SHIPMENT_BY_ID_QUERY = "SELECT * FROM Shipment WHERE shipment_id = ?";
     private static final String GET_PARCELS_IN_SHIPMENT_BY_ID_QUERY = "SELECT * FROM Parcel WHERE shipment_id = ?";
@@ -25,20 +25,20 @@ public class ShipmentService {
 
     public static List<String> executionTimeList;
 
-    public ShipmentService() {
+    public ShipmentDAO() {
         if (executionTimeList == null) {
             executionTimeList = new ArrayList<>();
         }
     }
 
-    public Shipment getShipmentById(Long shipmentId, CustomerService customerService, Connection conn) throws SQLException {
+    public Shipment getShipmentById(Long shipmentId, CustomerDAO customerDAO, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(GET_SHIPMENT_BY_ID_QUERY);
         stmt.setLong(1, shipmentId);
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
-            Customer sender = customerService.getCustomerById(rs.getLong("sender_id"), conn);
-            Customer receiver = customerService.getCustomerById(rs.getLong("receiver_id"), conn);
-            Customer payer = customerService.getCustomerById(rs.getLong("payer_id"), conn);
+            Customer sender = customerDAO.getCustomerById(rs.getLong("sender_id"), conn);
+            Customer receiver = customerDAO.getCustomerById(rs.getLong("receiver_id"), conn);
+            Customer payer = customerDAO.getCustomerById(rs.getLong("payer_id"), conn);
             Shipment shipment = new Shipment(rs.getLong("shipment_id"), sender, receiver,
                     payer, 0);
             // Retrieve all parcels associated with this shipment
@@ -57,9 +57,9 @@ public class ShipmentService {
         return null;
     }
 
-    public Long save(Shipment shipment, ParcelService parcelService, TerminalService terminalService, Connection conn) throws SQLException {
-        setFirstTerminal(shipment, terminalService, conn);
-        setLastTerminal(shipment, terminalService, conn);
+    public Long save(Shipment shipment, TerminalDAO terminalDAO, Connection conn) throws SQLException {
+        setFirstTerminal(shipment, terminalDAO, conn);
+        setLastTerminal(shipment, terminalDAO, conn);
         PreparedStatement stmt;
         Long id = shipment.getId();
         List<Parcel> parcels = shipment.getParcels();
@@ -93,6 +93,8 @@ public class ShipmentService {
         }
         return id;
     }
+/*
+
 
     public Long save(Shipment shipment, Parcel parcel, ParcelService parcelService, TerminalService terminalService, Connection conn) throws SQLException {
         setFirstTerminal(shipment, terminalService, conn);
@@ -140,13 +142,15 @@ public class ShipmentService {
         return id;
     }
 
-    public void delete(Shipment shipment, ParcelService parcelService, Connection conn) throws SQLException {
+ */
+
+    public void delete(Shipment shipment, ParcelDAO parcelDAO, Connection conn) throws SQLException {
         Long id = shipment.getId();
         List<Parcel> parcels = shipment.getParcels();
         if (id > 0) {
             // Delete all parcels associated with this shipment
             for (Parcel parcel : parcels) {
-                parcelService.delete(parcel, conn);
+                parcelDAO.delete(parcel, conn);
             }
             // Delete the shipment itself
             PreparedStatement stmt = conn.prepareStatement(DELETE_SHIPMENT_QUERY);
@@ -165,15 +169,15 @@ public class ShipmentService {
         stmt.setLong(6, shipment.getEndTerminal().getId());
     }
 
-    public void setFirstTerminal(Shipment shipment, TerminalService terminalService, Connection conn) {
+    public void setFirstTerminal(Shipment shipment, TerminalDAO terminalDAO, Connection conn) {
         String senderZipCode = shipment.getSender().getZipCode();
-        Terminal terminal = terminalService.getTerminalByZip(senderZipCode, conn);
+        Terminal terminal = terminalDAO.getTerminalByZip(senderZipCode, conn);
         shipment.setStartTerminal(terminal);
     }
 
-    public void setLastTerminal(Shipment shipment, TerminalService terminalService, Connection conn) {
+    public void setLastTerminal(Shipment shipment, TerminalDAO terminalDAO, Connection conn) {
         String receiverZipCode = shipment.getReceiver().getZipCode();
-        Terminal terminal = terminalService.getTerminalByZip(receiverZipCode, conn);
+        Terminal terminal = terminalDAO.getTerminalByZip(receiverZipCode, conn);
         shipment.setEndTerminal(terminal);
     }
 

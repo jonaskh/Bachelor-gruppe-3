@@ -9,32 +9,32 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class ParcelService {
+public class ParcelDAO {
 
     private static final String GET_PARCEL_BY_ID_QUERY = "SELECT * FROM Parcel WHERE parcel_id = ?";
     private static final String INSERT_PARCEL_QUERY = "INSERT INTO Parcel (shipment_id, weight, weight_class) VALUES (?, ?, ?)";
     private static final String UPDATE_PARCEL_QUERY = "UPDATE Parcel SET shipment_id = ?, weight = ?, weight_class = ? WHERE parcel_id = ?";
     private static final String DELETE_PARCEL_QUERY = "DELETE FROM Parcel WHERE parcel_id = ?";
 
-    public ParcelService() {}
+    public ParcelDAO() {}
 
     /**
      * Returns a parcel from the parcel table if it exists
      *
      * @param parcelId the id of the parcel to find
-     * @param customerService
-     * @param shipmentService
+     * @param customerDAO
+     * @param shipmentDAO
      * @param conn the connection to the database
      * @return a parcel or null if it does not exist
      * @throws SQLException
      */
-    public Parcel getParcelById(Long parcelId, CustomerService customerService,
-                                       ShipmentService shipmentService, Connection conn) throws SQLException {
+    public Parcel getParcelById(Long parcelId, CustomerDAO customerDAO,
+                                ShipmentDAO shipmentDAO, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(GET_PARCEL_BY_ID_QUERY);
         stmt.setLong(1, parcelId);
         ResultSet rs = stmt.executeQuery();
         if (rs.next()) {
-            Shipment shipment = shipmentService.getShipmentById(rs.getLong("shipment_id"), customerService, conn);
+            Shipment shipment = shipmentDAO.getShipmentById(rs.getLong("shipment_id"), customerDAO, conn);
             Parcel parcel = new Parcel(rs.getLong("parcel_id"), rs.getDouble("weight"));
             parcel.setShipment(shipment);
             return parcel;

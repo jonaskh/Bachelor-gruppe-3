@@ -6,37 +6,37 @@ import no.ntnu.bachelor_group3.jdbcevaluation.Data.Parcel;
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Terminal;
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.ValidPostalCode;
-import no.ntnu.bachelor_group3.jdbcevaluation.Services.CheckpointService;
-import no.ntnu.bachelor_group3.jdbcevaluation.Services.CustomerService;
-import no.ntnu.bachelor_group3.jdbcevaluation.Services.ParcelService;
-import no.ntnu.bachelor_group3.jdbcevaluation.Services.ShipmentService;
-import no.ntnu.bachelor_group3.jdbcevaluation.Services.TerminalService;
-import no.ntnu.bachelor_group3.jdbcevaluation.Services.ValidPostalCodeService;
+import no.ntnu.bachelor_group3.jdbcevaluation.Services.CheckpointDAO;
+import no.ntnu.bachelor_group3.jdbcevaluation.Services.CustomerDAO;
+import no.ntnu.bachelor_group3.jdbcevaluation.Services.ParcelDAO;
+import no.ntnu.bachelor_group3.jdbcevaluation.Services.ShipmentDAO;
+import no.ntnu.bachelor_group3.jdbcevaluation.Services.TerminalDAO;
+import no.ntnu.bachelor_group3.jdbcevaluation.Services.ValidPostalCodeDAO;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseManager implements AutoCloseable {
-    private static final String DB_URL = "jdbc:postgresql://database:5432/postgres";
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String DB_USER = "postgres";
     private static final String DB_PASSWORD = "postgres";
-    private final CustomerService customerService;
-    private final ShipmentService shipmentService;
-    private final ParcelService parcelService;
-    private final CheckpointService checkpointService;
-    private final TerminalService terminalService;
-    private final ValidPostalCodeService validPostalCodeService;
+    private final CustomerDAO customerDAO;
+    private final ShipmentDAO shipmentDAO;
+    private final ParcelDAO parcelDAO;
+    private final CheckpointDAO checkpointDAO;
+    private final TerminalDAO terminalDAO;
+    private final ValidPostalCodeDAO validPostalCodeDAO;
 
     private Connection conn;
 
     public DatabaseManager() throws SQLException {
-        customerService = new CustomerService();
-        shipmentService = new ShipmentService();
-        parcelService = new ParcelService();
-        checkpointService = new CheckpointService();
-        terminalService = new TerminalService();
-        validPostalCodeService = new ValidPostalCodeService();
+        customerDAO = new CustomerDAO();
+        shipmentDAO = new ShipmentDAO();
+        parcelDAO = new ParcelDAO();
+        checkpointDAO = new CheckpointDAO();
+        terminalDAO = new TerminalDAO();
+        validPostalCodeDAO = new ValidPostalCodeDAO();
 
         conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
         conn.setAutoCommit(false); // Start a new transaction
@@ -55,53 +55,55 @@ public class DatabaseManager implements AutoCloseable {
     }
 
     public Customer getCustomerById(Long customerId) throws SQLException {
-        return customerService.getCustomerById(customerId, conn);
+        return customerDAO.getCustomerById(customerId, conn);
     }
 
     public void saveCustomer(Customer customer) throws SQLException {
-        customerService.save(customer, conn);
+        customerDAO.save(customer, conn);
     }
 
     public void deleteCustomer(Customer customer) throws SQLException {
-        customerService.delete(customer, conn);
+        customerDAO.delete(customer, conn);
     }
 
     public Shipment getShipmentById(Long shipmentId) throws SQLException {
-        return shipmentService.getShipmentById(shipmentId, customerService, conn);
+        return shipmentDAO.getShipmentById(shipmentId, customerDAO, conn);
     }
 
     public Long saveShipment(Shipment shipment) throws SQLException {
-        return shipmentService.save(shipment, parcelService, terminalService, conn);
+        return shipmentDAO.save(shipment, terminalDAO, conn);
     }
-
+/*
     public Long saveShipmentWithParcel(Shipment shipment, Parcel parcel) throws  SQLException {
         return shipmentService.save(shipment, parcel, parcelService, terminalService, conn);
     }
 
+ */
+
     public void deleteShipment(Shipment shipment) throws SQLException {
-        shipmentService.delete(shipment, parcelService, conn);
+        shipmentDAO.delete(shipment, parcelDAO, conn);
     }
 
     public Parcel getParcelById(Long parcelId) throws SQLException {
-        return parcelService.getParcelById(parcelId, customerService, shipmentService, conn);
+        return parcelDAO.getParcelById(parcelId, customerDAO, shipmentDAO, conn);
     }
 
     public Long saveParcel(Parcel parcel, Long shipmentId) throws SQLException {
-        return parcelService.save(parcel, shipmentId, conn);
+        return parcelDAO.save(parcel, shipmentId, conn);
     }
 
     public Terminal getTerminalById(int terminalId) throws SQLException {
-        return terminalService.getTerminalById(terminalId, conn);
+        return terminalDAO.getTerminalById(terminalId, conn);
     }
 
     public void deleteParcel(Parcel parcel) throws SQLException {
-        parcelService.delete(parcel, conn);
+        parcelDAO.delete(parcel, conn);
     }
 
     public void setCheckpointOnParcel(Parcel parcel, Checkpoint checkpoint) throws SQLException {
         checkpoint.setParcel(parcel);
 
-        checkpointService.save(checkpoint, conn);
+        checkpointDAO.save(checkpoint, conn);
     }
 
     public List<Customer> getAllCustomers() throws SQLException {
@@ -192,15 +194,15 @@ public class DatabaseManager implements AutoCloseable {
     }
 
     public void saveTerminal(Terminal terminal) throws SQLException {
-        terminalService.save(terminal, conn);
+        terminalDAO.save(terminal, conn);
     }
 
     public void savePostalCode(ValidPostalCode postalCode) throws SQLException {
-        validPostalCodeService.save(postalCode, conn);
+        validPostalCodeDAO.save(postalCode, conn);
     }
 
     public Terminal getTerminalByZip(String zipCode) {
-        return terminalService.getTerminalByZip(zipCode, conn);
+        return terminalDAO.getTerminalByZip(zipCode, conn);
     }
 
     public List<Terminal> getAllTerminals() throws SQLException {
@@ -225,11 +227,11 @@ public class DatabaseManager implements AutoCloseable {
         for (Parcel parcel : shipment.getParcels()) {
 
             checkpoint.setParcel(parcel);
-            checkpointService.save(checkpoint, conn);
+            checkpointDAO.save(checkpoint, conn);
         }
     }
 
     public List<Checkpoint> getCheckpointsOnParcel(Long parcelId) {
-        return checkpointService.getCheckpointsByParcelId(parcelId, parcelService, shipmentService, customerService, terminalService, conn);
+        return checkpointDAO.getCheckpointsByParcelId(parcelId, parcelDAO, shipmentDAO, customerDAO, terminalDAO, conn);
     }
 }
