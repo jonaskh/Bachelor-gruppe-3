@@ -1,24 +1,31 @@
+version: "3.8"
 
 services:
 
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+
   app:
-    build: .
+    build: ./api
+    ports:
+      - "8080:8080"
     depends_on:
       database:
         condition: service_healthy
+
   database:
     image: postgres:14.1-alpine
     restart: unless-stopped
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - PGDATABASE=test
-    volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+      - PGDATABASE=postgres
+
     ports:
-    - '5432:5432'
+    - "5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
       timeout: 5s
       retries: 20
-

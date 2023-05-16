@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="9641a266-b6e8-4ad3-951b-52065e9a41ee" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Data/Parcel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Data/Parcel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/DataAccessEvaluationApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/DataAccessEvaluationApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/CheckpointRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/CheckpointRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/CustomerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/CustomerRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/ParcelRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/ParcelRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/ShipmentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/ShipmentRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/TerminalRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Repositories/TerminalRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Services/CheckpointService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Services/CheckpointService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Services/CustomerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Services/CustomerService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Services/ParcelService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Services/ParcelService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Services/ShipmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Services/ShipmentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Services/TerminalService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Services/TerminalService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/ShipmentRunnable/ShipmentRunnable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/ShipmentRunnable/ShipmentRunnable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Simulation/SimulationRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/no/ntnu/bachelor_group3/dataaccessevaluation/Simulation/SimulationRunner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/Lifecycle/LifecycleTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/Lifecycle/LifecycleTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/Lifecycle/MultiThreadTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/no/ntnu/bachelor_group3/dataaccessevaluation/EntityTests/Lifecycle/MultiThreadTests.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Enum" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="Use Maven wrapper" />
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="2L5Asgzm6VDOc5lebizZvE22tGz" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Program Files/Eclipse Adoptium/jre-17.0.5.8-hotspot&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.IDE.editor.colors.Language Defaults&quot;,
+    &quot;spring.configuration.checksum&quot;: &quot;feb3f440a959f791dd50082c15b8fd7d&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Jonas\OneDrive - NTNU\Classes\Bachelor\src\test\java\no\ntnu\bachelor_group3\dataaccessevaluation\EntityTests" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="no.ntnu.bachelor_group3.dataaccessevaluation" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle" />
+      <recent name="no.ntnu.bachelor_group3.dataaccessevaluation.Data" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.MultiThreadTests.concurrencyTest">
+    <configuration name="ConcurrencyMultiTest.simpleThreadPoolTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Bachelor" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle" />
+      <option name="MAIN_CLASS_NAME" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle.ConcurrencyMultiTest" />
+      <option name="METHOD_NAME" value="simpleThreadPoolTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LifecycleTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Bachelor" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle" />
+      <option name="MAIN_CLASS_NAME" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle.LifecycleTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MultiThreadTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="data-access-evaluation" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle" />
+      <option name="MAIN_CLASS_NAME" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle.MultiThreadTests" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MultiThreadTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Bachelor" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle" />
+      <option name="MAIN_CLASS_NAME" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle.MultiThreadTests" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MultiThreadTests.concurrencyTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Bachelor" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle" />
+      <option name="MAIN_CLASS_NAME" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle.MultiThreadTests" />
+      <option name="METHOD_NAME" value="concurrencyTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MultiThreadTests.simpleThreadPoolTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Bachelor" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle" />
+      <option name="MAIN_CLASS_NAME" value="no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle.MultiThreadTests" />
+      <option name="METHOD_NAME" value="simpleThreadPoolTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="Bachelor" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="Bachelor" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DataAccessEvaluationApplication (1)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="data-access-evaluation" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="no.ntnu.bachelor_group3.dataaccessevaluation.DataAccessEvaluationApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DataAccessEvaluationApplication (2)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="Bachelor" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="no.ntnu.bachelor_group3.dataaccessevaluation.DataAccessEvaluationApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DataAccessEvaluationApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="data-access-evaluation" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="no.ntnu.bachelor_group3.dataaccessevaluation.DataAccessEvaluationApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.MultiThreadTests.concurrencyTest" />
+        <item itemvalue="JUnit.LifecycleTest" />
+        <item itemvalue="JUnit.ConcurrencyMultiTest.simpleThreadPoolTest" />
+        <item itemvalue="JUnit.MultiThreadTests.simpleThreadPoolTest" />
+        <item itemvalue="JUnit.MultiThreadTests" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="9641a266-b6e8-4ad3-951b-52065e9a41ee" name="Changes" comment="" />
+      <created>1675150783991</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1675150783991</updated>
+      <workItem from="1675150785483" duration="1680000" />
+      <workItem from="1675330711243" duration="29577000" />
+      <workItem from="1675418824534" duration="2181000" />
+      <workItem from="1675422973904" duration="836000" />
+      <workItem from="1675675657302" duration="2594000" />
+      <workItem from="1675767108642" duration="5628000" />
+      <workItem from="1676281118417" duration="1724000" />
+      <workItem from="1676367305686" duration="16340000" />
+      <workItem from="1676531448467" duration="9723000" />
+      <workItem from="1676555782845" duration="17093000" />
+      <workItem from="1676835141626" duration="117000" />
+      <workItem from="1676890276727" duration="746000" />
+      <workItem from="1677607928315" duration="6448000" />
+      <workItem from="1677684651287" duration="24200000" />
+      <workItem from="1678191980212" duration="9924000" />
+      <workItem from="1678267400619" duration="32156000" />
+      <workItem from="1678702098786" duration="201000" />
+      <workItem from="1678874454780" duration="153000" />
+      <workItem from="1679395576052" duration="2548000" />
+      <workItem from="1679473314962" duration="27692000" />
+      <workItem from="1679645675099" duration="15208000" />
+      <workItem from="1679909050579" duration="12048000" />
+      <workItem from="1680001341121" duration="12479000" />
+      <workItem from="1680161486030" duration="1282000" />
+      <workItem from="1680163929024" duration="6835000" />
+      <workItem from="1680245296300" duration="1039000" />
+      <workItem from="1681199213473" duration="925000" />
+      <workItem from="1681200501675" duration="402000" />
+      <workItem from="1681201105249" duration="859000" />
+      <workItem from="1681201997076" duration="961000" />
+      <workItem from="1681202991182" duration="7187000" />
+      <workItem from="1681287926949" duration="14303000" />
+      <workItem from="1681302424138" duration="15919000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
