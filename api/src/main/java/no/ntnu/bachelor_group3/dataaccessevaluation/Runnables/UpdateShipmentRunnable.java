@@ -85,6 +85,5 @@ public class UpdateShipmentRunnable implements Runnable{
         shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp5,cp12);
         shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp7,cp13);
         shipmentService.setDelivered(shipment);
-//        System.out.println(shipment.getParcels().get(0).getCheckpoints());
     }
 }

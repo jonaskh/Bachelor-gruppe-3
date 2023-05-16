@@ -32,15 +32,6 @@ public class Parcel {
     private List<Checkpoint> checkpoints = new ArrayList<>();
 
 
-
-    //price is evaluated with weight times a constant
-
-
-//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinColumn(name = "shipment_id")
-//    private Shipment shipment;
-
-
     public Parcel() {
         this.parcel_id = counter++;
     }
