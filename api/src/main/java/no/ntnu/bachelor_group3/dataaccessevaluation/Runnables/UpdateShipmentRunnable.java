@@ -16,7 +16,14 @@ public class UpdateShipmentRunnable implements Runnable{
     private Checkpoint cp3;
     private Checkpoint cp4;
     private Checkpoint cp5;
-    private Checkpoint cp6;
+    private Checkpoint cp7;
+    private Checkpoint cp12;
+    private Checkpoint cp8;
+    private Checkpoint cp9;
+    private Checkpoint cp10;
+    private Checkpoint cp11;
+    private Checkpoint cp13;
+
 
 
     public UpdateShipmentRunnable(Shipment shipment, ShipmentService shipmentService, TerminalService terminalService) {
@@ -28,7 +35,14 @@ public class UpdateShipmentRunnable implements Runnable{
         this.cp3 = new Checkpoint(shipment.getFirstTerminal(), Checkpoint.CheckpointType.LoadedOnCar);
         this.cp4 = new Checkpoint(shipment.getFinalTerminal(), Checkpoint.CheckpointType.ReceivedFinalTerminal);
         this.cp5 = new Checkpoint(shipment.getFinalTerminal(), Checkpoint.CheckpointType.LoadedOnCar);
-        this.cp6 = new Checkpoint(shipment.getReceiver().getAddress(), Checkpoint.CheckpointType.UnderDelivery);
+        this.cp7 = new Checkpoint(shipment.getReceiver().getAddress(), Checkpoint.CheckpointType.UnderDelivery);
+        this.cp8 = new Checkpoint(shipment.getSender().getZip_code(), Checkpoint.CheckpointType.Collected);
+        this.cp9 = new Checkpoint(shipment.getFirstTerminal(), Checkpoint.CheckpointType.ReceivedFirstTerminal);
+        this.cp10 = new Checkpoint(shipment.getFirstTerminal(), Checkpoint.CheckpointType.LoadedOnCar);
+        this.cp11 = new Checkpoint(shipment.getFinalTerminal(), Checkpoint.CheckpointType.ReceivedFinalTerminal);
+        this.cp12 = new Checkpoint(shipment.getFinalTerminal(), Checkpoint.CheckpointType.LoadedOnCar);
+        this.cp13 = new Checkpoint(shipment.getReceiver().getAddress(), Checkpoint.CheckpointType.UnderDelivery);
+
     }
 
     public Shipment getShipment() {
@@ -64,12 +78,13 @@ public class UpdateShipmentRunnable implements Runnable{
 
         shipmentService.addShipment(shipment);
 
-        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp1);
-        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp2);
-        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp3);
-        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp4);
-        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp5);
-        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp6);
+        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp1, cp8);
+        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp2, cp9);
+        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp3, cp10);
+        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp4,cp11);
+        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp5,cp12);
+        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp7,cp13);
         shipmentService.setDelivered(shipment);
+//        System.out.println(shipment.getParcels().get(0).getCheckpoints());
     }
 }

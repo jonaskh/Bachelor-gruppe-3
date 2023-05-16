@@ -65,8 +65,10 @@ public class CreateCustomerTest {
             shipmentService.addShipment(shipment);
             shipment.printParcels();
             Checkpoint checkpoint = new Checkpoint("NTNU", Checkpoint.CheckpointType.Collected);
-            shipmentService.updateCheckpointsOnParcels(shipment, checkpoint);
-            shipment.printParcels();
+            Checkpoint cp2 = new Checkpoint("NTNU", Checkpoint.CheckpointType.Collected);
+
+            shipmentService.updateCheckpointsOnParcels(shipment, checkpoint, cp2);
+            shipmentService.findByID(shipment.getShipment_id()).printParcels();
         }
 
     }

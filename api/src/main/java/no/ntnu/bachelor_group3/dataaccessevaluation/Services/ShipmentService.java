@@ -93,15 +93,19 @@ public class ShipmentService {
      * @param checkpoint which checkpoint to add
      */
     @Transactional
-    public void updateCheckpointsOnParcels(Shipment shipment, Checkpoint checkpoint) {
-        for (Parcel parcel : shipment.getParcels()) {
-            parcelService.addCheckpointToParcel(checkpoint, parcel);
-            checkpointService.addCheckpoint(checkpoint);
-        }
+    public void updateCheckpointsOnParcels(Shipment shipment, Checkpoint checkpoint, Checkpoint cp2) {
+
+        parcelService.addCheckpointToParcel(checkpoint,shipment.getParcels().get(0));
+        parcelService.addCheckpointToParcel(cp2,shipment.getParcels().get(1));
+
+//        shipment.getParcels().get(0).addCheckpoint(checkpoint);
+//        shipment.getParcels().get(1).addCheckpoint(cp2);
         //adds the shipment to terminal if checkpoint is at a terminal and has not already passed it.
         if (checkpoint.getTerminal() != null) {
             addTerminal(checkpoint.getTerminal(), shipment);
             terminalService.addShipment(shipment, checkpoint.getTerminal());
+            terminalService.addCheckpoint(cp2, cp2.getTerminal());
+
             terminalService.addCheckpoint(checkpoint, checkpoint.getTerminal());
         }
     }

@@ -62,10 +62,10 @@ public class CheckpointService {
         return count;
     }
 
-    public void addParcel(Parcel parcel, Checkpoint checkpoint) {
-        var before = Instant.now();
-        checkpoint.setParcel(parcel);
-        var duration = Duration.between(before, Instant.now()).toNanos();
-        checkpointEvals.add(duration + ", shipment find");
-    }
+//    public void addParcel(Parcel parcel, Checkpoint checkpoint) {
+//        var before = Instant.now();
+//        checkpoint.setParcel(parcel);
+//        var duration = Duration.between(before, Instant.now()).toNanos();
+//        checkpointEvals.add(duration + ", shipment find");
+//    }
 }

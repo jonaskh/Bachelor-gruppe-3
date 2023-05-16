@@ -1,5 +1,6 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.ShipmentTests;
 
+import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Checkpoint;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
 
@@ -43,8 +44,13 @@ public class CRUDTests {
         Customer customer = new Customer();
         Shipment shipment = new Shipment(customer, customer, customer);
 
+        Checkpoint cp1 = new Checkpoint("åasdads", Checkpoint.CheckpointType.Collected);
+        Checkpoint cp2 = new Checkpoint("åasdads", Checkpoint.CheckpointType.Collected);
+
+
         shipmentService.addShipment(shipment);
-        assertNotNull(shipmentService.findByID(shipment.getShipment_id()));
+        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()),cp1, cp2);
+        System.out.println(shipmentService.findByID(shipment.getShipment_id()).getParcels().get(0).getCheckpoints());
     }
 
     @Test

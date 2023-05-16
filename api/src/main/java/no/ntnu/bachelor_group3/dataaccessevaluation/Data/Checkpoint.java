@@ -12,10 +12,9 @@ import java.util.List;
 @Table(name = "checkpoint")
 public class Checkpoint {
 
-    @ManyToMany(mappedBy = "checkpoints",
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
-    private List<Parcel> parcels = new ArrayList<>();
+//    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    @JoinColumn(name = "parcel_id")
+//    private Parcel parcel;
 
     //further methods and fields excluded
 
@@ -41,9 +40,9 @@ public class Checkpoint {
     @Column(name = "optlock", columnDefinition = "integer DEFAULT 0", nullable = false)
     private long version = 0L;
 
-    public void setParcel(Parcel parcel) {
-        parcels.add(parcel);
-    }
+//    public void setParcel(Parcel parcel) {
+//        parcels.add(parcel);
+//    }
 
     public enum CheckpointType{Collected, ReceivedFirstTerminal,LoadedOnCar,ReceivedFinalTerminal,UnderDelivery,Delivered}
 

@@ -27,11 +27,8 @@ public class Parcel {
     @Column(name = "optlock", columnDefinition = "integer DEFAULT 0", nullable = false)
     private long version = 0L;
 
-    @ManyToMany(cascade =  CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "cp_parcels",
-            joinColumns = { @JoinColumn(name = "parcel_id") },
-            inverseJoinColumns = { @JoinColumn(name = "checkpoint_id") })
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "parcel_id")
     private List<Checkpoint> checkpoints = new ArrayList<>();
 
 
@@ -102,7 +99,7 @@ public class Parcel {
     }
 
     public void addCheckpoint(Checkpoint checkpoint) {
-        this.checkpoints.add(checkpoint);
+        checkpoints.add(checkpoint);
     }
 
 
