@@ -84,6 +84,8 @@ package no.ntnu.bachelor_group3.dataaccessevaluation;
 
 import JOOQ.Simulation.ShipmentSim;
 import JOOQ.service.ShipmentService;
+import JOOQ.service.TerminalIdService;
+import JOOQ.service.ValidPostalCodeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,6 +107,10 @@ public class DataAccessEvaluationApplication implements ApplicationRunner {
 
 	@Autowired
 	private ShipmentService shipmentService;
+	@Autowired
+	private ValidPostalCodeService validPostalCodeService;
+	@Autowired
+	private TerminalIdService terminalIdService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(DataAccessEvaluationApplication.class, args);
@@ -112,13 +118,13 @@ public class DataAccessEvaluationApplication implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		ShipmentSim shipmentSim = new ShipmentSim(shipmentService);
+		ShipmentSim shipmentSim = new ShipmentSim(shipmentService, validPostalCodeService, terminalIdService);
 
-		var before = Instant.now();
-		shipmentSim.simulate();
+		shipmentSim.simulate(1, 100);       // Run simulation with 1 thread and 100 shipments
+		shipmentSim.simulate(2, 2000);    // Run simulation with 3 threads and 10000 shipments
+		shipmentSim.simulate(3, 3000);    // Run simulation with 3 threads and 10000 shipments
+		shipmentSim.printStatistics();
 
-		var duration = Duration.between(before, Instant.now()).toSeconds();
-		System.out.println("duration " + duration);
 	}
 }
 

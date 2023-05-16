@@ -28,6 +28,8 @@ public class ValidPostalCodeService {
         this.dao = dao;
     }
 
+
+
     public ValidPostalCodes create(ValidPostalCodes validPostalCodes) {
         dao.insert(validPostalCodes);
         return validPostalCodes;
