@@ -7,6 +7,7 @@ import no.ntnu.bachelor_group3.dataaccessevaluation.Runnables.TerminalShipmentsR
 import no.ntnu.bachelor_group3.dataaccessevaluation.Runnables.UpdateShipmentRunnable;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -15,10 +16,9 @@ public class SimulationRunner {
     private ShipmentService shipmentService;
     private CustomerService customerService;
     private TerminalService terminalService;
-    private ValidPostalCodeService validPostalCodeService;
     private ParcelService parcelService;
     private CheckpointService checkpointService;
-    private static List<String> evals = new CopyOnWriteArrayList<>();
+    private static List<String> evals = new ArrayList<>();
 
 
     private ExecutorService executor1 = Executors.newFixedThreadPool(10);
@@ -27,14 +27,10 @@ public class SimulationRunner {
     private ScheduledExecutorService findShipmentsInTerminalService = Executors.newScheduledThreadPool(5);
 
 
-    private final ArrayBlockingQueue<Shipment> queue = new ArrayBlockingQueue<>(10000);
-
-
-    public SimulationRunner(ShipmentService shipmentService, CustomerService customerService, TerminalService terminalService, ValidPostalCodeService validPostalCodeService, ParcelService parcelService, CheckpointService checkpointService) {
+    public SimulationRunner(ShipmentService shipmentService, CustomerService customerService, TerminalService terminalService, ParcelService parcelService, CheckpointService checkpointService) {
         this.shipmentService = shipmentService;
         this.customerService = customerService;
         this.terminalService = terminalService;
-        this.validPostalCodeService = validPostalCodeService;
         this.parcelService = parcelService;
         this.checkpointService = checkpointService;
     }

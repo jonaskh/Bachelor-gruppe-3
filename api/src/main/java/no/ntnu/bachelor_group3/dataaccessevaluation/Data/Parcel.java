@@ -27,7 +27,7 @@ public class Parcel {
     @Column(name = "optlock", columnDefinition = "integer DEFAULT 0", nullable = false)
     private long version = 0L;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "parcel_id")
     private List<Checkpoint> checkpoints = new ArrayList<>();
 

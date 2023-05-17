@@ -36,10 +36,6 @@ public class DataAccessEvaluationApplication {
 	@Autowired
 	private ValidPostalCodeService validPostalCodeService;
 
-	private static final Logger log = LoggerFactory.getLogger(DataAccessEvaluationApplication.class);
-
-	private static List<String> evals = new ArrayList<>();
-
 
 	public static void main(String[] args) {
 		SpringApplication.run(DataAccessEvaluationApplication.class, args);
@@ -47,7 +43,7 @@ public class DataAccessEvaluationApplication {
 
 	@Bean
 	public void runSimulation() {
-		SimulationRunner simulationRunner = new SimulationRunner(shipmentService, customerService, terminalService, validPostalCodeService, parcelService, checkpointService);
+		SimulationRunner simulationRunner = new SimulationRunner(shipmentService, customerService, terminalService, parcelService, checkpointService);
 
 		validPostalCodeService.ReadCSVFile();
 		var before = Instant.now();

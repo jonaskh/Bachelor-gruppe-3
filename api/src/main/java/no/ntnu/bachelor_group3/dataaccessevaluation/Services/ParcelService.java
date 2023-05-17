@@ -46,10 +46,10 @@ public class ParcelService {
 //    Updates the current checkpoint and adds it to total checkpoint list.
     @Transactional
     public void addCheckpointToParcel(Checkpoint checkpoint, Parcel parcel) {
-        var before = Instant.now();
+//        var before = Instant.now();
         findByID(parcel.getParcel_id()).get().addCheckpoint(checkpoint);
-        var duration = Duration.between(before, Instant.now()).toNanos();
-        parcelEval.add(duration + ", shipment find");
+//        var duration = Duration.between(before, Instant.now()).toNanos();
+//        parcelEval.add(duration + ", checkpoint create");
 
 
 //            checkpoint.setParcel(parcel);
@@ -62,7 +62,6 @@ public class ParcelService {
             parcelRepository.save(parcel);
             var duration = Duration.between(before, Instant.now()).toMillis();
             parcelEval.add(duration + ", parcel create");
-            System.out.println("Parcel has been added to database");
         }
     }
 
