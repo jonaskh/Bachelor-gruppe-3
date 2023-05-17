@@ -21,6 +21,10 @@ class APIService {
         return axios.get(  BACKEND_URL + "/shipment/eval");
     }
 
+    getShipmentsFromCustomer = (cellData) => {
+        return axios.get("http://localhost:8080/shipment" + "/" + cellData)
+    }
+
     getCheckpointEval() {
         return axios.get(  BACKEND_URL + "/checkpoint/eval");
     }

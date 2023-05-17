@@ -1,5 +1,6 @@
 package no.ntnu.bachelor_group3.dataaccessevaluation.Data;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.javafaker.Faker;
 import jakarta.persistence.*;
 
@@ -7,6 +8,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "customer")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Customer {
 
     private static Long counter = 1L;

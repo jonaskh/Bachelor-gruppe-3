@@ -6,7 +6,7 @@ import apiServiceInstance from "../APIService";
 function CustomerTable() {
 
     const [customerData, setCustomerData] = useState([]);
-    const [terminalData, setTerminalData] = useState([]);
+    const [shipmentData, setShipmentData] = useState([]);
 
 
     useEffect(() => {
@@ -21,15 +21,16 @@ function CustomerTable() {
 
     const [currentPage, setCurrentPage] = useState(1);
 
-    // const handleCellClick = (cellData) => {
-    //     console.log(cellData); // Or perform other actions with the cell data
-    //     apiServiceInstance.getCustomerParcels(cellData)
-    //         .then(response => {
-    //             setTerminalData(response.data);
-    //             console.log(cellData); // Or perform other actions with the cell data
-    //         })
-    //         .catch(error => console.log(error));
-    // };
+    const handleCellClick = (cellData) => {
+        console.log(cellData); // Or perform other actions with the cell data
+        apiServiceInstance.getShipmentsFromCustomer(parseInt(cellData))
+            .then(response => {
+                setShipmentData(response.data);
+                console.log(response.data);
+                // Or perform other actions with the cell data
+            })
+            .catch(error => console.log(error));
+    };
 
 
 
@@ -40,9 +41,10 @@ function CustomerTable() {
         { dataField: 'zip_code', text: 'Zip Code' },
     ];
 
-    const terminalColumns = [
-        {dataField: 'terminalID', text: 'Terminal Id'},
-        {dataField: 'address', text: 'Address'}
+    const shipmentColumns = [
+        {dataField: 'shipment_id', text: 'Shipment Id'},
+        {dataField: 'receiverID', text: 'Id of receiver'},
+        {dataField: 'totalWeight', text: 'Total weight in KG'},
     ];
 
     return (
@@ -59,7 +61,7 @@ function CustomerTable() {
                 {customerData.slice((currentPage - 1) * 20, currentPage * 20).map((row) => (
                     <tr key={row.ID}>
                         {customerColumns.map((column) => (
-                            <td key={column.dataField}>
+                            <td key={column.dataField} onClick={() => handleCellClick(row[column.dataField])}>
                                 {row[column.dataField]}
                             </td>
                         ))}
@@ -87,6 +89,28 @@ function CustomerTable() {
                     onClick={() => setCurrentPage(currentPage + 1)}
                 />
             </Pagination>
+
+            <Table striped bordered hover size="sm">
+                <thead>
+                <tr>
+                    {shipmentColumns.map((column) => (
+                        <th key={column.dataField}>{column.text}</th>
+                    ))}
+                </tr>
+                </thead>
+                <tbody>
+                {shipmentData.slice((currentPage - 1) * 20, currentPage * 20).map((row) => (
+                    <tr key={row.ID}>
+                        {shipmentColumns.map((column) => (
+                            <td key={column.dataField}>
+                                {row[column.dataField]}
+                            </td>
+                        ))}
+                    </tr>
+                ))}
+
+                </tbody>
+            </Table>
 
         </>
     );
