@@ -15,7 +15,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CheckpointService {
+public class CheckpointDAO {
 
     private static final String GET_CHECKPOINT_BY_ID_QUERY = "SELECT * FROM checkpoint WHERE checkpoint_id = ?";
     private static final String INSERT_CHECKPOINT_QUERY = "INSERT INTO checkpoint (cost, location, time, parcel_id, terminal_id, type) VALUES (?, ?, ?, ?, ?, ?)";
@@ -25,22 +25,22 @@ public class CheckpointService {
 
     public static List<String> executionTimeList;
 
-    public CheckpointService() {
+    public CheckpointDAO() {
         if (executionTimeList == null) {
             executionTimeList = new ArrayList<>();
         }
     }
 
-    public Checkpoint getCheckpointById(int checkpointId, ParcelService parcelService, ShipmentService shipmentService,
-                                        CustomerService customerService, TerminalService terminalService, Connection conn) throws SQLException {
+    public Checkpoint getCheckpointById(int checkpointId, ParcelDAO parcelDAO, ShipmentDAO shipmentDAO,
+                                        CustomerDAO customerDAO, TerminalDAO terminalDAO, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(GET_CHECKPOINT_BY_ID_QUERY);
         stmt.setInt(1, checkpointId);
         ResultSet rs = stmt.executeQuery();
         int typeInt = rs.getInt("type");
         Checkpoint.CheckpointType type = Checkpoint.CheckpointType.fromInteger(typeInt);
-        Parcel parcel = parcelService.getParcelById(rs.getLong("parcel_id"),
-                customerService, shipmentService, conn);
-        Terminal terminal = terminalService.getTerminalById(rs.getInt("terminal_id"), conn);
+        Parcel parcel = parcelDAO.getParcelById(rs.getLong("parcel_id"),
+                customerDAO, shipmentDAO, conn);
+        Terminal terminal = terminalDAO.getTerminalById(rs.getInt("terminal_id"), conn);
         if (rs.next()) {
             Checkpoint checkpoint = new Checkpoint(rs.getLong("checkpoint_id"), rs.getFloat("cost"),
                     rs.getString("location"), parcel, terminal, type);
@@ -49,8 +49,8 @@ public class CheckpointService {
         return null;
     }
 
-    public List<Checkpoint> getCheckpointsByParcelId(Long parcelId, ParcelService parcelService, ShipmentService shipmentService,
-                                                     CustomerService customerService, TerminalService terminalService, Connection conn) {
+    public List<Checkpoint> getCheckpointsByParcelId(Long parcelId, ParcelDAO parcelDAO, ShipmentDAO shipmentDAO,
+                                                     CustomerDAO customerDAO, TerminalDAO terminalDAO, Connection conn) {
         List<Checkpoint> checkpoints = new ArrayList<>();
 
         try (PreparedStatement stmt = conn.prepareStatement(GET_CHECKPOINTS_FROM_PARCEL)) {
@@ -60,9 +60,9 @@ public class CheckpointService {
             while (rs.next()) {
                 int typeInt = rs.getInt("type");
                 Checkpoint.CheckpointType type = Checkpoint.CheckpointType.fromInteger(typeInt);
-                Parcel parcel = parcelService.getParcelById(rs.getLong("parcel_id"),
-                        customerService, shipmentService, conn);
-                Terminal terminal = terminalService.getTerminalById(rs.getInt("terminal_id"), conn);
+                Parcel parcel = parcelDAO.getParcelById(rs.getLong("parcel_id"),
+                        customerDAO, shipmentDAO, conn);
+                Terminal terminal = terminalDAO.getTerminalById(rs.getInt("terminal_id"), conn);
 
                 Checkpoint checkpoint = new Checkpoint(rs.getLong("checkpoint_id"), rs.getFloat("cost"),
                         rs.getString("location"), parcel, terminal, type);
@@ -88,6 +88,8 @@ public class CheckpointService {
             stmt.setLong(4, checkpoint.getParcel().getId());
             if (checkpoint.getTerminal() != null) {
                 stmt.setLong(5, checkpoint.getTerminal().getId());
+            } else {
+                stmt.setNull(5, 1);
             }
             stmt.setInt(6, checkpoint.getType().ordinal());
             var startTime = Instant.now();

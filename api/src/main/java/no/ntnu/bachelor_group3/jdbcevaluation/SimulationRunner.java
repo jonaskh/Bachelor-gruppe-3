@@ -25,7 +25,7 @@ public class SimulationRunner {
     private ScheduledExecutorService findShipmentInCustomerService = Executors.newScheduledThreadPool(10);
     private ScheduledExecutorService findShipmentsInTerminalService = Executors.newScheduledThreadPool(2);
 
-    private final ArrayBlockingQueue<Shipment> queue = new ArrayBlockingQueue<>(50);
+    private final ArrayBlockingQueue<Shipment> queue = new ArrayBlockingQueue<>(1000);
 
 
     public SimulationRunner(DatabaseManager db) {
@@ -39,7 +39,7 @@ public class SimulationRunner {
             Long payerId = db.saveCustomer(receiver);
 
         System.out.println("Starting simulation...");
-            for (int i = 0; i < 50; i++) {
+            for (int i = 0; i < 1000; i++) {
                 Shipment shipment = new Shipment(0L, sender, sender, receiver, 1.2f);
                 AddShipmentsRunnable shipmentsRunnable = new AddShipmentsRunnable(shipment, db);
                 try {
@@ -119,42 +119,6 @@ public class SimulationRunner {
 
 
         }
-
-
-    public void realTimeConverter() {
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-        Calendar calendar = Calendar.getInstance();
-        int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
-        String[] daysOfWeek = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-        long previousElapsedSeconds = -1;
-        while (stopWatch.getTime() < 30000) { // 30 seconds in milliseconds
-
-            long elapsedSeconds = stopWatch.getTime();
-            stopWatch.split();
-            if (elapsedSeconds != previousElapsedSeconds) {
-                if (((elapsedSeconds / 1000) != (previousElapsedSeconds / 1000)) && calendar.get(Calendar.DAY_OF_MONTH) != currentDay) {
-                    previousElapsedSeconds = stopWatch.getSplitTime();
-                    currentDay = calendar.get(Calendar.DAY_OF_MONTH);
-                    int dayOfWeek = getDayOfWeek(calendar.getTime());
-                    System.out.println("Today is " + daysOfWeek[dayOfWeek - 1]);
-                } else {
-                    previousElapsedSeconds = elapsedSeconds;
-                }
-            }
-            calendar.setTime(new Date(stopWatch.getSplitTime() * 24 * 60 * 60 * 1000)); // Set the calendar time based on the elapsed time
-            stopWatch.unsplit();
-
-        }
-        stopWatch.stop();
-
-    }
-
-    private static int getDayOfWeek(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        return calendar.get(Calendar.DAY_OF_WEEK);
-    }
 }
 
 

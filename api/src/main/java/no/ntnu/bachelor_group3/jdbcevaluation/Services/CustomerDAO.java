@@ -10,14 +10,14 @@ import java.sql.Statement;
 import java.time.Duration;
 import java.time.Instant;
 
-public class CustomerService {
+public class CustomerDAO {
 
     private static final String GET_CUSTOMER_BY_ID_QUERY = "SELECT * FROM customer WHERE customer_id = ?";
     private static final String INSERT_CUSTOMER_QUERY = "INSERT INTO customer (name, address, zip_code) VALUES (?, ?, ?)";
     private static final String UPDATE_CUSTOMER_QUERY = "UPDATE customer SET name = ?, address = ?, zip_code = ? WHERE customer_id = ?";
     private static final String DELETE_CUSTOMER_QUERY = "DELETE FROM customer WHERE customer_id = ?";
 
-    public CustomerService() {}
+    public CustomerDAO() {}
 
     /**
      * Returns a customer from the customer table if it exists

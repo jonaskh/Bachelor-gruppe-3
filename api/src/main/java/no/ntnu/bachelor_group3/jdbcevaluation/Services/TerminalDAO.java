@@ -8,9 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class TerminalService {
+public class TerminalDAO {
 
-    public TerminalService() {}
+    public TerminalDAO() {}
 
     public Terminal getTerminalById(int terminalId, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM terminal WHERE terminal_id = ?");
@@ -55,15 +55,7 @@ public class TerminalService {
             stmt = conn.prepareStatement("INSERT INTO terminal (address) VALUES (?)");
             stmt.setString(1, terminal.getLocation());
             int rowsInserted = stmt.executeUpdate();
-            if (rowsInserted > 0) {
-                // Run a separate query to get the last inserted ID
-                try (Statement stmt2 = conn.createStatement();
-                     ResultSet rs = stmt2.executeQuery("SELECT DBINFO('sqlca.sqlerrd1') FROM systables WHERE tabid=1")) {
-                    if (rs.next()) {
-                        id = rs.getLong(1);
-                    }
-                }
-            }
+
         } else {
             // This is an existing terminal, so update it in the database
             stmt = conn.prepareStatement("UPDATE terminal SET address = ? WHERE terminal_id = ?");
