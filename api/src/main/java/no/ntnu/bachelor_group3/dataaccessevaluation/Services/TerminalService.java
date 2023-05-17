@@ -61,6 +61,7 @@ public class TerminalService {
         }
     }
 
+    @Transactional
     public void addShipment(Shipment shipment, Terminal terminal) {
         var before = Instant.now();
         findByID(terminal.getTerminal_id()).addShipment(shipment);

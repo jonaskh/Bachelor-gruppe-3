@@ -1,0 +1,12 @@
+-------------------------------------------------------------------------------
+Test set: no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.CustomerTests.TestAllEntities
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.109 s <<< FAILURE! - in no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.CustomerTests.TestAllEntities
+addAll  Time elapsed: 0.106 s  <<< ERROR!
+org.springframework.dao.InvalidDataAccessApiUsageException: org.hibernate.TransientPropertyValueException: object references an unsaved transient instance - save the transient instance before flushing : no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment.payer -> no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer
+	at no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.CustomerTests.TestAllEntities.addAll(TestAllEntities.java:42)
+Caused by: java.lang.IllegalStateException: org.hibernate.TransientPropertyValueException: object references an unsaved transient instance - save the transient instance before flushing : no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment.payer -> no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer
+	at no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.CustomerTests.TestAllEntities.addAll(TestAllEntities.java:42)
+Caused by: org.hibernate.TransientPropertyValueException: object references an unsaved transient instance - save the transient instance before flushing : no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment.payer -> no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer
+	at no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.CustomerTests.TestAllEntities.addAll(TestAllEntities.java:42)
+
