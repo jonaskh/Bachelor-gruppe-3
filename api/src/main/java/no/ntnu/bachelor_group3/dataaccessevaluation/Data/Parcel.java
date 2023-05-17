@@ -10,11 +10,7 @@ import java.util.List;
 @Table(name = "parcel")
 public class Parcel {
 
-
-
-    private double weight;
-
-    private int weight_class;
+    private int weight;
 
     private static Long counter = 1L;
 
@@ -36,14 +32,12 @@ public class Parcel {
         this.parcel_id = counter++;
     }
 
-    public Parcel(Shipment shipment, double weight) {
-//        this.shipment = shipment;
+    public Parcel(Shipment shipment, int weight) {
         this.parcel_id = counter++;
         this.weight = weight;
-        setWeightClass();
     }
 
-    public double getWeight() {
+    public int getWeight() {
         return weight;
     }
 
@@ -68,25 +62,6 @@ public class Parcel {
             cost += checkpoint.getCost() * this.weight;
         }
         return cost;
-    }
-
-    //TODO: check performance
-    public void setWeightClass() {
-        if (this.weight < 1) {
-            this.weight_class = 1;
-        }
-        if (1 < this.weight && this.weight < 5) {
-            this.weight_class = 2;
-        }
-        if (5 < this.weight && this.weight < 10) {
-            this.weight_class = 3;
-        }
-        if (10 < this.weight && this.weight < 20) {
-            this.weight_class = 4;
-        }
-        if (this.weight > 20) {
-            this.weight_class = 5;
-        }
     }
 
     public void addCheckpoint(Checkpoint checkpoint) {

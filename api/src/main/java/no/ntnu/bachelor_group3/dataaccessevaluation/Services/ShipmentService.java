@@ -42,7 +42,6 @@ public class ShipmentService {
     }
 
 
-    @Transactional
     public Shipment findByID(Long id) {
         var before = Instant.now();
         Optional<Shipment> shipment = shipmentRepository.findById(id);
@@ -113,8 +112,8 @@ public class ShipmentService {
     //returns the last checkpoint for the shipment, used by customer to track location in Runnable
     //assumes all parcels in shipment has same location.
     @Transactional
-    public List<Checkpoint> getLocation(Shipment shipment) {
-        return findByID(shipment.getShipment_id()).getParcels().get(0).getCheckpoints();
+    public Checkpoint getLocation(Shipment shipment) {
+        return findByID(shipment.getShipment_id()).getParcels().get(0).getLastCheckpoint();
     }
 
     @Transactional

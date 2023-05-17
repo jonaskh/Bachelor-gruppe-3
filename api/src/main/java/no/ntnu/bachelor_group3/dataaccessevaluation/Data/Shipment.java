@@ -152,9 +152,8 @@ public class Shipment {
         Random random = new Random();
         int bound = random.nextInt(5) + 1; //generate random number of parcels added, always add 1 to avoid zero values
 
-
         for (int i = 0; i < 2; i++) {
-            double weight = random.nextInt(1000) / 100.0; //returns a double value up to 10kg with 2 decimal places
+            int weight = random.nextInt(10); //returns a double value up to 10kg with 2 decimal places
             Parcel parcel = new Parcel(this, weight);
             addParcel(parcel);
         }

@@ -11,12 +11,13 @@ import no.ntnu.bachelor_group3.dataaccessevaluation.Services.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Random;
 import java.util.concurrent.*;
 
 public class SimulationRunner {
 
 
-    private final int SHIPMENTS = 500;
+    private final int SHIPMENTS = 1000;
     private final ShipmentService shipmentService;
     private final CustomerService customerService;
     private final TerminalService terminalService;
@@ -42,6 +43,8 @@ public class SimulationRunner {
         this.checkpointService = checkpointService;
     }
 
+    Random random = new Random();
+
     public void simulate() {
         System.out.println("Starting simulation...");
 
@@ -60,7 +63,7 @@ public class SimulationRunner {
         }
 
         try {
-            Thread.sleep(2000);
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -77,12 +80,18 @@ public class SimulationRunner {
             }
         }
 
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
 
 //        to allow the other threads to let shipments be added before starting
 
         //run find shipment location after a 0.5 second delay every second to simulate higher load.
-        for (int k = 0; k < 5; k++) {
-            findLocationofShipmentExecutor.scheduleAtFixedRate(new FindShipmentRunnable(shipmentService, shipmentService.findByID(1L)), 0, 1000, TimeUnit.MILLISECONDS);
+        for (int k = 0; k < 20; k++) {
+            findLocationofShipmentExecutor.scheduleAtFixedRate(new FindShipmentRunnable(shipmentService, shipmentService.findByID(random.nextLong(size))), 0, 500, TimeUnit.MILLISECONDS);
         }
 
 
@@ -91,11 +100,7 @@ public class SimulationRunner {
 //            updateCustomerExecutor.scheduleAtFixedRate(new TerminalShipmentsRunnable(shipmentService, terminalService, terminalService.returnTerminalFromZip("6300")), 0, 500, TimeUnit.MILLISECONDS);
 //        }
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+
         try {
             //stops the executors from accepting new tasks
             updateShipmentExecutor.shutdown();
@@ -109,9 +114,10 @@ public class SimulationRunner {
             //stops the thread pools if no more tasks, an exception occurs or timeout.
             updateShipmentExecutor.awaitTermination(2, TimeUnit.MINUTES);
 
-            findLocationofShipmentExecutor.awaitTermination(2, TimeUnit.MINUTES);
             updateCustomerExecutor.awaitTermination(2, TimeUnit.MINUTES);
             addShipmentsExecutor.awaitTermination(2, TimeUnit.MINUTES);
+            findLocationofShipmentExecutor.awaitTermination(2, TimeUnit.MINUTES);
+
             System.out.println("Adding done");
 
 

@@ -41,7 +41,7 @@ public class Checkpoint {
 
     private String location;
 
-    private double cost;
+    private int cost;
 
     public Checkpoint() {
     }
@@ -52,10 +52,10 @@ public class Checkpoint {
         this.type = type;
         switch (type) {
             case Collected -> this.cost = 1;
-            case ReceivedFinalTerminal, ReceivedFirstTerminal -> this.cost = 1.25;
-            case LoadedOnCar -> this.cost = 1.5;
-            case UnderDelivery -> this.cost = 1.8;
-            case Delivered -> this.cost = 2;
+            case ReceivedFinalTerminal, ReceivedFirstTerminal -> this.cost = 5;
+            case LoadedOnCar -> this.cost = 2;
+            case UnderDelivery -> this.cost = 3;
+            case Delivered -> this.cost = 4;
         }
     }
 
@@ -65,10 +65,10 @@ public class Checkpoint {
         this.terminal = terminal;
         switch (type) {
             case Collected -> this.cost = 1;
-            case ReceivedFinalTerminal, ReceivedFirstTerminal -> this.cost = 1.25;
-            case LoadedOnCar -> this.cost = 1.5;
-            case UnderDelivery -> this.cost = 1.8;
-            case Delivered -> this.cost = 2;
+            case ReceivedFinalTerminal, ReceivedFirstTerminal -> this.cost = 5;
+            case LoadedOnCar -> this.cost = 2;
+            case UnderDelivery -> this.cost = 3;
+            case Delivered -> this.cost = 4;
         }
     }
 
@@ -99,7 +99,7 @@ public class Checkpoint {
     }
 
 
-    public double getCost() {
+    public int getCost() {
         return cost;
     }
 
