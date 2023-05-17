@@ -61,34 +61,6 @@ public class TerminalService {
         }
     }
 
-    @Transactional
-    public void addShipment(Shipment shipment, Terminal terminal) {
-        var before = Instant.now();
-        findByID(terminal.getTerminal_id()).addShipment(shipment);
-        var duration = Duration.between(before, Instant.now());
-        terminalEvals.add(duration + " terminal update");
-    }
-
-    @Transactional
-    public void addCheckpoint(Checkpoint checkpoint, Terminal terminal) {
-        checkpoint.getTerminal().addCheckpoint(checkpoint);
-    }
-
-
-
-    public long getShipmentsinTerminal(int terminal_id) {
-        long count = 0;
-        if (findByID(terminal_id) != null) {
-            Terminal terminal = findByID(terminal_id);
-            count = terminal.getShipmentNumber();
-        } else {
-            System.out.println("not found terminal");
-        }
-        return count;
-    }
-
-
-
     @jakarta.transaction.Transactional
     public long count() {
         var before = Instant.now();
@@ -99,13 +71,6 @@ public class TerminalService {
     }
 
     //TODO: Find all checkpoints at terminal from id
-
-
-
-    @Transactional
-    public long shipmentsInTerminal(Terminal terminal) {
-        return terminal.getShipmentNumber();
-    }
 
 
     public Terminal returnTerminalFromZip(String zip) {

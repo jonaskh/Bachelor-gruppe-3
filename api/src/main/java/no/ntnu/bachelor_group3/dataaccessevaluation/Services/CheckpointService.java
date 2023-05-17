@@ -41,18 +41,6 @@ public class CheckpointService {
         checkpointEvals.add(duration);
     }
 
-    /*
-    Called by terminalService to calculate how many shipments have passed through a terminal.
-     */
-    @jakarta.transaction.Transactional
-    public long getAllShipmentsThroughTerminal(String loc) {
-        var before = Instant.now();
-        long count = checkpointRepository.findAllByLocation(loc);
-        var duration = Duration.between(before, Instant.now()).toNanos();
-        checkpointEvals.add(duration + " , terminal find all shipments");
-        return count;
-    }
-
     @jakarta.transaction.Transactional
     public long count() {
         var before = Instant.now();
@@ -62,10 +50,5 @@ public class CheckpointService {
         return count;
     }
 
-//    public void addParcel(Parcel parcel, Checkpoint checkpoint) {
-//        var before = Instant.now();
-//        checkpoint.setParcel(parcel);
-//        var duration = Duration.between(before, Instant.now()).toNanos();
-//        checkpointEvals.add(duration + ", shipment find");
-//    }
+
 }

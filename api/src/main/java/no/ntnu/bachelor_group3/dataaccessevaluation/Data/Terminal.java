@@ -10,25 +10,11 @@ public class Terminal {
 
     private static Integer counter = 1;
 
-
     @Id
     private Integer terminal_id;
 
     private String address;
 
-    //contains all checkpoints that are registered in a terminal
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "checkpoint_id_terminal")
-    private List<Checkpoint> checkpoints = new ArrayList<>();
-
-
-    //list of shipments for a period of time. Stored in a queue for first in first out.
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "shipment_terminals",
-            joinColumns = { @JoinColumn(name = "terminal_id") },
-            inverseJoinColumns = { @JoinColumn(name = "shipment_id") })
-    private List<Shipment> shipments_passed = new ArrayList<>();
 
     public Terminal() {
     }
@@ -36,10 +22,6 @@ public class Terminal {
     public Terminal(String address) {
         this.terminal_id = counter++;
         this.address = address;
-    }
-
-    public List<Checkpoint> getCheckpoints() {
-        return checkpoints;
     }
 
     public Integer getTerminal_id() {
@@ -57,47 +39,6 @@ public class Terminal {
     public void setAddress(String address) {
         this.address = address;
     }
-
-    public List<Shipment> getShipments_passed() {
-        return shipments_passed;
-    }
-
-    public long getShipmentNumber() {
-        return shipments_passed.size();
-    }
-
-    public long getCheckpointNumber() {
-        return checkpoints.size();
-    }
-
-    public void addShipment(Shipment shipment) {
-        shipments_passed.add(shipment);
-    }
-//    public void addShipment(Shipment shipment) {
-//        boolean exists = false;
-//        if (!shipments_passed.isEmpty()) {
-//            for (Shipment ship : shipments_passed) {
-//                if (ship == shipment) {
-//                    exists = true;
-//                }
-//                if (!exists) {
-//                    shipments_passed.add(shipment);
-//                    System.out.println("Added shipment to terminal");
-//                } else {
-//                    System.out.println("Shipment already exists");
-//                }
-//            }
-//        } else {
-//            shipments_passed.add(shipment);
-//        }
-//    }
-
-    public void addCheckpoint(Checkpoint cp) {
-        checkpoints.add(cp);
-    }
-
-
-
 
     @Override
     public String toString() {

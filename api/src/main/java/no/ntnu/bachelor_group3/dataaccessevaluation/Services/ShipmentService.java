@@ -95,35 +95,12 @@ public class ShipmentService {
 
         checkpointService.addCheckpoint(cp2);
         checkpointService.addCheckpoint(checkpoint);
-        parcelService.addCheckpointToParcel(checkpoint,shipment.getParcels().get(0));
-        parcelService.addCheckpointToParcel(cp2,shipment.getParcels().get(1));
-
-        //adds the shipment to terminal if checkpoint is at a terminal and has not already passed it.
-        if (checkpoint.getTerminal() != null) {
-            addTerminal(checkpoint.getTerminal(), shipment);
-            terminalService.addShipment(shipment, checkpoint.getTerminal());
-//            terminalService.addCheckpoint(cp2, cp2.getTerminal());
-//
-//            terminalService.addCheckpoint(checkpoint, checkpoint.getTerminal());
-        }
-    }
-
-    public Checkpoint getLastCheckpoint(Shipment shipment) {
-        if (findByID(shipment.getShipment_id()) != null) {
-            return shipment.getParcels().get(0).getLastCheckpoint();
-        } else {
-            return null;
-        }
+        parcelService.addCheckpointToParcel(checkpoint, shipment.getParcels().get(0));
+        parcelService.addCheckpointToParcel(cp2, shipment.getParcels().get(1));
     }
 
 
-    @Transactional
-    public void addTerminal(Terminal terminal, Shipment shipment) {
-        var before = Instant.now();
-        findByID(shipment.getShipment_id()).addTerminal(terminal);
-        var duration = Duration.between(before, Instant.now()).toNanos();
-        shipmentEvals.add(duration + " , shipment update");
-    }
+
 
     //returns the last checkpoint for the shipment, used by customer to track location in Runnable
     //assumes all parcels in shipment has same location.

@@ -30,6 +30,7 @@ public class UpdateShipmentRunnable implements Runnable{
         this.shipment = shipment;
         this.shipmentService = shipmentService;
         this.terminalService = terminalService;
+
         this.cp1 = new Checkpoint(shipment.getSender().getZip_code(), Checkpoint.CheckpointType.Collected);
         this.cp2 = new Checkpoint(shipment.getFirstTerminal(), Checkpoint.CheckpointType.ReceivedFirstTerminal);
         this.cp3 = new Checkpoint(shipment.getFirstTerminal(), Checkpoint.CheckpointType.LoadedOnCar);
@@ -42,6 +43,7 @@ public class UpdateShipmentRunnable implements Runnable{
         this.cp11 = new Checkpoint(shipment.getFinalTerminal(), Checkpoint.CheckpointType.ReceivedFinalTerminal);
         this.cp12 = new Checkpoint(shipment.getFinalTerminal(), Checkpoint.CheckpointType.LoadedOnCar);
         this.cp13 = new Checkpoint(shipment.getReceiver().getAddress(), Checkpoint.CheckpointType.UnderDelivery);
+
 
     }
 
@@ -75,15 +77,14 @@ public class UpdateShipmentRunnable implements Runnable{
      * to the final terminal. The time is relative to real time.
      */
     public void catchRun() {
-
-        shipmentService.addShipment(shipment);
-
         shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp1, cp8);
         shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp2, cp9);
         shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp3, cp10);
         shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp4,cp11);
         shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp5,cp12);
         shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp7,cp13);
+
+
         shipmentService.setDelivered(shipment);
     }
 }

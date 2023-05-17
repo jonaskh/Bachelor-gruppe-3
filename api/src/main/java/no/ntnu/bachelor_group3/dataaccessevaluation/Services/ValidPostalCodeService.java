@@ -29,20 +29,6 @@ public class ValidPostalCodeService {
         return validPostalCodeRepository.findByPostalCode(zip).orElse(null);
     }
 
-//    public String addValidPostalCode() {
-//        int existing = 0;
-//        for (Map.Entry<String, ValidPostalCode> set : ReadCSVFile().entrySet()) {
-//            if (validPostalCodeRepository.findByPostalCode(set.getPostalCode()).isPresent()) {
-//                existing++;
-//            } else {
-//                validPostalCodeRepository.save(validPostalCode1);
-//
-//            }
-//        }
-//        return "Already existing zip codes: " + existing;
-//    }
-
-
     @Transactional
     public void createTerminals(){
 

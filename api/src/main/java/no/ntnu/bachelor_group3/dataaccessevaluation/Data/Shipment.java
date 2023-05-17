@@ -23,10 +23,6 @@ public class Shipment {
     @JoinColumn(name = "shipment_id")
     private List<Parcel> parcels = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "shipments_passed", fetch = FetchType.EAGER)
-    private List<Terminal> terminals = new ArrayList<>();
-
-
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "sender_id")
     private Customer sender;
@@ -72,17 +68,6 @@ public class Shipment {
         this.payer = payer;
         addParcels();
 
-    }
-
-
-    //TODO: add total cost => weight * checkpoint cost
-
-
-    //TODO: Set terminals based on zip codes
-
-
-    public void addTerminal(Terminal terminal) {
-        terminals.add(terminal);
     }
 
     public Terminal getFirstTerminal() {

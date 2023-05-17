@@ -12,12 +12,6 @@ import java.util.List;
 @Table(name = "checkpoint")
 public class Checkpoint {
 
-//    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    @JoinColumn(name = "parcel_id")
-//    private Parcel parcel;
-
-    //further methods and fields excluded
-
 
 
     //format used for the timestamps
@@ -34,15 +28,12 @@ public class Checkpoint {
 
 
 
-    private LocalDateTime time;
 
     @Version
     @Column(name = "optlock", columnDefinition = "integer DEFAULT 0", nullable = false)
     private long version = 0L;
 
-//    public void setParcel(Parcel parcel) {
-//        parcels.add(parcel);
-//    }
+
 
     public enum CheckpointType{Collected, ReceivedFirstTerminal,LoadedOnCar,ReceivedFinalTerminal,UnderDelivery,Delivered}
 
@@ -51,12 +42,12 @@ public class Checkpoint {
     private String location;
 
     private double cost;
+
     public Checkpoint() {
     }
 
     public Checkpoint(String location, CheckpointType type) {
         this.location = location;
-        this.time = LocalDateTime.now();
         this.checkpoint_id = counter++;
         this.type = type;
         switch (type) {
@@ -69,7 +60,6 @@ public class Checkpoint {
     }
 
     public Checkpoint(Terminal terminal, CheckpointType type) {
-        this.time = LocalDateTime.now();
         this.checkpoint_id = counter++;
         this.type = type;
         this.terminal = terminal;
@@ -81,9 +71,7 @@ public class Checkpoint {
             case Delivered -> this.cost = 2;
         }
     }
-//    public void setParcel(Parcel parcel) {
-//        this.parcel = parcel;
-//    }
+
 
     public void setType(CheckpointType type) {
         this.type = type;
@@ -110,9 +98,6 @@ public class Checkpoint {
         return this.checkpoint_id;
     }
 
-    public String getTime() {
-        return sdf3.format(time);
-    }
 
     public double getCost() {
         return cost;
@@ -124,8 +109,6 @@ public class Checkpoint {
                 "checkpoint_id=" + checkpoint_id +
                 ", type=" + type +
                 ", cost=" + cost +
-//                ", terminal=" + terminal +
-//                ", time=" + time +
                 '}';
     }
 }

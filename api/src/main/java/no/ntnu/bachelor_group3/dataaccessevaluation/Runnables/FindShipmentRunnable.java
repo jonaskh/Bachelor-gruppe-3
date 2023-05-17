@@ -25,6 +25,6 @@ public class FindShipmentRunnable implements Runnable {
     }
 
     private void catchRun() {
-        System.out.println(shipmentService.findByID(shipment.getShipment_id()).getParcels().get(0).getLastCheckpoint());
+        System.out.println("lats location: " + shipmentService.findByID(shipment.getShipment_id()).getParcels().get(0).getLastCheckpoint());
     }
 }
