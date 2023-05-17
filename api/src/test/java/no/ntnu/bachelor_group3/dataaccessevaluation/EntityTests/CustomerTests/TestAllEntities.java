@@ -3,7 +3,6 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.CustomerTests;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
 
-import no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.TestConfiguration;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.CustomerService;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ParcelService;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.ShipmentService;

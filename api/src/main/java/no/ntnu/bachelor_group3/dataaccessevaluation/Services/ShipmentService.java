@@ -35,8 +35,6 @@ public class ShipmentService {
     @Autowired
     private TerminalService terminalService;
 
-
-
     private static List<String> shipmentEvals = new ArrayList<>();
 
 
@@ -104,9 +102,9 @@ public class ShipmentService {
         if (checkpoint.getTerminal() != null) {
             addTerminal(checkpoint.getTerminal(), shipment);
             terminalService.addShipment(shipment, checkpoint.getTerminal());
-            terminalService.addCheckpoint(cp2, cp2.getTerminal());
-
-            terminalService.addCheckpoint(checkpoint, checkpoint.getTerminal());
+//            terminalService.addCheckpoint(cp2, cp2.getTerminal());
+//
+//            terminalService.addCheckpoint(checkpoint, checkpoint.getTerminal());
         }
     }
 
@@ -122,7 +120,7 @@ public class ShipmentService {
     @Transactional
     public void addTerminal(Terminal terminal, Shipment shipment) {
         var before = Instant.now();
-        shipment.addTerminal(terminal);
+        findByID(shipment.getShipment_id()).addTerminal(terminal);
         var duration = Duration.between(before, Instant.now()).toNanos();
         shipmentEvals.add(duration + " , shipment update");
     }

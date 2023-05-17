@@ -23,7 +23,7 @@ public class Shipment {
     @JoinColumn(name = "shipment_id")
     private List<Parcel> parcels = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "shipments_passed", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "shipments_passed", fetch = FetchType.EAGER)
     private List<Terminal> terminals = new ArrayList<>();
 
 

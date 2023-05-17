@@ -58,7 +58,7 @@ public class SimulationRunner {
 
         //run find shipment location after a 0.5 second delay every second to simulate higher load.
         for (int k = 0; k < 5; k++) {
-            findShipmentInCustomerService.scheduleAtFixedRate(new FindShipmentRunnable(shipmentService, shipmentService.findByID(1L)), 100, 1000, TimeUnit.MILLISECONDS);
+            findShipmentInCustomerService.scheduleAtFixedRate(new FindShipmentRunnable(shipmentService, shipmentService.findByID(1L)), 0, 1000, TimeUnit.MILLISECONDS);
         }
 
 
@@ -66,9 +66,6 @@ public class SimulationRunner {
         for (int j = 0; j < 5; j++) {
             findShipmentsInTerminalService.scheduleAtFixedRate(new TerminalShipmentsRunnable(shipmentService, terminalService, terminalService.returnTerminalFromZip("6300")), 0, 500, TimeUnit.MILLISECONDS);
         }
-
-
-
 
         try {
             //stops the executors from accepting new tasks
