@@ -14,7 +14,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 
 @Service
@@ -28,9 +27,6 @@ public class ShipmentService {
 
     @Autowired
     private CheckpointService checkpointService;
-
-    @Autowired
-    private CustomerService customerService;
 
     @Autowired
     private TerminalService terminalService;
@@ -55,6 +51,18 @@ public class ShipmentService {
         var duration = Duration.between(before, Instant.now()).toNanos();
         shipmentEvals.add(duration + ", shipment: " + shipment.get().getShipment_id() + ", find");
         return shipment.orElse(null);
+    }
+
+    public List<Shipment> findByCustomerID(Long id) {
+        List<Shipment> customerShipmentList = new ArrayList<>();
+        Iterable<Shipment> shipmentList = shipmentRepository.findAll();
+        for(Shipment shipment: shipmentList){
+            if(shipment.getPayerID() == id) {
+                customerShipmentList.add(shipment);
+            }
+        }
+
+        return customerShipmentList;
     }
 
     public long returnNrOfParcels(Shipment ship) {

@@ -34,7 +34,6 @@ public class Checkpoint {
 
 
 
-    private LocalDateTime time;
 
     @Version
     @Column(name = "optlock", columnDefinition = "integer DEFAULT 0", nullable = false)
@@ -56,7 +55,6 @@ public class Checkpoint {
 
     public Checkpoint(String location, CheckpointType type) {
         this.location = location;
-        this.time = LocalDateTime.now();
         this.checkpoint_id = counter++;
         this.type = type;
         switch (type) {
@@ -69,7 +67,6 @@ public class Checkpoint {
     }
 
     public Checkpoint(Terminal terminal, CheckpointType type) {
-        this.time = LocalDateTime.now();
         this.checkpoint_id = counter++;
         this.type = type;
         this.terminal = terminal;
@@ -110,9 +107,6 @@ public class Checkpoint {
         return this.checkpoint_id;
     }
 
-    public String getTime() {
-        return sdf3.format(time);
-    }
 
     public double getCost() {
         return cost;
