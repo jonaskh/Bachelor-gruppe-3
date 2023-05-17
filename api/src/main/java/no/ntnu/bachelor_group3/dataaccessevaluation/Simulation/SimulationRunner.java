@@ -21,7 +21,7 @@ public class SimulationRunner {
     private static List<String> evals = new ArrayList<>();
 
 
-    private ExecutorService executor1 = Executors.newFixedThreadPool(10);
+    private ExecutorService executor1 = Executors.newFixedThreadPool(1);
     private ExecutorService updateShipmentsService = Executors.newFixedThreadPool(5);
     private ScheduledExecutorService findShipmentInCustomerService = Executors.newScheduledThreadPool(5);
     private ScheduledExecutorService findShipmentsInTerminalService = Executors.newScheduledThreadPool(5);
@@ -50,16 +50,24 @@ public class SimulationRunner {
             executor1.execute(new UpdateShipmentRunnable(new Shipment(sender, sender, receiver), shipmentService, terminalService));
         }
 
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         //run find shipment location after a 0.5 second delay every second to simulate higher load.
         for (int k = 0; k < 5; k++) {
-            findShipmentInCustomerService.scheduleAtFixedRate(new FindShipmentRunnable(shipmentService, shipmentService.findByID(1L)), 0, 500, TimeUnit.MILLISECONDS);
-
+            findShipmentInCustomerService.scheduleAtFixedRate(new FindShipmentRunnable(shipmentService, shipmentService.findByID(1L)), 100, 1000, TimeUnit.MILLISECONDS);
         }
+
 
         //run find shipments in terminal every second to simulate higher load.
         for (int j = 0; j < 5; j++) {
             findShipmentsInTerminalService.scheduleAtFixedRate(new TerminalShipmentsRunnable(shipmentService, terminalService, terminalService.returnTerminalFromZip("6300")), 0, 500, TimeUnit.MILLISECONDS);
         }
+
+
 
 
         try {
