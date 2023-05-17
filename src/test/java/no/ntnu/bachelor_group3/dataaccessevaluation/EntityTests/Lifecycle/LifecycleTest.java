@@ -3,7 +3,6 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.Lifecycle;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Checkpoint;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Shipment;
-import no.ntnu.bachelor_group3.dataaccessevaluation.Data.Terminal;
 import no.ntnu.bachelor_group3.dataaccessevaluation.EntityTests.TestConfiguration;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Services.*;
 import org.junit.jupiter.api.DisplayName;
@@ -44,22 +43,28 @@ public class LifecycleTest {
 
         customerService.add(sender);
         customerService.add(receiver);
-        shipmentService.cascadingAdd(shipment);
+        shipmentService.addShipment(shipment);
 
         Checkpoint checkpoint = new Checkpoint(sender.getAddress(), Checkpoint.CheckpointType.Collected);
         Checkpoint checkpoint1 = new Checkpoint(shipment.getFirstTerminal(), Checkpoint.CheckpointType.ReceivedFirstTerminal);
         Checkpoint checkpoint2 = new Checkpoint(shipment.getFirstTerminal(), Checkpoint.CheckpointType.LoadedOnCar);
         Checkpoint checkpoint3 = new Checkpoint(shipment.getFinalTerminal(), Checkpoint.CheckpointType.ReceivedFinalTerminal);
         Checkpoint checkpoint4 = new Checkpoint(receiver.getAddress(), Checkpoint.CheckpointType.UnderDelivery);
+        Checkpoint checkpoint5 = new Checkpoint(sender.getAddress(), Checkpoint.CheckpointType.Collected);
+        Checkpoint checkpoint6 = new Checkpoint(shipment.getFirstTerminal(), Checkpoint.CheckpointType.ReceivedFirstTerminal);
+        Checkpoint checkpoint7 = new Checkpoint(shipment.getFirstTerminal(), Checkpoint.CheckpointType.LoadedOnCar);
+        Checkpoint checkpoint8 = new Checkpoint(shipment.getFinalTerminal(), Checkpoint.CheckpointType.ReceivedFinalTerminal);
+        Checkpoint checkpoint9 = new Checkpoint(receiver.getAddress(), Checkpoint.CheckpointType.UnderDelivery);
 
-        shipmentService.updateCheckpointsOnParcels(shipment, checkpoint);
 
-        shipmentService.updateCheckpointsOnParcels(shipment, checkpoint1);
+        shipmentService.updateCheckpointsOnParcels(shipment, checkpoint, checkpoint5);
+
+        shipmentService.updateCheckpointsOnParcels(shipment, checkpoint1, checkpoint6);
 
 
-        shipmentService.updateCheckpointsOnParcels(shipment, checkpoint2);
+        shipmentService.updateCheckpointsOnParcels(shipment, checkpoint2, checkpoint7);
 
-        shipmentService.updateCheckpointsOnParcels(shipment, checkpoint3);
+        shipmentService.updateCheckpointsOnParcels(shipment, checkpoint3, checkpoint8);
 
 
         System.out.println("shipments passed: " + terminalService.returnTerminalFromZip("6300").getShipmentNumber());

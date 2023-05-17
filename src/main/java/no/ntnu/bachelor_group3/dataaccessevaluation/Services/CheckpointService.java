@@ -68,7 +68,7 @@ public class CheckpointService {
         return count;
     }
 
-    public void addParcel(Parcel parcel, Checkpoint checkpoint) {
-        checkpoint.setParcel(parcel);
-    }
+//    public void addParcel(Parcel parcel, Checkpoint checkpoint) {
+//        checkpoint.setParcel(parcel);
+//    }
 }

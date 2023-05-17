@@ -49,7 +49,7 @@ public class CreateCustomerTest {
             customerService.add(customer);
 
             Shipment shipment = new Shipment(customer, customer, customer);
-            shipmentService.add(shipment);
+            shipmentService.addShipment(shipment);
             System.out.println("Customers in db: " + customerService.count());
 
         //    customerService.printShipments(customer);
@@ -66,10 +66,12 @@ public class CreateCustomerTest {
             customerService.add(customer);
 
             Shipment shipment = new Shipment(customer, customer, customer);
-            shipmentService.cascadingAdd(shipment);
+            shipmentService.addShipment(shipment);
             shipment.printParcels();
             Checkpoint checkpoint = new Checkpoint("NTNU", Checkpoint.CheckpointType.Collected);
-            shipmentService.updateCheckpointsOnParcels(shipment, checkpoint);
+            Checkpoint checkpoint2 = new Checkpoint("NTNU", Checkpoint.CheckpointType.Collected);
+
+            shipmentService.updateCheckpointsOnParcels(shipment, checkpoint, checkpoint2);
             shipment.printParcels();
         }
 

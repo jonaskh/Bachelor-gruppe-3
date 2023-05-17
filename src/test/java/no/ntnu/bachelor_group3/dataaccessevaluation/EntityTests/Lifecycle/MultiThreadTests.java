@@ -133,7 +133,7 @@ public class MultiThreadTests {
     public void testFindByIDTimer() {
         Customer customer = new Customer();
         Shipment shipment = new Shipment(customer, customer, customer);
-        shipmentService.cascadingAdd(shipment);
+        shipmentService.addShipment(shipment);
         System.out.println("Positive find: " + shipmentService.findByID(1L));
 
         try {

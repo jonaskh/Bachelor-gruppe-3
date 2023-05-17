@@ -23,22 +23,16 @@ public class Checkpoint {
     @Id
     private Long checkpoint_id;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "terminal_id")
     private Terminal terminal;
-
-    @ManyToMany(mappedBy = "checkpoints", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Parcel> parcels = new ArrayList<>();
-
 
     @Version
     @Column(name = "optlock", columnDefinition = "integer DEFAULT 0", nullable = false)
     private long version = 0L;
 
-    public void setParcel(Parcel parcel) {
-        parcels.add(parcel);
-    }
-
+    //six types of chcekpoints
     public enum CheckpointType{Collected, ReceivedFirstTerminal,LoadedOnCar,ReceivedFinalTerminal,UnderDelivery,Delivered}
 
     private CheckpointType type;

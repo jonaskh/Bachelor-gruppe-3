@@ -55,13 +55,7 @@ public class SimulationRunner {
 
         System.out.println("Starting simulation...");
 
-        for (int i = 0; i < 500; i++) {
-
-//            try {
-//                queue.put(shipment);
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
+        for (int i = 0; i < 50; i++) {
             executor1.execute(new UpdateShipmentRunnable(new Shipment(sender, sender, receiver), shipmentService, terminalService));
         }
 
@@ -76,19 +70,6 @@ public class SimulationRunner {
         for (int j = 0; j < 10; j++) {
             findShipmentsInTerminalService.scheduleAtFixedRate(new TerminalShipmentsRunnable(shipmentService, terminalService, terminalService.returnTerminalFromZip("6300")), 500, 10000, TimeUnit.MILLISECONDS);
         }
-
-
-//        //TODO: queue.take,
-//        int i = 0;
-//        var size = queue.size();
-//        while (i < size) {
-//            try {
-//                updateShipmentsService.execute(new UpdateShipmentRunnable(queue.take(), shipmentService, terminalService));
-//                i++;
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
 
         try {
             //stops the executors from accepting new tasks

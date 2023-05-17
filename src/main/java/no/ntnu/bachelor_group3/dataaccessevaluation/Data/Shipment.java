@@ -131,8 +131,8 @@ public class Shipment {
         return delivered;
     }
 
-    public void setDelivered(boolean delivered) {
-        this.delivered = delivered;
+    public void setDelivered() {
+        this.delivered = true;
     }
 
     public List<Parcel> getParcels() {
@@ -156,9 +156,6 @@ public class Shipment {
     public void addParcel(Parcel parcel) {
 
         this.parcels.add(parcel);
-    }
-
-    public void setDelivered() {
     }
 
     public void addParcels() {

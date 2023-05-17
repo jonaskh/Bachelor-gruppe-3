@@ -3,16 +3,13 @@ package no.ntnu.bachelor_group3.dataaccessevaluation.Services;
 import jakarta.transaction.Transactional;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Data.*;
 import no.ntnu.bachelor_group3.dataaccessevaluation.Repositories.ShipmentRepository;
-import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -21,21 +18,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Service
 public class ShipmentService {
 
-
-
-
     @Autowired
     private ShipmentRepository shipmentRepository;
 
     @Autowired
     private ParcelService parcelService;
-
-
-    @Autowired
-    private CheckpointService checkpointService;
-
-    @Autowired
-    private CustomerService customerService;
 
     @Autowired
     private TerminalService terminalService;
@@ -79,17 +66,7 @@ public class ShipmentService {
      */
     //TODO: CASCADING SAVE CHILD ENTITIES VS MANUAL
     @Transactional
-    public void cascadingAdd(Shipment shipment) {
-
-        if (customerService.findByID(shipment.getSenderID()).isEmpty()) {
-            customerService.save(shipment.getSender());
-        }
-        if (customerService.findByID(shipment.getReceiverID()).isEmpty()) {
-            customerService.save(shipment.getReceiver());
-        }
-        if (customerService.findByID(shipment.getPayerID()).isEmpty()) {
-            customerService.save(shipment.getPayer());
-        }
+    public void addShipment(Shipment shipment) {
         setFirstTerminalToShipment(shipment);
         setEndTerminalToShipment(shipment);
 
@@ -114,12 +91,10 @@ public class ShipmentService {
      * @param checkpoint which checkpoint to add
      */
     @Transactional
-    public void updateCheckpointsOnParcels(Shipment shipment, Checkpoint checkpoint) {
-        for (Parcel parcel : shipment.getParcels()) {
-            parcelService.addCheckpointToParcel(checkpoint, parcel);
-            //TODO: move eval
-            checkpointService.addCheckpoint(checkpoint);
-        }
+    public void updateCheckpointsOnParcels(Shipment shipment, Checkpoint checkpoint, Checkpoint cp2) {
+
+        parcelService.addCheckpointToParcel(checkpoint,shipment.getParcels().get(0));
+        parcelService.addCheckpointToParcel(cp2,shipment.getParcels().get(1));
 
         //adds the shipment to terminal if checkpoint is at a terminal and has not already passed it.
         if (checkpoint.getTerminal() != null) {
@@ -166,34 +141,20 @@ public class ShipmentService {
         return count;
     }
 
+    //deletes one shipment by id from database
     @Transactional
     public void deleteOneShipment(Long shipmentId) {
         shipmentRepository.deleteById(shipmentId);
     }
-//
-//    //saves a shipment to the repository, and thus the database
-//    public long add(Shipment shipment) {
-//        long saveShipmentTimeEval = 0;
-//        if (findByID(shipment.getShipment_id()) == null) {
-//            if (customerService.findByID(shipment.getSenderID()).isEmpty()) {
-//                customerService.add(shipment.getSender());
-//            }
-//            if (customerService.findByID(shipment.getReceiverID()).isEmpty()) {
-//                customerService.add(shipment.getReceiver());
-//            }
-//
-//            var beforeSaveShipment = System.currentTimeMillis();
-//            shipmentRepository.save(shipment);
-//            saveShipmentTimeEval = System.currentTimeMillis() - beforeSaveShipment;
-//            System.out.println("Shipment: " + shipment.getShipment_id() + " has been added to the database");
-//            saveParcelsToDatabaseFromShipment(shipment);
-//
-//
-//        } else {
-//            System.out.println("Shipment already exists in database");
-//
-//        }
-//        return saveShipmentTimeEval;
-//    }
+
+    //changes the delivered boolean to true when all checkpoints are done
+    @Transactional
+    public void setDelivered(Shipment shipment) {
+        var before = Instant.now();
+        findByID(shipment.getShipment_id()).setDelivered();
+        var duration = Duration.between(before, Instant.now()).toNanos();
+        shipmentEvals.add(duration + " , shipment update");
+    }
+
 
 }
