@@ -20,7 +20,7 @@ public class ShipmentDAO {
     private static final String GET_SHIPMENT_BY_ID_QUERY = "SELECT * FROM Shipment WHERE shipment_id = ?";
     private static final String GET_PARCELS_IN_SHIPMENT_BY_ID_QUERY = "SELECT * FROM Parcel WHERE shipment_id = ?";
     private static final String INSERT_SHIPMENT_QUERY = "INSERT INTO Shipment (sender_id, receiver_id, payer_id, delivered, start_terminal_id, end_terminal_id) VALUES (?, ?, ?, ?, ?, ?)";
-    private static final String UPDATE_SHIPMENT_QUERY = "UPDATE Shipment SET sender_id = ?, receiver_id = ?, payer_id = ?, delivered = ?, start_terminal_id = ?, end_terminal_id WHERE id = ?";
+    private static final String UPDATE_SHIPMENT_QUERY = "UPDATE Shipment SET sender_id = ?, receiver_id = ?, payer_id = ?, delivered = ?, start_terminal_id = ?, end_terminal_id = ? WHERE shipment_id = ?";
     private static final String DELETE_SHIPMENT_QUERY = "DELETE FROM Shipment WHERE id = ?";
 
     public static List<String> executionTimeList;
@@ -84,7 +84,7 @@ public class ShipmentDAO {
             // This is an existing shipment, so update it in the database
             stmt = conn.prepareStatement(UPDATE_SHIPMENT_QUERY);
             setShipmentInfo(shipment, stmt);
-            stmt.setLong(4, id);
+            stmt.setLong(7, id);
             var startTime = Instant.now();
             stmt.executeUpdate();
             var executionTime = Duration.between(startTime, Instant.now()).toNanos();

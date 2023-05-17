@@ -12,6 +12,8 @@ Chart.register(zoomPlugin);
 function ShipmentEvalChart() {
     const [evalList, setEvalList] = useState([]);
     const [evalList2, setEvalList2] = useState([]);
+    const [evalList3, setEvalList3] = useState([]);
+
 
 
     useEffect(() => {
@@ -38,11 +40,22 @@ function ShipmentEvalChart() {
             const slicedData2 = filteredData2.slice(10);
 
             setEvalList2(slicedData2);
+
+            const filteredData3 = response.data
+                .filter((line) => line.includes("update"))
+                .map((line) => {
+                    const [time, shipment, operation] = line.split(', ');
+                    return {shipment, operation, time };
+                })
+                .filter((obj) => parseInt(obj.time) !== 0 && !isNaN(parseInt(obj.time)))
+            const slicedData3 = filteredData3.slice(10);
+
+            setEvalList3(slicedData3);
         });
 
     }, []);
 
-    function formatData(evalList) {
+    function formatData(evalList, evalList3) {
         const data = {
             labels: evalList.map((evaluation) => evaluation.shipment),
 
@@ -54,6 +67,13 @@ function ShipmentEvalChart() {
                     borderColor: 'rgb(75, 192, 192)',
                     lineTension: 0.1,
                 },
+                {
+                    label: 'Update',
+                    data: evalList3.map((evaluation) => evaluation.time),
+                    fill: false,
+                    borderColor: 'rgb(192,75,192)',
+                    lineTension: 0.1,
+                }
             ],
         };
         return data;
@@ -76,9 +96,9 @@ function ShipmentEvalChart() {
     }
 
     useEffect(() => {
-        if (evalList.length > 0 && evalList2.length > 0) {
-            const data = formatData(evalList);
-            const ctx = document.getElementById('shipment-createEval-chart').getContext('2d');
+        if (evalList.length > 0 && evalList2.length > 0 && evalList3.length > 0) {
+            const data = formatData(evalList, evalList3);
+            const ctx = document.getElementById('shipment-create&updateEval-chart').getContext('2d');
             new Chart(ctx, {
                 type: 'line',
                 data: data,
@@ -86,7 +106,7 @@ function ShipmentEvalChart() {
                     plugins: {
                         title: {
                             display: true,
-                            text:'Creates ' + evalList.length + ' valid Shipments'
+                            text:'CU operations for ' + evalList.length + ' valid Shipments'
                         },
                         zoom: zoomOptions,
                     },
@@ -121,7 +141,7 @@ function ShipmentEvalChart() {
                 },
             });
 
-            const barData = formatBarData(evalList, evalList2);
+            const barData = formatBarData(evalList, evalList2, evalList3);
             const barCtx = document.getElementById('shipment-eval-bar-chart').getContext('2d');
             new Chart(barCtx, {
                 type: 'bar',
@@ -137,9 +157,9 @@ function ShipmentEvalChart() {
                 plugins: [ChartDataLabels]
             });
         }
-    }, [evalList, evalList2]);
+    }, [evalList, evalList2, evalList3]);
 
-    function formatBarData(evalList, evalList2) {
+    function formatBarData(evalList, evalList2, evalList3) {
         const timeValues = evalList
             .filter((evaluation) => parseInt(evaluation.time) !== 0 && !isNaN(parseInt(evaluation.time)) )
             .map((evaluation) => {
@@ -148,6 +168,13 @@ function ShipmentEvalChart() {
             });
 
         const timeValues2 = evalList2
+            .filter((evaluation) => parseInt(evaluation.time) !== 0 && !isNaN(parseInt(evaluation.time)) )
+            .map((evaluation) => {
+                const value = parseFloat(evaluation.time);
+                return value;
+            });
+
+        const timeValues3 = evalList3
             .filter((evaluation) => parseInt(evaluation.time) !== 0 && !isNaN(parseInt(evaluation.time)) )
             .map((evaluation) => {
                 const value = parseFloat(evaluation.time);
@@ -177,10 +204,22 @@ function ShipmentEvalChart() {
                         calculateAverage(timeValues2),
                         calculateStandardDeviation(timeValues2),
                     ],
-                    backgroundColor: ['rgba(192, 75, 192, 0.2)'],
-                    borderColor: ['rgba(192, 75, 192, 1)'],
+                    backgroundColor: ['rgba(192,75,79,0.2)'],
+                    borderColor: ['rgb(192,75,79)'],
                     borderWidth: 1,
                 },
+                {
+                    label: 'Update',
+                    data: [
+                        Math.min(...timeValues3),
+                        Math.max(...timeValues3),
+                        calculateAverage(timeValues3),
+                        calculateStandardDeviation(timeValues3),
+                    ],
+                    backgroundColor: ['rgba(192,75,192,0.2)'],
+                    borderColor: ['rgb(192,75,192)'],
+                    borderWidth: 1,
+                }
             ],
         };
         return data;
@@ -204,7 +243,7 @@ function ShipmentEvalChart() {
     return (
         <div>
             <div style={{ display: "flex", position: "relative", height: "60vh", width: "49vw" }}>
-                <canvas id="shipment-createEval-chart"></canvas>
+                <canvas id="shipment-create&updateEval-chart"></canvas>
                 <canvas id="shipment-readEval-chart"></canvas>
             </div>
             <div style={{ display: "flex", justifyContent: "center", position: "relative", height: "60vh", width: "50vw" }}>

@@ -58,5 +58,7 @@ public class UpdateShipmentRunnable implements Runnable{
         db.setCheckpointOnParcels(shipment, cp4);
         db.setCheckpointOnParcels(shipment, cp5);
         db.setCheckpointOnParcels(shipment, cp6);
+        shipment.setDelivered(true);
+        db.saveShipment(shipment);
     }
 }

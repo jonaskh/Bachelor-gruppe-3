@@ -31,11 +31,15 @@ public class AddShipmentsRunnable implements Runnable {
 
     public void catchRun() throws SQLException {
         Parcel parcel = new Parcel(0L, 1.2);
+        Parcel parcel2 = new Parcel(0L, 2.1);
         Long shipmentId = db.saveShipment(shipment);
         Long parcelId = db.saveParcel(parcel, shipmentId);
+        Long parcelId2 = db.saveParcel(parcel2, shipmentId);
         parcel.setId(parcelId);
+        parcel2.setId(parcelId2);
         List<Parcel> parcels = new ArrayList<>();
         parcels.add(parcel);
+        parcels.add(parcel2);
         shipment.setId(shipmentId);
         shipment.setParcels(parcels);
     }
