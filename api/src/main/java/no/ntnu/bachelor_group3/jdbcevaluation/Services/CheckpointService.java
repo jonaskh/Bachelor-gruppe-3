@@ -23,10 +23,12 @@ public class CheckpointService {
     private static final String DELETE_CHECKPOINT_QUERY = "DELETE FROM checkpoint WHERE checkpoint_id = ?";
     private static final String GET_CHECKPOINTS_FROM_PARCEL = "SELECT * FROM checkpoint WHERE parcel_id = ?";
 
-    public List<String> executionTimeList;
+    public static List<String> executionTimeList;
 
     public CheckpointService() {
-        executionTimeList = new ArrayList<>();
+        if (executionTimeList == null) {
+            executionTimeList = new ArrayList<>();
+        }
     }
 
     public Checkpoint getCheckpointById(int checkpointId, ParcelService parcelService, ShipmentService shipmentService,
@@ -76,8 +78,8 @@ public class CheckpointService {
 
     public Long save(Checkpoint checkpoint, Connection conn) throws SQLException {
         PreparedStatement stmt;
-        Long id = 0L;
-        if (id == 0) {
+        Long id = checkpoint.getId();
+        if (id == null || id == 0L) {
             // This is a new checkpoint, so insert it into the database
             stmt = conn.prepareStatement(INSERT_CHECKPOINT_QUERY, Statement.RETURN_GENERATED_KEYS);
             stmt.setFloat(1, checkpoint.getCost());
@@ -91,7 +93,7 @@ public class CheckpointService {
             var startTime = Instant.now();
             int rowsInserted = stmt.executeUpdate();
             var executionTime = Duration.between(startTime, Instant.now()).toNanos();
-            executionTimeList.add(executionTime + ", create, checkpoint");
+            executionTimeList.add(executionTime + ", checkpoint, create");
             if (rowsInserted > 0) {
                 // Run a separate query to get the last inserted ID
                 try (ResultSet rs = stmt.getGeneratedKeys()) {

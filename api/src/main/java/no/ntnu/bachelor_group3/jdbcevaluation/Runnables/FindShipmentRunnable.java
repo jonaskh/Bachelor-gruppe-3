@@ -35,7 +35,7 @@ public class FindShipmentRunnable implements Runnable {
                 Checkpoint lastCheckpoint = checkpoints.get(checkpoints.size() - 1);
                 System.out.println("Status: " + lastCheckpoint.getType().name() + "   Location: " + lastCheckpoint.getTerminal().getLocation());
             } else {
-                System.out.println("No checkpoints on this shipment yet");
+                //System.out.println("No checkpoints on this shipment yet");
             }
         }
     }

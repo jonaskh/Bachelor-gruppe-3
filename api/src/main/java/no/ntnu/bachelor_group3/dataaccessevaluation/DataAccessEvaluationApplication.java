@@ -23,7 +23,6 @@ public class DataAccessEvaluationApplication {
 
 	@Bean
 	public void runSimulation() {
-		System.out.println("started");
 		try (DatabaseManager db = new DatabaseManager()) {
 			DataPopulator dataPopulator = new DataPopulator(db);
 			// Comment out the two lines below if already populated

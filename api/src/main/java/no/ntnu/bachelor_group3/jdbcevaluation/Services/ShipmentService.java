@@ -20,19 +20,26 @@ public class ShipmentService {
     private static final String GET_SHIPMENT_BY_ID_QUERY = "SELECT * FROM Shipment WHERE shipment_id = ?";
     private static final String GET_PARCELS_IN_SHIPMENT_BY_ID_QUERY = "SELECT * FROM Parcel WHERE shipment_id = ?";
     private static final String INSERT_SHIPMENT_QUERY = "INSERT INTO Shipment (sender_id, receiver_id, payer_id, delivered, start_terminal_id, end_terminal_id) VALUES (?, ?, ?, ?, ?, ?)";
-    private static final String UPDATE_SHIPMENT_QUERY = "UPDATE Shipment SET sender_id = ?, receiver_id = ?, payer_id = ?, delivered = ?, start_terminal_id = ?, end_terminal_id = ? WHERE id = ?";
+    private static final String UPDATE_SHIPMENT_QUERY = "UPDATE Shipment SET sender_id = ?, receiver_id = ?, payer_id = ?, delivered = ?, start_terminal_id = ?, end_terminal_id = ? WHERE shipment_id = ?";
     private static final String DELETE_SHIPMENT_QUERY = "DELETE FROM Shipment WHERE id = ?";
 
-    public List<String> executionTimeList;
+    public static List<String> executionTimeList;
 
     public ShipmentService() {
-        executionTimeList = new ArrayList<>();
+        if (executionTimeList == null) {
+            executionTimeList = new ArrayList<>();
+        }
     }
 
     public Shipment getShipmentById(Long shipmentId, CustomerService customerService, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(GET_SHIPMENT_BY_ID_QUERY);
         stmt.setLong(1, shipmentId);
+
+        var startTime = Instant.now();
         ResultSet rs = stmt.executeQuery();
+        var executionTime = Duration.between(startTime, Instant.now()).toNanos();
+        executionTimeList.add(executionTime + ", shipment, read");
+
         if (rs.next()) {
             Customer sender = customerService.getCustomerById(rs.getLong("sender_id"), conn);
             Customer receiver = customerService.getCustomerById(rs.getLong("receiver_id"), conn);
@@ -65,7 +72,7 @@ public class ShipmentService {
             var startTime = Instant.now();
             int rowsInserted = stmt.executeUpdate();
             var executionTime = Duration.between(startTime, Instant.now()).toNanos();
-            executionTimeList.add(executionTime + ", create, shipment");
+            executionTimeList.add(executionTime + ", shipment, create");
             if (rowsInserted > 0) {
                 // Run a separate query to get the last inserted ID
                 try (ResultSet rs = stmt.getGeneratedKeys()) {
@@ -73,7 +80,6 @@ public class ShipmentService {
                         id = rs.getLong(1);
                     }
                 } catch (Exception e) {
-                    System.out.println("Failed DBINFO query");
                     e.printStackTrace();
                 }
             } else {
@@ -83,11 +89,11 @@ public class ShipmentService {
             // This is an existing shipment, so update it in the database
             stmt = conn.prepareStatement(UPDATE_SHIPMENT_QUERY);
             setShipmentInfo(shipment, stmt);
-            stmt.setLong(4, id);
+            stmt.setLong(7, id);
             var startTime = Instant.now();
             stmt.executeUpdate();
             var executionTime = Duration.between(startTime, Instant.now()).toNanos();
-            executionTimeList.add(executionTime + ", update, shipment");
+            executionTimeList.add(executionTime + ", shipment, update");
             // Update all parcels associated with this shipment
         }
         return id;
