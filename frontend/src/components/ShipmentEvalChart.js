@@ -31,7 +31,7 @@ function ShipmentEvalChart() {
 
             setEvalList(slicedData);
             const filteredData2 = response.data
-                .filter((line) => line.includes("find"))
+                .filter((line) => line.includes("read"))
                 .map((line) => {
                     const [time, shipment, operation] = line.split(', ');
                     return {shipment, operation, time };
@@ -50,12 +50,12 @@ function ShipmentEvalChart() {
                 .filter((obj) => parseInt(obj.time) !== 0 && !isNaN(parseInt(obj.time)))
             const slicedData3 = filteredData3.slice(10);
 
-            setEvalList2(slicedData3);
+            setEvalList3(slicedData3);
         });
 
     }, []);
 
-    function formatData(evalList) {
+    function formatData(evalList, evalList3) {
         const data = {
             labels: evalList.map((evaluation) => evaluation.shipment),
 
@@ -68,7 +68,7 @@ function ShipmentEvalChart() {
                     lineTension: 0.1,
                 },
                 {
-                    label: 'Create',
+                    label: 'Update',
                     data: evalList3.map((evaluation) => evaluation.time),
                     fill: false,
                     borderColor: 'rgb(192,75,192)',
@@ -97,7 +97,7 @@ function ShipmentEvalChart() {
 
     useEffect(() => {
         if (evalList.length > 0 && evalList2.length > 0 && evalList3.length > 0) {
-            const data = formatData(evalList);
+            const data = formatData(evalList, evalList3);
             const ctx = document.getElementById('shipment-create&updateEval-chart').getContext('2d');
             new Chart(ctx, {
                 type: 'line',
