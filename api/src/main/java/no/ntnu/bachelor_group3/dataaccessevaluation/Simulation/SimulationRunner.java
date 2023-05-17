@@ -11,6 +11,7 @@ import no.ntnu.bachelor_group3.dataaccessevaluation.Services.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Random;
 import java.util.concurrent.*;
 
 public class SimulationRunner {
@@ -33,6 +34,7 @@ public class SimulationRunner {
 
     private final ScheduledExecutorService updateCustomerExecutor = Executors.newScheduledThreadPool(5);
 
+    private final Random random = new Random();
 
     public SimulationRunner(ShipmentService shipmentService, CustomerService customerService, TerminalService terminalService, ParcelService parcelService, CheckpointService checkpointService) {
         this.shipmentService = shipmentService;
@@ -82,7 +84,7 @@ public class SimulationRunner {
 
         //run find shipment location after a 0.5 second delay every second to simulate higher load.
         for (int k = 0; k < 5; k++) {
-            findLocationofShipmentExecutor.scheduleAtFixedRate(new FindShipmentRunnable(shipmentService, shipmentService.findByID(1L)), 0, 1000, TimeUnit.MILLISECONDS);
+            findLocationofShipmentExecutor.scheduleAtFixedRate(new FindShipmentRunnable(shipmentService, shipmentService.findByID(random.nextLong(size))), 0, 1000, TimeUnit.MILLISECONDS);
         }
 
 
