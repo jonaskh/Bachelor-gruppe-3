@@ -1,10 +1,18 @@
 package no.ntnu.bachelor_group3.jdbcevaluation.Runnables;
 
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Checkpoint;
+import no.ntnu.bachelor_group3.jdbcevaluation.Data.Customer;
+import no.ntnu.bachelor_group3.jdbcevaluation.Data.Parcel;
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.jdbcevaluation.DatabaseManager;
+import no.ntnu.bachelor_group3.jdbcevaluation.Services.CustomerDAO;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 public class FindShipmentRunnable implements Runnable {

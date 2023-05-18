@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseManager implements AutoCloseable {
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
+    private static final String DB_URL = "jdbc:postgresql://database:5432/postgres";
     private static final String DB_USER = "postgres";
     private static final String DB_PASSWORD = "postgres";
     private final CustomerDAO customerDAO;
@@ -227,6 +227,7 @@ public class DatabaseManager implements AutoCloseable {
         long id = 0;
         String query = "SELECT COUNT(shipment_id) FROM shipment";
         try (PreparedStatement stmt = conn.prepareStatement(query);
+
              ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
                 id = rs.getLong(1);

@@ -34,7 +34,12 @@ public class ShipmentDAO {
     public Shipment getShipmentById(Long shipmentId, CustomerDAO customerDAO, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(GET_SHIPMENT_BY_ID_QUERY);
         stmt.setLong(1, shipmentId);
+
+        var startTime = Instant.now();
         ResultSet rs = stmt.executeQuery();
+        var executionTime = Duration.between(startTime, Instant.now()).toNanos();
+        executionTimeList.add(executionTime + ", shipment, read");
+
         if (rs.next()) {
             Customer sender = customerDAO.getCustomerById(rs.getLong("sender_id"), conn);
             Customer receiver = customerDAO.getCustomerById(rs.getLong("receiver_id"), conn);
@@ -44,12 +49,9 @@ public class ShipmentDAO {
             // Retrieve all parcels associated with this shipment
             stmt = conn.prepareStatement(GET_PARCELS_IN_SHIPMENT_BY_ID_QUERY);
             stmt.setLong(1, shipmentId);
-            var startTime = Instant.now();
             rs = stmt.executeQuery();
-            var executionTime = Duration.between(startTime, Instant.now()).toNanos();
-            executionTimeList.add(executionTime + ", shipment, read");
             while (rs.next()) {
-                Parcel parcel = new Parcel(rs.getLong("parcel_id"), rs.getDouble("weight"));
+                Parcel parcel = new Parcel(rs.getLong("parcel_id"), rs.getFloat("weight"));
                 shipment.getParcels().add(parcel);
             }
             return shipment;

@@ -12,7 +12,6 @@ import java.util.Random;
 import java.util.concurrent.*;
 
 public class SimulationRunner {
-    private static List<String> evals = new CopyOnWriteArrayList<>();
     private DatabaseManager db;
 
     private final int SHIPMENTS = 1000;
@@ -66,7 +65,7 @@ public class SimulationRunner {
 
 
         for (int k = 0; k < findShipment; k++) {
-            findLocationOfShipmentExecutor.scheduleAtFixedRate(new FindShipmentRunnable(db, db.getShipmentById(random.nextLong(size)+1)), findShipmentDelay, findShipmentPeriod, TimeUnit.MILLISECONDS);
+            findLocationOfShipmentExecutor.scheduleAtFixedRate(new FindShipmentRunnable(db, db.getShipmentById(random.nextLong(size-1)+1)), findShipmentDelay, findShipmentPeriod, TimeUnit.MILLISECONDS);
         }
 
         for (int j = 0; j < countShipment; j++) {
@@ -99,17 +98,15 @@ public class SimulationRunner {
             executor2.shutdown();
 
 
-                executor1.awaitTermination(2, TimeUnit.MINUTES);
+                executor1.awaitTermination(10, TimeUnit.MINUTES);
                 System.out.println("Adding done");
 
                 //stops the thread pools if no more tasks, an exception occurs or timeout.
-                executor2.awaitTermination(2, TimeUnit.MINUTES);
+                executor2.awaitTermination(10, TimeUnit.MINUTES);
                 System.out.println("Update shipments done");
 
-                findLocationOfShipmentExecutor.awaitTermination(2, TimeUnit.MINUTES);
-                shipmentCountExecutor.awaitTermination(2, TimeUnit.MINUTES);
-
-
+                findLocationOfShipmentExecutor.awaitTermination(10, TimeUnit.MINUTES);
+                shipmentCountExecutor.awaitTermination(10, TimeUnit.MINUTES);
 
             } catch (InterruptedException e) {
                 e.printStackTrace();

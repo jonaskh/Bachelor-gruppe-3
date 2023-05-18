@@ -100,47 +100,49 @@ function ShipmentEvalChart() {
         if (evalList.length > 0 && evalList2.length > 0 && evalList3.length > 0) {
             const data = formatData(evalList, evalList3);
             const ctx = document.getElementById('shipment-create&updateEval-chart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: data,
-                options: {
-                    plugins: {
-                        title: {
-                            display: true,
-                            text:'CU operations for ' + evalList.length + ' valid Shipments'
+            if(evalList.length < 60000) {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        plugins: {
+                            title: {
+                                display: true,
+                                text:'CU operations for ' + evalList.length + ' valid Shipments'
+                            },
+                            zoom: zoomOptions,
                         },
-                        zoom: zoomOptions,
-                    },
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                            },
                         },
                     },
-                },
-            });
+                });
 
-            const data2 = formatData2(evalList2);
-            const ctx2 = document.getElementById('shipment-readEval-chart').getContext('2d');
-            new Chart(ctx2, {
-                type: 'line',
-                data: data2,
-                options: {
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: evalList2.length + ' Valid Read operations'
+                const data2 = formatData2(evalList2);
+                const ctx2 = document.getElementById('shipment-readEval-chart').getContext('2d');
+                new Chart(ctx2, {
+                    type: 'line',
+                    data: data2,
+                    options: {
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: evalList2.length + ' Valid Read operations'
+                            },
+                            zoom: zoomOptions,
                         },
-                        zoom: zoomOptions,
-                    },
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                            },
                         },
                     },
-                },
-            });
+                });
+            }
 
             const barData = formatBarData(evalList, evalList2, evalList3);
             const barCtx = document.getElementById('shipment-eval-bar-chart').getContext('2d');

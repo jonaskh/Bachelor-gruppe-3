@@ -47,25 +47,27 @@ function CheckpointEvalChart() {
         if (evalList3.length > 0) {
             const data = formatData(evalList3);
             const ctx = document.getElementById('checkpoint-eval-chart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: data,
-                options: {
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: evalList3.length + ' Valid Create operations'
+            if (evalList3 < 60000) {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: evalList3.length + ' Valid Create operations'
+                            },
+                            zoom: zoomOptions,
                         },
-                        zoom: zoomOptions,
-                    },
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                            },
                         },
                     },
-                },
-            });
+                });
+            }
 
             const barData = formatBarData(evalList3);
             const barCtx = document.getElementById('checkpoint-eval-bar-chart').getContext('2d');
