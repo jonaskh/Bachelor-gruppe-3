@@ -14,6 +14,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 @Service
@@ -31,7 +32,7 @@ public class ShipmentService {
     @Autowired
     private TerminalService terminalService;
 
-    private static List<String> shipmentEvals = new ArrayList<>();
+    private static List<String> shipmentEvals = new CopyOnWriteArrayList<>();
 
 
     public ShipmentService() {
@@ -121,7 +122,7 @@ public class ShipmentService {
         var before = Instant.now();
         findByID(shipment.getShipment_id()).setDelivered();
         var duration = Duration.between(before, Instant.now()).toNanos();
-        shipmentEvals.add(duration  + " , shipment update");
+        shipmentEvals.add(duration  + " , shipment, update");
     }
 
 

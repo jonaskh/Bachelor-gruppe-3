@@ -16,16 +16,17 @@ services:
         condition: service_healthy
 
   database:
-    image: postgres:14.1-alpine
+    image: ibmcom/informix-developer-database:latest
     restart: unless-stopped
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - PGDATABASE=postgres
+      - LICENSE=accept
+      - INFORMIXDB_SERVER=informix
+      - INFORMIXDB_USERNAME=informix
+      - INFORMIXDB_PASSWORD=in4mix
 
     ports:
-    - "5432:5432"
+    - "9088:9088"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: ["CMD-SHELL", "onstat -"]
       timeout: 5s
       retries: 20

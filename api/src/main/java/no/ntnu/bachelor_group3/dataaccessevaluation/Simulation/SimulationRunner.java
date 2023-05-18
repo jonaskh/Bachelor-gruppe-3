@@ -17,7 +17,9 @@ import java.util.concurrent.*;
 public class SimulationRunner {
 
 
-    private final int SHIPMENTS = 1000;
+    private final int SHIPMENTS = 10000;
+
+    private final int THREADS = 10;
     private final ShipmentService shipmentService;
     private final CustomerService customerService;
     private final TerminalService terminalService;
@@ -25,14 +27,14 @@ public class SimulationRunner {
     private final CheckpointService checkpointService;
     private static List<String> evals = new ArrayList<>();
 
-    private ArrayBlockingQueue<Shipment> shipmentQueue = new ArrayBlockingQueue<>(100000);
+    private ArrayBlockingQueue<Shipment> shipmentQueue = new ArrayBlockingQueue<>(SHIPMENTS);
 
 
-    private final ExecutorService addShipmentsExecutor = Executors.newFixedThreadPool(5);
-    private final ScheduledExecutorService findLocationofShipmentExecutor = Executors.newScheduledThreadPool(5);
+    private final ExecutorService addShipmentsExecutor = Executors.newFixedThreadPool(THREADS);
+    private final ScheduledExecutorService findLocationofShipmentExecutor = Executors.newScheduledThreadPool(THREADS);
     private final ScheduledExecutorService updateShipmentExecutor = Executors.newScheduledThreadPool(2);
 
-    private final ScheduledExecutorService updateCustomerExecutor = Executors.newScheduledThreadPool(5);
+    private final ScheduledExecutorService updateCustomerExecutor = Executors.newScheduledThreadPool(THREADS);
 
 
     public SimulationRunner(ShipmentService shipmentService, CustomerService customerService, TerminalService terminalService, ParcelService parcelService, CheckpointService checkpointService) {
@@ -58,8 +60,8 @@ public class SimulationRunner {
         //prints the last location of a shipment
         for (int i = 0; i < SHIPMENTS; i++) {
             Shipment ship = new Shipment(sender, sender, receiver);
-            addShipmentsExecutor.execute(new AddShipmentsRunnable(ship, shipmentService, customerService));
-            shipmentQueue.add(ship);
+            addShipmentsExecutor.execute(new UpdateShipmentRunnable(ship, shipmentService, terminalService));
+//            shipmentQueue.add(ship);
         }
 
         try {
@@ -69,30 +71,35 @@ public class SimulationRunner {
         }
 
 
-        int i = 0;
-        var size = shipmentQueue.size();
-        while (i < size) {
-            try {
-                updateShipmentExecutor.execute(new UpdateShipmentRunnable(shipmentQueue.take(), shipmentService, terminalService));
-                i++;
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
+//        int i = 0;
+//        var size = shipmentQueue.size();
+//        System.out.println(size);
+//        while (i < size) {
+//            try {
+//                updateShipmentExecutor.execute(new UpdateShipmentRunnable(shipmentQueue.take(), shipmentService, terminalService));
+//                i++;
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            Thread.sleep(2000);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
 
 
 //        to allow the other threads to let shipments be added before starting
 
-        //run find shipment location after a 0.5 second delay every second to simulate higher load.
-        for (int k = 0; k < 20; k++) {
-            findLocationofShipmentExecutor.scheduleAtFixedRate(new FindShipmentRunnable(shipmentService, shipmentService.findByID(random.nextLong(size))), 0, 500, TimeUnit.MILLISECONDS);
+        if (shipmentService.findByID(1L) != null) {
+//            run find shipment location after a 0.5 second delay every second to simulate higher load.
+            for (int k = 1; k < 20; k++) {
+
+                findLocationofShipmentExecutor.scheduleAtFixedRate(new FindShipmentRunnable(shipmentService, shipmentService.findByID(Long.valueOf(k))), 1000, 2000, TimeUnit.MILLISECONDS);
+            }
         }
+
 
 
         //run find shipments in terminal every second to simulate higher load.
@@ -102,21 +109,28 @@ public class SimulationRunner {
 
 
         try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        try {
             //stops the executors from accepting new tasks
-            updateShipmentExecutor.shutdown();
 
             addShipmentsExecutor.shutdown();
 
             updateCustomerExecutor.shutdown();
             findLocationofShipmentExecutor.shutdown();
+            updateShipmentExecutor.shutdown();
 
 
             //stops the thread pools if no more tasks, an exception occurs or timeout.
-            updateShipmentExecutor.awaitTermination(2, TimeUnit.MINUTES);
 
-            updateCustomerExecutor.awaitTermination(2, TimeUnit.MINUTES);
-            addShipmentsExecutor.awaitTermination(2, TimeUnit.MINUTES);
-            findLocationofShipmentExecutor.awaitTermination(2, TimeUnit.MINUTES);
+            updateCustomerExecutor.awaitTermination(3, TimeUnit.MINUTES);
+            addShipmentsExecutor.awaitTermination(3, TimeUnit.MINUTES);
+            findLocationofShipmentExecutor.awaitTermination(3, TimeUnit.MINUTES);
+
+            updateShipmentExecutor.awaitTermination(3, TimeUnit.MINUTES);
+
 
             System.out.println("Adding done");
 

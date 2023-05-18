@@ -77,14 +77,16 @@ public class UpdateShipmentRunnable implements Runnable{
      * to the final terminal. The time is relative to real time.
      */
     public void catchRun() {
-        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp1, cp8);
-        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp2, cp9);
-        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp3, cp10);
-        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp4,cp11);
-        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp5,cp12);
-        shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp7,cp13);
+            shipmentService.addShipment(shipment);
+            shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp1, cp8);
+            shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp2, cp9);
+            shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp3, cp10);
+            shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp4,cp11);
+            shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp5,cp12);
+            shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp7,cp13);
 
 
-        shipmentService.setDelivered(shipment);
+            shipmentService.setDelivered(shipment);
+
     }
 }

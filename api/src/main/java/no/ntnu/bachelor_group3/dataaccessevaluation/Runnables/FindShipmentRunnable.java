@@ -25,6 +25,8 @@ public class FindShipmentRunnable implements Runnable {
     }
 
     private void catchRun() {
-        System.out.println("last location: " + shipmentService.getLocation(shipment));
+        if (shipmentService.findByID(shipment.getShipment_id()) != null) {
+            System.out.println("last location: " + shipmentService.getLocation(shipment));
+        }
     }
 }
