@@ -4,6 +4,7 @@ import { Chart, registerables } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import zoomOptions from "./ZoomOptions";
+import {unmountComponentAtNode} from "react-dom";
 
 
 Chart.register(...registerables);
@@ -19,7 +20,7 @@ function ShipmentEvalChart() {
     useEffect(() => {
         // Fetch data from API endpoint
         apiServiceInstance.getShipmentEval().then((response) => {
-            console.log(response.data)
+            //console.log(response.data)
             const filteredData = response.data
                 .filter((line) => line.includes("create"))
                 .map((line) => {
@@ -228,7 +229,6 @@ function ShipmentEvalChart() {
 
     function calculateAverage(values) {
         const sum = values.reduce((acc, val) => acc + val, 0);
-        console.log(values);
         return Math.round(sum / values.length);
     }
 
@@ -238,6 +238,7 @@ function ShipmentEvalChart() {
         const avgSquareDiff = calculateAverage(squareDiffs);
         const stdDev = Math.sqrt(avgSquareDiff);
         return Math.round(stdDev);
+
     }
 
     return (
