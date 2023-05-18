@@ -14,11 +14,13 @@ import no.ntnu.bachelor_group3.jdbcevaluation.Services.TerminalDAO;
 import no.ntnu.bachelor_group3.jdbcevaluation.Services.ValidPostalCodeDAO;
 
 import java.sql.*;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseManager implements AutoCloseable {
-    private static final String DB_URL = "jdbc:informix-sqli://database:9088/informix_db:INFORMIXSERVER=informix";
+    private static final String DB_URL = "jdbc:informix-sqli://database:9088/informix:INFORMIXSERVER=informix";
     private static final String DB_USER = "informix";
     private static final String DB_PASSWORD = "in4mix";
     private final CustomerDAO customerDAO;
@@ -232,5 +234,19 @@ public class DatabaseManager implements AutoCloseable {
 
 
         return terminals;
+    }
+
+    public long getShipmentCount() throws SQLException {
+        long count = 0;
+        Statement stmt = conn.createStatement();
+        var startTime = Instant.now();
+        ResultSet rs = stmt.executeQuery("SELECT COUNT(shipment_id) FROM shipment");
+        var executionTime = Duration.between(startTime, Instant.now()).toNanos();
+        System.out.println("Count shipments exectuion time: " + executionTime);
+        if (rs.next()) {
+            count = rs.getLong(1);
+        }
+
+        return count;
     }
 }

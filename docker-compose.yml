@@ -1,24 +1,32 @@
+version: "3.8"
 
 services:
 
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+
   app:
-    build: .
+    build: ./api
+    ports:
+      - "8080:8080"
     depends_on:
       database:
         condition: service_healthy
+
   database:
-    image: postgres:14.1-alpine
+    image: ibmcom/informix-developer-database:latest
     restart: unless-stopped
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - PGDATABASE=test
-    volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+      - LICENSE=accept
+      - INFORMIXDB_SERVER=informix
+      - INFORMIXDB_USERNAME=informix
+      - INFORMIXDB_PASSWORD=in4mix
+
     ports:
-    - '5432:5432'
+      - "9088:9088"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: ["CMD-SHELL", "onstat -"]
       timeout: 5s
       retries: 20
-
