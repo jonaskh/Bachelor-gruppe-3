@@ -4,14 +4,11 @@ import no.ntnu.bachelor_group3.jdbcevaluation.Data.Customer;
 import no.ntnu.bachelor_group3.jdbcevaluation.Data.Shipment;
 import no.ntnu.bachelor_group3.jdbcevaluation.Runnables.AddShipmentsRunnable;
 import no.ntnu.bachelor_group3.jdbcevaluation.Runnables.FindShipmentRunnable;
-import no.ntnu.bachelor_group3.jdbcevaluation.Runnables.TerminalShipmentsRunnable;
 import no.ntnu.bachelor_group3.jdbcevaluation.Runnables.UpdateShipmentRunnable;
-import org.apache.commons.lang3.time.StopWatch;
 
 import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.*;
 
 public class SimulationRunner {
@@ -19,14 +16,24 @@ public class SimulationRunner {
     private DatabaseManager db;
 
     private final int SHIPMENTS = 1000;
-    private final int THREADS = 5;
+    private final int threads = 5;
+
+    private final int findShipment = 100;
+    private final int findShipmentDelay = 1000;
+    private final int findShipmentPeriod = 2000;
+
+    private final int countShipment = 10;
+    private final int countDelay = 1000;
+    private final int countPeriod = 5000;
+
+    private final Random random = new Random();
 
 
 
-    private ExecutorService executor1 = Executors.newFixedThreadPool(THREADS);
-    private ExecutorService executor2 = Executors.newFixedThreadPool(THREADS);
-    private ScheduledExecutorService findShipmentInCustomerService = Executors.newScheduledThreadPool(THREADS);
-    private ScheduledExecutorService findShipmentsInTerminalService = Executors.newScheduledThreadPool(THREADS);
+    private ExecutorService executor1 = Executors.newFixedThreadPool(threads);
+    private ExecutorService executor2 = Executors.newFixedThreadPool(threads);
+    private ScheduledExecutorService findLocationOfShipmentExecutor = Executors.newScheduledThreadPool(threads);
+    private ScheduledExecutorService shipmentCountExecutor = Executors.newScheduledThreadPool(threads);
 
     private final ArrayBlockingQueue<Shipment> queue = new ArrayBlockingQueue<>(SHIPMENTS);
 
@@ -53,18 +60,25 @@ public class SimulationRunner {
                 executor1.execute(shipmentsRunnable);
             }
 
+        int i = 0;
+        var size = queue.size();
 
 
-            for (int k = 0; k < 100; k++) {
-                findShipmentInCustomerService.scheduleAtFixedRate(new FindShipmentRunnable(db, db.getShipmentById(1l)), 0, 500, TimeUnit.MILLISECONDS);
-            }
 
-            for (int j = 0; j < 10; j++) {
-                findShipmentsInTerminalService.scheduleAtFixedRate(new TerminalShipmentsRunnable(db), 0, 10000, TimeUnit.MILLISECONDS);
-            }
+        for (int k = 0; k < findShipment; k++) {
+            findLocationOfShipmentExecutor.scheduleAtFixedRate(new FindShipmentRunnable(db, db.getShipmentById(random.nextLong(size)+1)), findShipmentDelay, findShipmentPeriod, TimeUnit.MILLISECONDS);
+        }
 
-            int i = 0;
-            var size = queue.size();
+        for (int j = 0; j < countShipment; j++) {
+            shipmentCountExecutor.scheduleAtFixedRate(() -> {
+                try {
+                    db.getShipmentCount();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }, countDelay, countPeriod, TimeUnit.MILLISECONDS);
+        }
+
             while (i < size) {
                 try {
                     executor2.execute(new UpdateShipmentRunnable(queue.take(), db));
@@ -79,8 +93,8 @@ public class SimulationRunner {
                 //stops the executors from accepting new tasks
 
 
-                findShipmentsInTerminalService.shutdown();
-                findShipmentInCustomerService.shutdown();
+                shipmentCountExecutor.shutdown();
+                findLocationOfShipmentExecutor.shutdown();
             executor1.shutdown();
             executor2.shutdown();
 
@@ -92,8 +106,8 @@ public class SimulationRunner {
                 executor2.awaitTermination(2, TimeUnit.MINUTES);
                 System.out.println("Update shipments done");
 
-                findShipmentInCustomerService.awaitTermination(2, TimeUnit.MINUTES);
-                findShipmentsInTerminalService.awaitTermination(2, TimeUnit.MINUTES);
+                findLocationOfShipmentExecutor.awaitTermination(2, TimeUnit.MINUTES);
+                shipmentCountExecutor.awaitTermination(2, TimeUnit.MINUTES);
 
 
 
@@ -105,60 +119,12 @@ public class SimulationRunner {
             db.commit();
 
 
-            //evals.addAll(customerService.getCustomerEval());
-            //evals.forEach(System.out::println);
-
-            //System.out.println("shipments: " + sender.getShipments().size());
-
-
-
-            //System.out.println("queue size: " + queue.size());
-            //System.out.println("shipments: " + shipmentService.count());
-            //System.out.println("parcels: " + parcelService.count());
-            //System.out.println("checkpoints: " + checkpointService.count());
-
-            //System.out.println("Number of shipments in terminal 14: " + terminalService.returnTerminalFromZip("6008").getShipmentNumber());
-            //System.out.println("Number of checkpoints in terminal 14: " + terminalService.returnTerminalFromZip("0021").getCheckpointNumber());
-
-
         }
 
-
-    public void realTimeConverter() {
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-        Calendar calendar = Calendar.getInstance();
-        int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
-        String[] daysOfWeek = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-        long previousElapsedSeconds = -1;
-        while (stopWatch.getTime() < 30000) { // 30 seconds in milliseconds
-
-            long elapsedSeconds = stopWatch.getTime();
-            stopWatch.split();
-            if (elapsedSeconds != previousElapsedSeconds) {
-                if (((elapsedSeconds / 1000) != (previousElapsedSeconds / 1000)) && calendar.get(Calendar.DAY_OF_MONTH) != currentDay) {
-                    previousElapsedSeconds = stopWatch.getSplitTime();
-                    currentDay = calendar.get(Calendar.DAY_OF_MONTH);
-                    int dayOfWeek = getDayOfWeek(calendar.getTime());
-                    System.out.println("Today is " + daysOfWeek[dayOfWeek - 1]);
-                } else {
-                    previousElapsedSeconds = elapsedSeconds;
-                }
-            }
-            calendar.setTime(new Date(stopWatch.getSplitTime() * 24 * 60 * 60 * 1000)); // Set the calendar time based on the elapsed time
-            stopWatch.unsplit();
-
-        }
-        stopWatch.stop();
-
-    }
-
-    private static int getDayOfWeek(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        return calendar.get(Calendar.DAY_OF_WEEK);
-    }
 }
+
+
+
 
 
 
