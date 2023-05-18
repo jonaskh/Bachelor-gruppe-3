@@ -25,7 +25,7 @@ public class SimulationRunner {
     private ScheduledExecutorService findShipmentInCustomerService = Executors.newScheduledThreadPool(10);
     private ScheduledExecutorService findShipmentsInTerminalService = Executors.newScheduledThreadPool(2);
 
-    private final ArrayBlockingQueue<Shipment> queue = new ArrayBlockingQueue<>(1000);
+    private final ArrayBlockingQueue<Shipment> queue = new ArrayBlockingQueue<>(500);
 
 
     public SimulationRunner(DatabaseManager db) {
@@ -39,7 +39,7 @@ public class SimulationRunner {
             Long payerId = db.saveCustomer(receiver);
 
         System.out.println("Starting simulation...");
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 500; i++) {
                 Shipment shipment = new Shipment(0L, sender, sender, receiver, 1.2f);
                 AddShipmentsRunnable shipmentsRunnable = new AddShipmentsRunnable(shipment, db);
                 try {
