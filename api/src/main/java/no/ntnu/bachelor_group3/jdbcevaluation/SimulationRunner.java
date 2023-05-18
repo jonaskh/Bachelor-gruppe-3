@@ -18,14 +18,17 @@ public class SimulationRunner {
     private static List<String> evals = new CopyOnWriteArrayList<>();
     private DatabaseManager db;
 
+    private final int SHIPMENTS = 1000;
+    private final int THREADS = 5;
 
 
-    private ExecutorService executor1 = Executors.newFixedThreadPool(5);
-    private ExecutorService executor2 = Executors.newFixedThreadPool(5);
-    private ScheduledExecutorService findShipmentInCustomerService = Executors.newScheduledThreadPool(10);
-    private ScheduledExecutorService findShipmentsInTerminalService = Executors.newScheduledThreadPool(2);
 
-    private final ArrayBlockingQueue<Shipment> queue = new ArrayBlockingQueue<>(2000);
+    private ExecutorService executor1 = Executors.newFixedThreadPool(THREADS);
+    private ExecutorService executor2 = Executors.newFixedThreadPool(THREADS);
+    private ScheduledExecutorService findShipmentInCustomerService = Executors.newScheduledThreadPool(THREADS);
+    private ScheduledExecutorService findShipmentsInTerminalService = Executors.newScheduledThreadPool(THREADS);
+
+    private final ArrayBlockingQueue<Shipment> queue = new ArrayBlockingQueue<>(SHIPMENTS);
 
 
     public SimulationRunner(DatabaseManager db) {
@@ -39,7 +42,7 @@ public class SimulationRunner {
             db.saveCustomer(receiver);
 
             System.out.println("Starting simulation...");
-            for (int i = 0; i < 2000; i++) {
+            for (int i = 0; i < SHIPMENTS; i++) {
                 Shipment shipment = new Shipment(0L, sender, sender, receiver, 1.2);
                 AddShipmentsRunnable shipmentsRunnable = new AddShipmentsRunnable(shipment, db);
                 try {

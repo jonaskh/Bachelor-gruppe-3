@@ -223,6 +223,18 @@ public class DatabaseManager implements AutoCloseable {
         return terminals;
     }
 
+    public long getShipmentCount() throws SQLException {
+        long id = 0;
+        String query = "SELECT COUNT(shipment_id) FROM shipment";
+        try (PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                id = rs.getLong(1);
+            }
+        }
+        return id;
+    }
+
     public void setCheckpointOnParcels(Shipment shipment, Checkpoint checkpoint) throws SQLException {
         for (Parcel parcel : shipment.getParcels()) {
 
