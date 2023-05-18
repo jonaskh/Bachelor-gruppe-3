@@ -34,7 +34,6 @@ public class ShipmentService {
     long nextShipId = 1L;
 
 
-    private final ShipmentDao shipmentDao;
     private final AtomicLong nextId = new AtomicLong(0L);
     private final List<String> timeTakenList;
     private final DSLContext dslContext;
@@ -44,7 +43,7 @@ public class ShipmentService {
 
 
 
-
+    private final ShipmentDao shipmentDao;
     public ShipmentService(ShipmentDao shipmentDao, DSLContext dslContext) {
         this.shipmentDao = shipmentDao;
         this.timeTakenList = new ArrayList<>();
@@ -175,6 +174,8 @@ public class ShipmentService {
     public List<Shipment> getAll() {
         return shipmentDao.findAll();
     }
+
+
 
     public Shipment getOne(long id) {
         Instant startTime = Instant.now();

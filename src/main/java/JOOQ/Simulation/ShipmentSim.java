@@ -42,8 +42,6 @@ public class ShipmentSim {
 
     private ValidPostalCodeService validPostalCodesService;
 
-    private List<Map<String, Long>> createStatisticsList;
-    private List<Map<String, Long>> readStatisticsList;
 
 
     public ShipmentSim(ShipmentService shipmentService,  ValidPostalCodeService validPostalCodesService, TerminalIdService terminalIdService) throws SQLException {
@@ -58,16 +56,16 @@ public class ShipmentSim {
         this.validPostalCodesService = validPostalCodesService;
         this.terminalIdService = terminalIdService;
 
-        createStatisticsList = new ArrayList<>();
-        readStatisticsList = new ArrayList<>();
+
 
 
 
     }
 
 
-    public void simulate(int threads, int shipmentCount) {
+    public void simulate() {
         shipmentService.deleteAllShipments();
+
 
 
         Map<String, Integer> terminalIdsByPostalCode = terminalIdService.getAllTerminalIdsByPostalCode();
@@ -88,8 +86,8 @@ public class ShipmentSim {
                 .setZipCode(postalCode2);
         Customer savedReceiver = customerService.create(receiver);
 
-
-
+        int threads = 2;
+        int shipmentCount = 300000;
 
         ExecutorService executor = Executors.newFixedThreadPool(threads);
         for (int i = 0; i < shipmentCount; i++) {
@@ -105,7 +103,7 @@ public class ShipmentSim {
 
         ExecutorService getExecutor = Executors.newFixedThreadPool(threads);
         for (int i = 0; i < shipmentCount; i++) {
-            getExecutor.submit(new GetShipmentRunnable(shipmentService, i + 1)); // Use i + 1 as the shipment ID
+            getExecutor.submit(new GetShipmentRunnable(shipmentService, 1)); // Pass 1 as the shipment ID
         }
         getExecutor.shutdown();
         try {
@@ -114,52 +112,35 @@ public class ShipmentSim {
             e.printStackTrace();
         }
 
-
-
-
+        // Calculate and print statistics
 
         List<Long> timeTakenToCreateList = shipmentService.getTimeTakenToCreateList();
         Map<String, Long> createStatistics = shipmentService.calculateStatistics(timeTakenToCreateList);
-        createStatisticsList.add(createStatistics);
+
+// Print the create statistics
+        System.out.println("Create Statistics:");
+        System.out.println("Min: " + createStatistics.get("min"));
+        System.out.println("Max: " + createStatistics.get("max"));
+        System.out.println("Standard Deviation: " + createStatistics.get("standardDeviation"));
+        System.out.println("Average: " + createStatistics.get("average"));
+
 
         List<Long> timeTakenToReadList = shipmentService.getTimeTakenToReadList();
         Map<String, Long> readStatistics = shipmentService.calculateStatistics(timeTakenToReadList);
-        readStatisticsList.add(readStatistics);
-    }
 
-        // Calculate and print statistics
-
-        public void printStatistics() {
-            System.out.println("===== Create Statistics =====");
-            for (int i = 0; i < createStatisticsList.size(); i++) {
-                System.out.println("Simulation " + (i + 1) + ":");
-                Map<String, Long> createStatistics = createStatisticsList.get(i);
-                System.out.println("Min: " + createStatistics.get("min"));
-                System.out.println("Max: " + createStatistics.get("max"));
-                System.out.println("Standard Deviation: " + createStatistics.get("standardDeviation"));
-                System.out.println("Average: " + createStatistics.get("average"));
-                System.out.println();
-            }
-
-            System.out.println("===== Read Statistics =====");
-            for (int i = 0; i < readStatisticsList.size(); i++) {
-                System.out.println("Simulation " + (i + 1) + ":");
-                Map<String, Long> readStatistics = readStatisticsList.get(i);
-                System.out.println("Min: " + readStatistics.get("min"));
-                System.out.println("Max: " + readStatistics.get("max"));
-                System.out.println("Standard Deviation: " + readStatistics.get("standardDeviation"));
-                System.out.println("Average: " + readStatistics.get("average"));
-                System.out.println();
-            }
-        }
-    }
+// Print the read statistics
+        System.out.println("Read Statistics:");
+        System.out.println("Min: " + readStatistics.get("min"));
+        System.out.println("Max: " + readStatistics.get("max"));
+        System.out.println("Standard Deviation: " + readStatistics.get("standardDeviation"));
+        System.out.println("Average: " + readStatistics.get("average"));
 
 
 
 
 
 
-
+    }}
 
 
 
@@ -195,20 +176,20 @@ public class ShipmentSim {
         }
     }
 
-class GetShipmentRunnable implements Runnable {
-    private final ShipmentService shipmentService;
-    private final long shipmentId;
+    class GetShipmentRunnable implements Runnable {
+        private final ShipmentService shipmentService;
+        private final long shipmentId;
 
-    public GetShipmentRunnable(ShipmentService shipmentService, long shipmentId) {
-        this.shipmentService = shipmentService;
-        this.shipmentId = shipmentId;
-    }
+        public GetShipmentRunnable(ShipmentService shipmentService, long shipmentId) {
+            this.shipmentService = shipmentService;
+            this.shipmentId = shipmentId;
+        }
 
-    @Override
-    public void run() {
-        shipmentService.getOne(shipmentId);
+        @Override
+        public void run() {
+            shipmentService.getOne(shipmentId);
+        }
     }
-}
 
 
 

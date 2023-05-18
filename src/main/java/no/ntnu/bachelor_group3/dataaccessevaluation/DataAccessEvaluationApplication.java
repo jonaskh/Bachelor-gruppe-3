@@ -120,11 +120,11 @@ public class DataAccessEvaluationApplication implements ApplicationRunner {
 	public void run(ApplicationArguments args) throws Exception {
 		ShipmentSim shipmentSim = new ShipmentSim(shipmentService, validPostalCodeService, terminalIdService);
 
-		shipmentSim.simulate(1, 100);       // Run simulation with 1 thread and 100 shipments
-		shipmentSim.simulate(2, 2000);    // Run simulation with 3 threads and 10000 shipments
-		shipmentSim.simulate(3, 3000);    // Run simulation with 3 threads and 10000 shipments
-		shipmentSim.printStatistics();
+		var before = Instant.now();
+		shipmentSim.simulate();
 
+		var duration = Duration.between(before, Instant.now()).toSeconds();
+		System.out.println("duration " + duration);
 	}
 }
 
