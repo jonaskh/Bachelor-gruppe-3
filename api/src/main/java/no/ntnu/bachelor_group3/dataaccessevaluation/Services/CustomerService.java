@@ -65,14 +65,6 @@ public class CustomerService {
     }
 
     @Transactional
-    public void addShipment(Shipment shipment, Customer customer) {
-        var before = Instant.now();
-        findByID(customer.getCustomerID()).get().addShipment(shipment);
-        var duration = Duration.between(before, Instant.now()).toNanos();
-        customerEval.add(duration + ", shipment find");
-    }
-
-    @Transactional
     public Customer findByName(String name) {
         Optional<Customer> customer = customerRepository.findCustomerByName(name);
 

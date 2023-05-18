@@ -62,7 +62,7 @@ public class MultiThreadTests {
             Customer customer2 = new Customer("oslo", "tarjei", "0021");
 
             Shipment shipment = new Shipment(customer, customer, customer2);
-            UpdateShipmentRunnable sr = new UpdateShipmentRunnable(shipment, shipmentService, terminalService);
+            UpdateShipmentRunnable sr = new UpdateShipmentRunnable(shipment, shipmentService);
             executor.execute(sr);
         }
 

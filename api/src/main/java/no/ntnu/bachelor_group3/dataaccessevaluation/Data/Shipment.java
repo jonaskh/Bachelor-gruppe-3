@@ -24,11 +24,11 @@ public class Shipment {
     @JoinColumn(name = "shipment_id")
     private List<Parcel> parcels = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "sender_id")
     private Customer sender;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "receiver_id")
     private Customer receiver;
 
@@ -145,7 +145,6 @@ public class Shipment {
 
         this.parcels.add(parcel);
     }
-
 
     public void addParcels() {
 

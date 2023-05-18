@@ -27,11 +27,11 @@ public class Customer {
     private Long version = null;
 
 
-    //Set of shipments for each customer
-    @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER)
-    @JoinColumn(name = "customer_shipments")
-    private List<Shipment> shipments = new ArrayList<>();
+//    //Set of shipments for each customer
+//    @OneToMany(cascade = CascadeType.ALL,
+//            fetch = FetchType.EAGER)
+//    @JoinColumn(name = "customer_shipments")
+//    private List<Shipment> shipments = new ArrayList<>();
 
     /**
      * Constructor that user JavaFaker to generate values
@@ -79,17 +79,17 @@ public class Customer {
         return address;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAddress() {
+        this.address = faker.address().streetAddress();
     }
 
-    public List<Shipment> getShipments() {
-        return this.shipments;
-    }
-
-    public void addShipment(Shipment shipment) {
-        shipments.add(shipment);
-    }
+//    public List<Shipment> getShipments() {
+//        return this.shipments;
+//    }
+//
+//    public void addShipment(Shipment shipment) {
+//        shipments.add(shipment);
+//    }
 
 
     @Override

@@ -74,23 +74,25 @@ public class ShipmentService {
      * @param shipment
      */
     @Transactional
-    public void addShipment(Shipment shipment) {
+    public Shipment addShipment(Shipment shipment) {
 
+        Shipment ship = null;
         setFirstTerminalToShipment(shipment);
         setEndTerminalToShipment(shipment);
 
-        shipment.getSender().addShipment(shipment);
+//        shipment.getSender().addShipment(shipment);
 
         try {
             var before = Instant.now(); //evaluates the time taken by repository method.
 
-            shipmentRepository.save(shipment);
+            ship = shipmentRepository.save(shipment);
             var duration = Duration.between(before, Instant.now());
 
             shipmentEvals.add(duration.get(ChronoUnit.NANOS) + ", shipment: " + shipment.getShipment_id() + ", create");
         } catch (HibernateException e) {
             System.out.println("Shipment with that ID already exists");
         }
+        return ship;
     }
 
     /**
@@ -146,6 +148,7 @@ public class ShipmentService {
         var count = shipmentRepository.count();
         var duration = Duration.between(before, Instant.now());
         var result = duration + ", shipment read all";
+        System.out.println(count);
 
         shipmentEvals.add(result);
         return count;

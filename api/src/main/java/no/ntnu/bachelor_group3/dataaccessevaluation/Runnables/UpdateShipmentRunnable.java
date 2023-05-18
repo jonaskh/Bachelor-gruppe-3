@@ -10,7 +10,6 @@ public class UpdateShipmentRunnable implements Runnable{
     private Shipment shipment;
 
     private ShipmentService shipmentService;
-    private TerminalService terminalService;
     private Checkpoint cp1;
     private Checkpoint cp2;
     private Checkpoint cp3;
@@ -26,10 +25,9 @@ public class UpdateShipmentRunnable implements Runnable{
 
 
 
-    public UpdateShipmentRunnable(Shipment shipment, ShipmentService shipmentService, TerminalService terminalService) {
+    public UpdateShipmentRunnable(Shipment shipment, ShipmentService shipmentService) {
         this.shipment = shipment;
         this.shipmentService = shipmentService;
-        this.terminalService = terminalService;
 
         this.cp1 = new Checkpoint(shipment.getSender().getZip_code(), Checkpoint.CheckpointType.Collected);
         this.cp2 = new Checkpoint(shipment.getFirstTerminal(), Checkpoint.CheckpointType.ReceivedFirstTerminal);
@@ -77,6 +75,7 @@ public class UpdateShipmentRunnable implements Runnable{
      * to the final terminal. The time is relative to real time.
      */
     public void catchRun() {
+        shipmentService.addShipment(shipment);
         shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp1, cp8);
         shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp2, cp9);
         shipmentService.updateCheckpointsOnParcels(shipmentService.findByID(shipment.getShipment_id()), cp3, cp10);
