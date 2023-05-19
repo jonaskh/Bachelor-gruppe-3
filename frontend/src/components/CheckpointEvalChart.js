@@ -44,10 +44,10 @@ function CheckpointEvalChart() {
     }
 
     useEffect(() => {
-        if (evalList3.length > 0) {
+        if (evalList3.length > 0 && evalList3.length < 50000) {
             const data = formatData(evalList3);
             const ctx = document.getElementById('checkpoint-eval-chart').getContext('2d');
-            if (evalList3 < 60000) {
+            if (evalList3.length < 50000) {
                 new Chart(ctx, {
                     type: 'line',
                     data: data,
