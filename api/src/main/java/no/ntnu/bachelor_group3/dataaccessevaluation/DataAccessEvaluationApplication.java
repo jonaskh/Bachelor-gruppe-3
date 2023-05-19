@@ -39,15 +39,3 @@ public class DataAccessEvaluationApplication {
 		}
 	}
 }
-
-/*	@Bean
-	public Customer addCustomerToDataBase(CustomerService service) {
-		Customer customer = new Customer("sdasd","asdas","1999");
-
-		service.add(customer);
-		service.findByID(customer.getCustomerID());
-
-		System.out.println(service.findByID(customer.getCustomerID()).toString());
-
-		return service.findByID(customer.getCustomerID());
-	}*/
