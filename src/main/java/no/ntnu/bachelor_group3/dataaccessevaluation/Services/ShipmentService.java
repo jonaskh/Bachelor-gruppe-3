@@ -12,9 +12,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
@@ -39,6 +37,8 @@ public class ShipmentService {
 
 
     private static List<String> shipmentEvals = new CopyOnWriteArrayList<>();
+    private static List<Long> timeToReadList = new ArrayList<>();
+    private static List<Long> timeToCreateList = new ArrayList<>();
 
 
     public ShipmentService() {
@@ -49,6 +49,15 @@ public class ShipmentService {
         return shipmentEvals;
     }
 
+
+    @Transactional
+    public Shipment findByIDSim(Long id) {
+        var before = Instant.now();
+        Optional<Shipment> shipment = shipmentRepository.findById(id);
+        var duration = Duration.between(before, Instant.now()).toNanos();
+        timeToReadList.add(duration);
+        return shipment.orElse(null);
+    }
 
 
     @Transactional
@@ -77,32 +86,64 @@ public class ShipmentService {
     @Transactional
     public void cascadingAdd(Shipment shipment) {
 
-        if (customerService.findByID(shipment.getSenderID()).isEmpty()) {
-            customerService.save(shipment.getSender());
-        }
-        if (customerService.findByID(shipment.getReceiverID()).isEmpty()) {
-            customerService.save(shipment.getReceiver());
-        }
-        if (customerService.findByID(shipment.getPayerID()).isEmpty()) {
-            customerService.save(shipment.getPayer());
-        }
-        setFirstTerminalToShipment(shipment);
-        setEndTerminalToShipment(shipment);
-
-        shipment.getSender().addShipment(shipment);
-
-        try {
-            var before = Instant.now(); //evaluates the time taken by repository method.
-
+        var before = Instant.now();
             shipmentRepository.save(shipment);
             var duration = Duration.between(before, Instant.now());
 
             shipmentEvals.add(duration.get(ChronoUnit.NANOS) + ", shipment," + shipment.getShipment_id() + ", create");
-        } catch (HibernateException e) {
-            System.out.println("Shipment with that ID already exists");
-        }
+            timeToCreateList.add(duration.toNanos());
+
     }
 
+
+
+
+    public Map<String, Long> calculateStatistics(List<Long> numbers) {
+        Map<String, Long> statistics = new HashMap<>();
+
+        System.out.println(numbers.size());
+        // Remove the first 10 values
+        List<Long> remainingNumbers = numbers.subList(10, numbers.size());
+
+        // Print the size of the remaining list
+        int remainingListSize = remainingNumbers.size();
+        System.out.println("Size of the remaining list: " + remainingListSize);
+
+        // Calculate statistics for the remaining numbers
+        long min = Collections.min(remainingNumbers);
+        long max = Collections.max(remainingNumbers);
+
+        double sum = 0;
+        for (long number : remainingNumbers) {
+            sum += number;
+        }
+        double average = sum / remainingNumbers.size();
+
+        double squaredDifferenceSum = 0;
+        for (long number : remainingNumbers) {
+            double difference = number - average;
+            squaredDifferenceSum += difference * difference;
+        }
+        double variance = squaredDifferenceSum / remainingNumbers.size();
+        double standardDeviation = Math.sqrt(variance);
+
+        // Store the statistics
+        statistics.put("min", min);
+        statistics.put("max", max);
+        statistics.put("average", (long) average);
+        statistics.put("standardDeviation", (long) standardDeviation);
+
+        // Print the statistics
+
+        return statistics;
+    }
+
+    public List<Long> getTimeTakenToCreateList() {
+        return timeToCreateList;
+    }
+    public List<Long> getTimeTakenToReadList() {
+        return timeToReadList;
+    }
 
 
 

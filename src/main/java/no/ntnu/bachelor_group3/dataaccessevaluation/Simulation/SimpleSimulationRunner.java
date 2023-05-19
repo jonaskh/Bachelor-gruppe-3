@@ -12,6 +12,7 @@ import org.apache.commons.lang3.time.StopWatch;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 
 public class SimpleSimulationRunner {
@@ -25,12 +26,16 @@ public class SimpleSimulationRunner {
     private static List<String> evals = new CopyOnWriteArrayList<>();
 
 
+    int threads = 10;
+    int loadSize = 50000;
 
-    private ExecutorService executor1 = Executors.newFixedThreadPool(3);
+
+    private ExecutorService executor1 = Executors.newFixedThreadPool(threads);
+    private ExecutorService executor2 = Executors.newFixedThreadPool(threads);
 
 
 
-    private final ArrayBlockingQueue<Shipment> queue = new ArrayBlockingQueue<>(10000);
+    private final ArrayBlockingQueue<Shipment> queue = new ArrayBlockingQueue<>(loadSize + 1000);
 
 
     public SimpleSimulationRunner(ShipmentService shipmentService, CustomerService customerService, TerminalService terminalService, ValidPostalCodeService validPostalCodeService, ParcelService parcelService, CheckpointService checkpointService) {
@@ -52,7 +57,7 @@ public class SimpleSimulationRunner {
 
         System.out.println("Starting simulation...");
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < loadSize; i++) {
             Shipment shipment = new Shipment(sender, sender, receiver);
             AddShipmentsRunnable shipmentsRunnable = new AddShipmentsRunnable(shipment, shipmentService, customerService);
             try {
@@ -64,14 +69,9 @@ public class SimpleSimulationRunner {
         }
         try {
             //stops the executors from accepting new tasks
-
             executor1.shutdown();
-
-
             //stops the thread pools if no more tasks, an exception occurs or timeout.
             System.out.println("Update shipments done");
-
-
             executor1.awaitTermination(2, TimeUnit.MINUTES);
             System.out.println("Adding done");
 
@@ -80,59 +80,43 @@ public class SimpleSimulationRunner {
             e.printStackTrace();
             System.out.println("Error in await termination");
         }
+        for (int i = 0; i < loadSize; i++) {
+            Shipment shipment = queue.poll(); // assuming the queue still holds the shipments
+            FindShipmentRunnable findShipmentsRunnable = new FindShipmentRunnable(shipmentService, customerService, shipment); // You need to define it according to your actual usage
+            executor2.execute(findShipmentsRunnable);
+        }
 
-        //evals.addAll(shipmentService.getShipmentEvals());
-        //evals.addAll(parcelService.getParcelEvals());
-        evals.addAll(customerService.getCustomerEval());
-        //evals.addAll(checkpointService.getCheckpointEvals());
+        try {
+            executor2.shutdown();
+            executor2.awaitTermination(2, TimeUnit.MINUTES);
+            System.out.println("Finding done");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            System.out.println("Error in await termination");
+        }
 
-        evals.forEach(System.out::println);
+        List<Long> timeTakenToCreateList = shipmentService.getTimeTakenToCreateList();
+        Map<String, Long> createStatistics = shipmentService.calculateStatistics(timeTakenToCreateList);
+
+// Print the create statistics
+        System.out.println("Create Statistics:");
+        System.out.println("Min: " + createStatistics.get("min"));
+        System.out.println("Max: " + createStatistics.get("max"));
+        System.out.println("Standard Deviation: " + createStatistics.get("standardDeviation"));
+        System.out.println("Average: " + createStatistics.get("average"));
+
+
+        List<Long> timeTakenToReadList = shipmentService.getTimeTakenToReadList();
+        Map<String, Long> readStatistics = shipmentService.calculateStatistics(timeTakenToReadList);
+
+// Print the read statistics
+        System.out.println("Read Statistics:");
+        System.out.println("Min: " + readStatistics.get("min"));
+        System.out.println("Max: " + readStatistics.get("max"));
+        System.out.println("Standard Deviation: " + readStatistics.get("standardDeviation"));
+        System.out.println("Average: " + readStatistics.get("average"));
+
+
 
     }
 }
-
-//
-//    public void realTimeConverter() {
-//        StopWatch stopWatch = new StopWatch();
-//        stopWatch.start();
-//        Calendar calendar = Calendar.getInstance();
-//        int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
-//        String[] daysOfWeek = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-//        long previousElapsedSeconds = -1;
-//        while (stopWatch.getTime() < 30000) { // 30 seconds in milliseconds
-//
-//            long elapsedSeconds = stopWatch.getTime();
-//            stopWatch.split();
-//            if (elapsedSeconds != previousElapsedSeconds) {
-//                if (((elapsedSeconds / 1000) != (previousElapsedSeconds / 1000)) && calendar.get(Calendar.DAY_OF_MONTH) != currentDay) {
-//                    previousElapsedSeconds = stopWatch.getSplitTime();
-//                    currentDay = calendar.get(Calendar.DAY_OF_MONTH);
-//                    int dayOfWeek = getDayOfWeek(calendar.getTime());
-//                    System.out.println("Today is " + daysOfWeek[dayOfWeek - 1]);
-//                } else {
-//                    previousElapsedSeconds = elapsedSeconds;
-//                }
-//            }
-//            calendar.setTime(new Date(stopWatch.getSplitTime() * 24 * 60 * 60 * 1000)); // Set the calendar time based on the elapsed time
-//            stopWatch.unsplit();
-//
-//        }
-//        stopWatch.stop();
-//
-//    }
-
-//    private static int getDayOfWeek(Date date) {
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTime(date);
-//        return calendar.get(Calendar.DAY_OF_WEEK);
-//    }
-//}
-
-
-
-
-
-
-
-
-

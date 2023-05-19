@@ -27,6 +27,6 @@ public class FindShipmentRunnable implements Runnable {
     }
 
     private void catchRun() {
-        System.out.println("count: " + shipmentService.findByID(shipment.getShipment_id()).getParcels().get(0).getLastCheckpoint());
+        shipmentService.findByIDSim(1L);
     }
 }
