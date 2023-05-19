@@ -96,7 +96,7 @@ public class SimulationRunner {
 //            run find shipment location after a 0.5 second delay every second to simulate higher load.
             for (int k = 1; k < 20; k++) {
 
-                findLocationofShipmentExecutor.scheduleAtFixedRate(new FindShipmentRunnable(shipmentService, shipmentService.findByID(Long.valueOf(k))), 1000, 2000, TimeUnit.MILLISECONDS);
+                findLocationofShipmentExecutor.scheduleAtFixedRate(new FindShipmentRunnable(shipmentService, shipmentService.findByID(1L)), 1000, 2000, TimeUnit.MILLISECONDS);
             }
         }
 
