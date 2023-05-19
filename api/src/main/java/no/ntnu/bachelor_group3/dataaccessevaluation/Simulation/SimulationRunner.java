@@ -13,12 +13,13 @@ import java.util.concurrent.*;
 
 public class SimulationRunner {
 
-    private final int SHIPMENTS = 500;
-    private final ExecutorService addShipmentsExecutor = Executors.newFixedThreadPool(5);
-    private final ScheduledExecutorService findLocationofShipmentExecutor = Executors.newScheduledThreadPool(5);
+    private final int SHIPMENTS = 10000;
+    private final int THREADS = 1;
+    private final ExecutorService addShipmentsExecutor = Executors.newFixedThreadPool(THREADS);
+    private final ScheduledExecutorService findLocationofShipmentExecutor = Executors.newScheduledThreadPool(THREADS);
     private final ScheduledExecutorService updateShipmentExecutor = Executors.newScheduledThreadPool(2);
-    private final ScheduledExecutorService updateCustomerExecutor = Executors.newScheduledThreadPool(5);
-    private final ScheduledExecutorService shipmentCountExecutor = Executors.newScheduledThreadPool(5);
+    private final ScheduledExecutorService updateCustomerExecutor = Executors.newScheduledThreadPool(THREADS);
+    private final ScheduledExecutorService shipmentCountExecutor = Executors.newScheduledThreadPool(THREADS);
 
 
     private final ShipmentService shipmentService;
