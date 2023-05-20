@@ -59,6 +59,15 @@ public class ShipmentDAO {
         return null;
     }
 
+    /**
+     * Saves a shipment to the database through the Connection conn.
+     *
+     * @param shipment The shipment to save
+     * @param terminalDAO
+     * @param conn the connection to the database
+     * @return
+     * @throws SQLException
+     */
     public Long save(Shipment shipment, TerminalDAO terminalDAO, Connection conn) throws SQLException {
         setFirstTerminal(shipment, terminalDAO, conn);
         setLastTerminal(shipment, terminalDAO, conn);
@@ -95,56 +104,6 @@ public class ShipmentDAO {
         }
         return id;
     }
-/*
-
-
-    public Long save(Shipment shipment, Parcel parcel, ParcelService parcelService, TerminalService terminalService, Connection conn) throws SQLException {
-        setFirstTerminal(shipment, terminalService, conn);
-        setLastTerminal(shipment, terminalService, conn);
-        PreparedStatement stmt;
-        Long id = shipment.getId();
-        List<Parcel> parcels = shipment.getParcels();
-        if (id == 0) {
-            // This is a new shipment, so insert it into the database
-            stmt = conn.prepareStatement(INSERT_SHIPMENT_QUERY,
-                    Statement.RETURN_GENERATED_KEYS);
-            setShipmentInfo(shipment, stmt);
-            var startTime = Instant.now();
-            int rowsInserted = stmt.executeUpdate();
-            var executionTime = Duration.between(startTime, Instant.now()).toNanos();
-            executionTimeList.add(executionTime + ", shipment, create");
-            ResultSet rs = stmt.getGeneratedKeys();
-            if (rs.next()) {
-                id = rs.getLong(8);
-            } else {
-                throw new SQLException("Failed to insert shipment, no generated keys returned.");
-            }
-
-            // Insert the parcel with the shipment foreign key
-            String parcelQuery = "INSERT INTO parcel (shipment_id, weight, weight_class) VALUES (?, ?, ?)";
-            try (PreparedStatement parcelStatement = conn.prepareStatement(parcelQuery)) {
-                parcelStatement.setLong(1, id);
-                parcelStatement.setDouble(2, parcel.getWeight());
-                parcelStatement.setInt(3, parcel.getWeight_class());
-
-                parcelStatement.executeUpdate();
-            }
-        } else {
-            // This is an existing shipment, so update it in the database
-            stmt = conn.prepareStatement(UPDATE_SHIPMENT_QUERY);
-            setShipmentInfo(shipment, stmt);
-            stmt.setLong(4, id);
-            var startTime = Instant.now();
-            int rowsInserted = stmt.executeUpdate();
-            var executionTime = Duration.between(startTime, Instant.now()).toNanos();
-            executionTimeList.add(executionTime + ", shipment, create");
-
-            // Update all parcels associated with this shipment
-        }
-        return id;
-    }
-
- */
 
     public void delete(Shipment shipment, ParcelDAO parcelDAO, Connection conn) throws SQLException {
         Long id = shipment.getId();

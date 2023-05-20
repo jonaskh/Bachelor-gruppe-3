@@ -35,6 +35,11 @@ public class FindShipmentRunnable implements Runnable {
         }
     }
 
+    /**
+     * Finds the last checkpoint on a parcel in a shipment
+     *
+     * @throws SQLException
+     */
     private void catchRun() throws SQLException {
         if (shipment != null) {
             Long parcelId = db.getShipmentById(shipment.getId()).getParcels().get(0).getId();

@@ -29,6 +29,11 @@ public class AddShipmentsRunnable implements Runnable {
         }
     }
 
+    /**
+     * Adds a shipment and two parcels connected to that shipment in the database.
+     *
+     * @throws SQLException
+     */
     public void catchRun() throws SQLException {
         Parcel parcel = new Parcel(0L, 1.2);
         Parcel parcel2 = new Parcel(0L, 2.1);
