@@ -31,6 +31,7 @@ public class ShipmentDAO {
         }
     }
 
+
     public Shipment getShipmentById(Long shipmentId, CustomerDAO customerDAO, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(GET_SHIPMENT_BY_ID_QUERY);
         stmt.setLong(1, shipmentId);
@@ -59,6 +60,16 @@ public class ShipmentDAO {
         return null;
     }
 
+    /**
+     * Saves a shipment to the database through the Connection conn.
+     *
+     * @param shipment The shipment to save
+     * @param parcelDAO
+     * @param terminalDAO
+     * @param conn the connection to the database
+     * @return
+     * @throws SQLException
+     */
     public Long save(Shipment shipment, ParcelDAO parcelDAO, TerminalDAO terminalDAO, Connection conn) throws SQLException {
         setFirstTerminal(shipment, terminalDAO, conn);
         setLastTerminal(shipment, terminalDAO, conn);

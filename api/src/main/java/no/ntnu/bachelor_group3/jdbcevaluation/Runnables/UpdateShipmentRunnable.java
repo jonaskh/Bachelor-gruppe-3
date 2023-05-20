@@ -49,7 +49,7 @@ public class UpdateShipmentRunnable implements Runnable{
     }
     /**
      * Simulates the lifecycle of a shipment, where it simulates traveling through different checkpoints
-     * to the final terminal. The time is relative to real time.
+     * to the final terminal.
      */
     public void catchRun() throws SQLException {
         db.setCheckpointOnParcels(shipment, cp1);

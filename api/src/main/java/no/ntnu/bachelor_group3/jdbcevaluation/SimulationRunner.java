@@ -119,23 +119,6 @@ public class SimulationRunner {
 
             db.commit();
 
-
-            //evals.addAll(customerService.getCustomerEval());
-            //evals.forEach(System.out::println);
-
-            //System.out.println("shipments: " + sender.getShipments().size());
-
-
-
-            //System.out.println("queue size: " + queue.size());
-            //System.out.println("shipments: " + shipmentService.count());
-            //System.out.println("parcels: " + parcelService.count());
-            //System.out.println("checkpoints: " + checkpointService.count());
-
-            //System.out.println("Number of shipments in terminal 14: " + terminalService.returnTerminalFromZip("6008").getShipmentNumber());
-            //System.out.println("Number of checkpoints in terminal 14: " + terminalService.returnTerminalFromZip("0021").getCheckpointNumber());
-
-
         }
 }
 

@@ -23,6 +23,13 @@ public class TerminalDAO {
         return null;
     }
 
+    /**
+     * Returns the terminal responsible for the given zip code.
+     *
+     * @param zipCode The zip code to use for finding the terminal
+     * @param conn A connection to a database
+     * @return The terminal found responsible for the zip, or null
+     */
     public Terminal getTerminalByZip(String zipCode, Connection conn) {
         Terminal terminal = null;
         String query = "SELECT t.terminal_id, t.address " +
@@ -47,6 +54,14 @@ public class TerminalDAO {
         return terminal;
     }
 
+    /**
+     * Saves a terminal to a database through the Connection conn
+     * CREATE or UPDATE depending on if the terminal already exists.
+     *
+     * @param terminal The terminal to save
+     * @param conn the connection to the database
+     * @throws SQLException
+     */
     public void save(Terminal terminal, Connection conn) throws SQLException {
         PreparedStatement stmt;
         Long id = terminal.getId();
