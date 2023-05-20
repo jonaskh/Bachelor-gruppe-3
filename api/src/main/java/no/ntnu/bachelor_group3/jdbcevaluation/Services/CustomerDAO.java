@@ -40,6 +40,13 @@ public class CustomerDAO {
         return null;
     }
 
+    /**
+     * Saves a customer to the database or updates an existing one
+     *
+     * @param customer the customer to insert or update
+     * @param conn the connection to the database
+     * @throws SQLException
+     */
     public Long save(Customer customer, Connection conn) throws SQLException {
 
         if (customerExists(customer.getId(), conn)) {
