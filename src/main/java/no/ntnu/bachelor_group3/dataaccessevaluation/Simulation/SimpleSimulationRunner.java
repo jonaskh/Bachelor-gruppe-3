@@ -26,8 +26,8 @@ public class SimpleSimulationRunner {
     private static List<String> evals = new CopyOnWriteArrayList<>();
 
 
-    int threads = 10;
-    int loadSize = 50000;
+    int threads = 3;
+    int loadSize = 1000;
 
 
     private ExecutorService executor1 = Executors.newFixedThreadPool(threads);

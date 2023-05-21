@@ -1,0 +1,5 @@
+Statistics:
+Min: 303000
+Max: 57131000
+Standard Deviation: 1414667
+Average: 584608
