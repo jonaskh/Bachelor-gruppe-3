@@ -13,9 +13,14 @@ public class TerminalDaoConfig {
     @Autowired
     private DSLContext dslContext; // Assuming you have a bean of DSLContext
 
+    /**
+     * Creates and configures a TerminalDao bean.
+     *
+     * @return TerminalDao - the configured TerminalDao bean.
+     */
     @Bean
     public TerminalDao terminalDao() {
-        // Instantiate and configure the ShipmentDao object
+        // Instantiate and configure the TerminalDao object
         return new TerminalDao(dslContext.configuration());
     }
 }

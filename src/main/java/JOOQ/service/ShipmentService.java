@@ -31,19 +31,23 @@ import static no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.tables.Shi
 @Service
 @Transactional
 public class ShipmentService {
-    long nextShipId = 1L;
+    long nextShipId = 1L; // initial shipment id
 
+    // Variables for logging the time taken for operations
 
     private final AtomicLong nextId = new AtomicLong(0L);
     private final List<String> timeTakenList;
+    // jOOQ's DSLContext enables the construction of SQL queries in a type-safe way
     private final DSLContext dslContext;
     private final List<Long> timeTakenToCreateList;
     private final List<Long> timeTakenToReadList;
 
 
 
-
+    // ShipmentDao is used to interact with the Shipment table in the database
     private final ShipmentDao shipmentDao;
+
+    // Constructor for ShipmentService, initializing lists to hold timing data and the DAO to interact with the database
     public ShipmentService(ShipmentDao shipmentDao, DSLContext dslContext) {
         this.shipmentDao = shipmentDao;
         this.timeTakenList = new ArrayList<>();
@@ -52,6 +56,7 @@ public class ShipmentService {
         this.timeTakenToReadList = new ArrayList<>();
     }
 
+    // Method to create a new Shipment record
 
     public Shipment createShipment(Customer sender, Customer payer, Customer receiver, int senderTerminalId, int receiverTerminalId) {
         Instant startTime = Instant.now();
@@ -75,33 +80,7 @@ public class ShipmentService {
         timeTakenToCreateList.add(duration.toNanos());
         return shipmentRecord.into(Shipment.class);
     }
-
-//    public Shipment createShipment(Customer sender, Customer payer, Customer receiver, int senderTerminalId, int receiverTerminalId) {
-//        Instant startTime = Instant.now();
-//        LocalDateTime expectedDeliveryDate = LocalDateTime.now().plusDays(7);
-//
-//        Shipment shipment = new Shipment();
-//        shipment.setShipmentId(nextShipId++);
-//        shipment.setSenderId(sender.getCustomerId());
-//        shipment.setPayerId(payer.getCustomerId());
-//        shipment.setReceiverId(receiver.getCustomerId());
-//        shipment.setDelivered(false);
-//        shipment.setExpectedDeliveryDate(expectedDeliveryDate);
-//        shipment.setTimeCreated(LocalDateTime.now());
-//        shipment.setStartTerminalId(senderTerminalId);
-//        shipment.setEndTerminalId(receiverTerminalId);
-//
-//        shipmentDao.insert(shipment);
-//
-//        Instant endTime = Instant.now();
-//        Duration duration = Duration.between(startTime, endTime);
-//        timeTakenList.add(duration.toNanos() + ", shipment, create ");
-//        timeTakenToCreateList.add(duration.toNanos());
-//
-//        return shipment;
-//    }
-
-
+    // Method to calculate statistical measures on a list of numbers
     public Map<String, Long> calculateStatistics(List<Long> numbers) {
         Map<String, Long> statistics = new HashMap<>();
 
@@ -143,6 +122,7 @@ public class ShipmentService {
     }
 
 
+    // Getter methods for time taken lists
 
     public List<Long> getTimeTakenToCreateList() {
         return timeTakenToCreateList;
@@ -156,21 +136,7 @@ public class ShipmentService {
         return timeTakenList;
     }
 
-
-
-
-
-    private Long getNextShipmentId(DSLContext dslContext) {
-        return shipmentDao.configuration().dsl()
-                .fetchOne("SELECT nextval('nextShipmentId')::bigint")
-                .into(Long.class);
-    }
-
-
-
-
-
-
+    // Method to get all shipment records
     public List<Shipment> getAll() {
         return shipmentDao.findAll();
     }
@@ -203,7 +169,7 @@ public class ShipmentService {
         Duration duration = Duration.between(startTime, endTime);
         timeTakenList.add(duration.toNanos() + ", shipment, delete ");
     }
-
+    // Method to delete all shipment records
     public void deleteAllShipments() {
         dslContext.deleteFrom(SHIPMENT).execute();
     }

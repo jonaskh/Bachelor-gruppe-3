@@ -16,7 +16,6 @@ import java.util.Optional;
 
 import static no.ntnu.bachelor_group3.dataaccessevaluation.jooq.model.Tables.CUSTOMER;
 
-
 @RequiredArgsConstructor
 @Transactional
 @Repository
@@ -24,36 +23,50 @@ public class CustomerRepository implements JOOQRepository<Customer>{
 
     private final DSLContext dslContext;
 
+    /**
+     * Saves a Customer record in the database.
+     *
+     * @param customer - the Customer object to be saved.
+     * @return Customer - the saved Customer object.
+     */
     @Override
-    public Customer save(Customer Customer){
-        CustomerRecord CustomerRecord = dslContext.insertInto(CUSTOMER)
-                .set(CUSTOMER.ADDRESS, Customer.getAddress())
-                .set(CUSTOMER.NAME, Customer.getName())
-                .set(CUSTOMER.ZIP_CODE, Customer.getZipCode())
+    public Customer save(Customer customer){
+        CustomerRecord customerRecord = dslContext.insertInto(CUSTOMER)
+                .set(CUSTOMER.ADDRESS, customer.getAddress())
+                .set(CUSTOMER.NAME, customer.getName())
+                .set(CUSTOMER.ZIP_CODE, customer.getZipCode())
                 .returning(CUSTOMER.CUSTOMER_ID).fetchOne();
 
-
-        if (CustomerRecord != null) {
-            Customer.setCustomerId(CustomerRecord.getCustomerId());
-            return Customer;
+        if (customerRecord != null) {
+            customer.setCustomerId(customerRecord.getCustomerId());
+            return customer;
         }
         return null;
     }
 
-
-
+    /**
+     * Updates a Customer record in the database.
+     *
+     * @param customer - the Customer object with updated values.
+     * @param id - the ID of the Customer record to be updated.
+     * @return Customer - the updated Customer object.
+     */
     @Override
-    public Customer update(Customer Customer, long id) {
-        CustomerRecord CustomerRecord = (CustomerRecord) dslContext.update(CUSTOMER)
-                .set(CUSTOMER.ADDRESS, Customer.getAddress())
-                .set(CUSTOMER.NAME, Customer.getName())
-                .set(CUSTOMER.ZIP_CODE, Customer.getZipCode())
+    public Customer update(Customer customer, long id) {
+        CustomerRecord customerRecord = (CustomerRecord) dslContext.update(CUSTOMER)
+                .set(CUSTOMER.ADDRESS, customer.getAddress())
+                .set(CUSTOMER.NAME, customer.getName())
+                .set(CUSTOMER.ZIP_CODE, customer.getZipCode())
                 .where(CUSTOMER.CUSTOMER_ID.eq(id));
 
-        return (CustomerRecord != null)  ? Customer : null;
-
+        return (customerRecord != null) ? customer : null;
     }
 
+    /**
+     * Retrieves all Customer records from the database.
+     *
+     * @return List<Customer> - a list of Customer objects.
+     */
     @Override
     public List<Customer> findAll() {
         return dslContext
@@ -61,24 +74,29 @@ public class CustomerRepository implements JOOQRepository<Customer>{
                 .fetchInto(Customer.class);
     }
 
+    /**
+     * Retrieves a Customer record from the database by ID.
+     *
+     * @param id - the ID of the Customer record.
+     * @return Optional<Customer> - an optional Customer object.
+     */
     @Override
     public Optional<Customer> findById(long id) {
-        Customer Customer = dslContext.selectFrom(CUSTOMER).where(CUSTOMER.CUSTOMER_ID.eq(id)).fetchOneInto(Customer.class);
-        return (ObjectUtils.isEmpty(Customer)) ? Optional.empty() : Optional.of(Customer);
+        Customer customer = dslContext.selectFrom(CUSTOMER).where(CUSTOMER.CUSTOMER_ID.eq(id)).fetchOneInto(Customer.class);
+        return (ObjectUtils.isEmpty(customer)) ? Optional.empty() : Optional.of(customer);
     }
 
+    /**
+     * Deletes a Customer record from the database by ID.
+     *
+     * @param id - the ID of the Customer record to be deleted.
+     * @return boolean - true if the deletion is successful, false otherwise.
+     */
     public boolean deleteById(long id) {
         return dslContext.delete(CUSTOMER)
                 .where(CUSTOMER.CUSTOMER_ID.eq(id))
                 .execute() == 1;
     }
 
-    public Long getNextCustomerId() {
-        Result<Record1<Long>> result = dslContext.select(DSL.max(CUSTOMER.CUSTOMER_ID)).from(CUSTOMER).fetch();
-        Long maxCustomerId = result.get(0).value1();
-        return maxCustomerId + 1;
-    }
-
-
-
-}
+/**
+ * Retrieves the next available customer ID in the database

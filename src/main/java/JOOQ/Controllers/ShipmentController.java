@@ -17,15 +17,24 @@ public class ShipmentController {
 
     private final ShipmentService shipmentService;
 
+    /**
+     * Creates a new instance of ShipmentController.
+     *
+     * @param shipmentService - the ShipmentService dependency to be injected.
+     */
     @Autowired
     public ShipmentController(ShipmentService shipmentService) {
         this.shipmentService = shipmentService;
     }
 
+    /**
+     * Retrieves the list of time taken for each shipment evaluation.
+     *
+     * @return List<String> - the list of time taken for each shipment evaluation.
+     */
     @GetMapping("/shipment/eval")
     public List<String> getShipmentEval() {
         List<String> timeTakenList = shipmentService.getTimeTakenList();
-        //System.out.println(timeTakenList);
         return timeTakenList;
     }
 

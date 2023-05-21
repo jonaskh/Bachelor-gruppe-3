@@ -13,9 +13,14 @@ public class ValidPostalCodeDaoConfig {
     @Autowired
     private DSLContext dslContext; // Assuming you have a bean of DSLContext
 
+    /**
+     * Creates and configures a ValidPostalCodesDao bean.
+     *
+     * @return ValidPostalCodesDao - the configured ValidPostalCodesDao bean.
+     */
     @Bean
     public ValidPostalCodesDao validPostalCodesDao() {
-        // Instantiate and configure the ShipmentDao object
+        // Instantiate and configure the ValidPostalCodesDao object
         return new ValidPostalCodesDao(dslContext.configuration());
     }
 }

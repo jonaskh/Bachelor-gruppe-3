@@ -10,10 +10,11 @@ import org.springframework.context.annotation.Configuration;
 public class ShipmentDaoConfig {
 
     @Autowired
-    private DSLContext dslContext;
+    private DSLContext dslContext; // Assuming you have a bean of DSLContext
 
+    /**
+     * Creates and configures a ShipmentDao bean.
+     *
+     * @return ShipmentDao - the configured ShipmentDao bean.
+     */
     @Bean
-    public ShipmentDao shipmentDao() {
-        return new ShipmentDao(dslContext.configuration());
-    }
-}

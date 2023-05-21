@@ -12,9 +12,14 @@ public class CustomerDaoConfig {
     @Autowired
     private DSLContext dslContext; // Assuming you have a bean of DSLContext
 
+    /**
+     * Creates and configures a CustomerDao bean.
+     *
+     * @return CustomerDao - the configured CustomerDao bean.
+     */
     @Bean
     public CustomerDao customerDao() {
-        // Instantiate and configure the ShipmentDao object
+        // Instantiate and configure the CustomerDao object
         return new CustomerDao(dslContext.configuration());
     }
 }

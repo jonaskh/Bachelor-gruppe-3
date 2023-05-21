@@ -42,7 +42,7 @@ public class ShipmentSim {
 
     private ValidPostalCodeService validPostalCodesService;
 
-
+    // Constructs a ShipmentSim with required services
 
     public ShipmentSim(ShipmentService shipmentService,  ValidPostalCodeService validPostalCodesService, TerminalIdService terminalIdService) throws SQLException {
         conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "postgres");
@@ -62,7 +62,7 @@ public class ShipmentSim {
 
     }
 
-
+    // Simulates the creation and fetching of Shipments
     public void simulate() {
         shipmentService.deleteAllShipments();
 
@@ -147,7 +147,7 @@ public class ShipmentSim {
 
 
 
-
+// A Runnable task for creating shipments
     class ShipmentRunnable implements Runnable {
         private final Map<String, Integer> terminalIdsByPostalCode;
         private final ShipmentService shipmentService;
@@ -176,7 +176,9 @@ public class ShipmentSim {
         }
     }
 
-    class GetShipmentRunnable implements Runnable {
+// A Runnable task for fetching shipments
+
+class GetShipmentRunnable implements Runnable {
         private final ShipmentService shipmentService;
         private final long shipmentId;
 
